@@ -25,7 +25,7 @@ export default function Home() {
             {receipts
               .filter((receipt) => receipt.default.category === CATEGORIES.POS)
               .map((receipt) => (
-                <Receipt receipt={receipt.default} />
+                <Receipt receipt={receipt.default} key={receipt.default.name} />
               ))}
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function Home() {
                 (receipt) => receipt.default.category === CATEGORIES.RECEIPT
               )
               .map((receipt) => (
-                <Receipt receipt={receipt.default} />
+                <Receipt receipt={receipt.default} key={receipt.default.name} />
               ))}
           </div>
         </div>

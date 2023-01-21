@@ -79,9 +79,9 @@ export default function EditorProvider(props: { children: ReactNode }) {
   async function exportFile() {
     try {
       switch (format) {
-        case "pdf":
-          await downloadPdf();
-          break;
+        // case "pdf":
+        //   await downloadPdf();
+        //   break;
         case "jpeg":
           await getJpeg();
           break;

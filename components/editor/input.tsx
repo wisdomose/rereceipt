@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   FiAlignRight,
   FiAlignLeft,
@@ -29,6 +29,17 @@ export default function Input(props: Props) {
   };
 
   const [value, setValue] = useState<Elem>(defaultValue);
+
+  // get the cell to be edited
+  const getElem = useCallback(() => {
+    if (props.index != undefined && Array.isArray(props.index)) {
+      return structure[props.label][props.index[0]][props.index[1]];
+    } else if (typeof props.index === "number") {
+      return structure[props.label][props.index];
+    } else {
+      return structure[props.label];
+    }
+  }, [structure]);
 
   useEffect(() => {
     if (Object.keys(structure).length > 0) setValue(getElem());
@@ -82,21 +93,10 @@ export default function Input(props: Props) {
     setValue((v) => ({ ...value, ...update }));
   }
 
-  // get the cell to be edited
-  function getElem<T = Elem>(): T {
-    if (props.index != undefined && Array.isArray(props.index)) {
-      return structure[props.label][props.index[0]][props.index[1]];
-    } else if (typeof props.index === "number") {
-      return structure[props.label][props.index];
-    } else {
-      return structure[props.label];
-    }
-  }
-
   // get the different properties of the cell
   function getProp(key: keyof Elem): string {
     // console.log(props.label);
-    return value[key];
+    return value[key] || "inherit";
   }
 
   return (

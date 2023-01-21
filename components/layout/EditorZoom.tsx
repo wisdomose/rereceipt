@@ -2,7 +2,7 @@ import { ReactNode, forwardRef } from "react";
 import { RiFocus2Line } from "react-icons/ri";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
-export default forwardRef<HTMLDivElement, { children: ReactNode }>(
+const EditorZoom = forwardRef<HTMLDivElement, { children: ReactNode }>(
   (props, ref) => {
     return (
       <section
@@ -51,3 +51,5 @@ export default forwardRef<HTMLDivElement, { children: ReactNode }>(
     );
   }
 );
+EditorZoom.displayName = "EditorZoom";
+export default EditorZoom;
