@@ -1,0 +1,224 @@
+{
+  "title": {
+    "label": "Ideal Supermarket",
+    "text_align": "center",
+    "transform": "capitalize",
+    "font_weight": "bold",
+    "font_size": "16px"
+  },
+  "location": {
+    "label": "KM 31 Lekki-Epe Expressway Opp. Bogije Bus Stop Ibeju-lekki, Lagos",
+    "text_align": "center",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "contacts": [
+    {
+      "label": "808 381 7713",
+      "text_align": "center",
+      "transform": "capitalize",
+      "font_weight": "normal"
+    }
+  ],
+  "email": {
+    "label": "idealnetworksolutionsng@gmail.com",
+    "text_align": "center",
+    "transform": "lowercase",
+    "font_weight": "normal"
+  },
+  "date": {
+    "label": "20/12/2022",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "time": {
+    "label": "13:38:24",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "staff": {
+    "label": "PETER .A. COSMA",
+    "text_align": "end",
+    "transform": "uppercase",
+    "font_weight": "normal"
+  },
+  "device": {
+    "label": "ideal",
+    "text_align": "end",
+    "transform": "uppercase",
+    "font_weight": "normal"
+  },
+
+  "products": [
+    [
+      {
+        "label": "product",
+        "text_align": "left",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "price",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "qty",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "amount",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      }
+    ],
+    [
+      {
+        "label": "VM - F/rice & Curry",
+        "text_align": "left",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "170.00",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "10",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "1000.00",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      }
+    ],
+    [
+      {
+        "label": "COKE, FANTA, SPRITE, LIMCA",
+        "text_align": "left",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "170.00",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "15",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "2550.00",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      }
+    ],
+    [
+      {
+        "label": "FIVE ALIVE APPL, TROP, B",
+        "text_align": "left",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "450.00",
+        "text_align": "right",
+        "transform": "uppercase",
+        "font_weight": "normal"
+      },
+      {
+        "label": "2",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      },
+      {
+        "label": "900.00",
+        "text_align": "right",
+        "transform": "capitalize",
+        "font_weight": "normal"
+      }
+    ]
+  ],
+  "total_qty": {
+    "label": "29",
+    "text_align": "right",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+
+  "sub_total": {
+    "label": "5320.00",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "total": {
+    "label": "5320.00",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "bold",
+    "font_size": "16px"
+  },
+  "amount": {
+    "label": "5320.00",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+
+  "tax_rate": {
+    "label": "7.50",
+    "text_align": "left",
+    "transform": "uppercase",
+    "font_weight": "normal"
+  },
+  "tax_percentage": {
+    "label": "7.50",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "tax_paid": {
+    "label": "369.00",
+    "text_align": "end",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+
+  "payment_type": {
+    "label": "cash",
+    "text_align": "left",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+
+  "footer_message": {
+    "label": "Goods sold in good condition are not returnable",
+    "text_align": "center",
+    "transform": "capitalize",
+    "font_weight": "normal"
+  },
+  "settings": {
+    "font_family": "Moulpali",
+    "font_size": "8px",
+    "width": "220px"
+  }
+}
