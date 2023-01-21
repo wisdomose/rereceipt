@@ -48,28 +48,29 @@ export default function Alpine(props: Props) {
           {/* <FiMenu className="text-2xl" /> */}
         </Link>
 
-        {/* sidemenu */}
-        <Popover className="lg:hidden">
-          {({ open }: { open: boolean }) => (
-            <>
-              <Popover.Button className="text-gray-50 hover:bg-gray-50/10 focus:bg-gray-50/10  h-full w-14 flex items-center justify-center focus:ring-0 focus:outline-none">
-                <FiSettings />
-              </Popover.Button>
-              <Popover.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 " />
-              <Popover.Panel
-                className={`w-[250px] bg-black/80 h-full text-gray-200 fixed top-0 z-50 ${
-                  open ? "right-0" : "right-full"
-                }`}
-              >
-                <SideBar />
-              </Popover.Panel>
-            </>
-          )}
-        </Popover>
-
-        <p className="bg-gray-200 text-xs px-2 rounded-full h-fit mr-5">
-          0.0.0 - BETA
-        </p>
+        <div className="flex items-center h-full">
+          <p className="bg-gray-200 text-xs px-2 rounded-full h-fit mr-5">
+            0.0.0 - BETA
+          </p>
+          {/* sidemenu */}
+          <Popover className="lg:hidden h-full">
+            {({ open }: { open: boolean }) => (
+              <>
+                <Popover.Button className="text-gray-50 hover:bg-gray-50/10 focus:bg-gray-50/10 h-full w-14 flex items-center justify-center focus:ring-0 focus:outline-none">
+                  <FiSettings />
+                </Popover.Button>
+                <Popover.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 " />
+                <Popover.Panel
+                  className={`w-[250px] bg-black/80 h-full text-gray-200 fixed top-0 z-50 ${
+                    open ? "right-0" : "right-full"
+                  }`}
+                >
+                  <SideBar />
+                </Popover.Panel>
+              </>
+            )}
+          </Popover>
+        </div>
       </nav>
 
       <div className="h-full  lg:grid lg:grid-cols-[max-content,1fr,max-content]">
