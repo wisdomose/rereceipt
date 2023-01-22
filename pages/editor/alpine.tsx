@@ -3,6 +3,7 @@ import Alpine from "../../modules/editors/Alpine";
 import { useRouter } from "next/router";
 import receipts from "../../receipts/index";
 import useEditor from "../../store/editor/useEditor";
+import { useEffect } from "react";
 
 export default function AlpineWrapper() {
   const router = useRouter();

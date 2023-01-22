@@ -74,7 +74,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
                 {product.map((col, position) => (
                   <p
                     className="table-cell"
-                    key={col.label}
+                    key={col.label + position}
                     style={{
                       ...genStyle(col),
                       width:

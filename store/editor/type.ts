@@ -6,7 +6,7 @@ export type Pdf = JSX.Element;
 export const formats = ["jpeg", "png", "svg"] as const;
 // export const formats = ["pdf", "jpeg", "png", "svg"] as const;
 
-type Format = typeof formats[number];
+export type Format = typeof formats[number];
 
 export type Context = {
   updatePdfFile: (f?: Pdf) => void;

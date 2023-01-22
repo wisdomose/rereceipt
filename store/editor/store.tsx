@@ -4,12 +4,14 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef,
 } from "react";
 import { pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
-import { useToImage } from "@hcorta/react-to-image";
-import { Context, Pdf, formats } from "./type";
+import { Context, Format, Pdf, formats } from "./type";
 import { useRouter } from "next/router";
+import { toPng, toJpeg, toCanvas, toSvg } from "html-to-image";
+import jspdf from "jspdf";
 
 export const EditorStore = createContext<Context>({
   updatePdfFile: () => {},
@@ -35,6 +37,8 @@ export default function EditorProvider(props: { children: ReactNode }) {
   const [previewMode, setPreviewMode] = useState(false);
   const [format, setFormat] = useState<Context["format"]>(formats[0]);
   const router = useRouter();
+  const ref = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -47,49 +51,86 @@ export default function EditorProvider(props: { children: ReactNode }) {
     };
   }, [router.asPath]);
 
+  useEffect(() => {
+    if (previewMode) {
+      ref.current = ref.current;
+    }
+  }, [previewMode]);
+
   // BUG: when downloading an image, the name of the file isn't the current name
   const downloadImage = useCallback(
-    (data: Record<string, any>) => {
+    (data: { data: string; format: Format }) => {
+      // console.log(data);
       saveAs(data.data, name + "." + data.format);
     },
     [name]
   );
-
-  const { ref, isLoading, getJpeg, getPng, getSvg } = useToImage(
-    {
-      pixelRatio: 3,
-    },
-    downloadImage
-  );
-
-  async function downloadPdf() {
-    try {
-      if (!pdfFile) return;
-      await pdf(pdfFile)
-        .toBlob()
-        .then((res) => {
-          saveAs(res, name + ".pdf");
-        });
-    } catch (err: any) {
-      console.error(err);
-      console.log(err.message);
-    }
-  }
+  // async function downloadPdf() {
+  //   setIsLoading(true);
+  //   try {
+  //     if (!pdfFile) return;
+  //     await pdf(pdfFile)
+  //       .toBlob()
+  //       .then((res) => {
+  //         saveAs(res, name + ".pdf");
+  //       });
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     console.log(err.message);
+  //   }
+  //   setIsLoading(false);
+  // }
 
   async function exportFile() {
+    function filter(node: any) {
+      return node.tagName !== "i";
+    }
+
     try {
+      if (!ref?.current) {
+        console.log("Image still rendering");
+        return;
+      }
+
+      const options = { quality: 1, pixelRatio: 2 };
+
       switch (format) {
         // case "pdf":
-        //   await downloadPdf();
-        //   break;
+        //   await toCanvas(ref.current, { ...options }).then((png) => {
+        //     // const img = new Image();
+        //     // img.src = png;
+        //     console.log({
+        //       width: png.width,
+        //       width2: png.scrollWidth,
+        //       height: png.height,
+        //       height2: png.scrollHeight,
+        //     });
+        //     // downloadImage({ data: png, format: "svg" });
+
+        //     const pdf = new jspdf({ unit: "px" });
+        //     // pdf.pdf.addSvgAsImage(svg, 0, 0, img.width, img.height);
+        //     pdf.addImage(png, "JPEG", 0, 0, png.width, png.height);
+        //     // pdf.addImage(png, "PNG", 0, 0, img.width, img.height);
+        //     pdf.save(name + ".pdf");
+        //   });
+        //
+        // break;
         case "jpeg":
-          await getJpeg();
+          await toJpeg(ref.current, options).then(function (dataUrl) {
+            downloadImage({ data: dataUrl, format: "jpeg" });
+          });
           break;
         case "png":
-          await getPng();
+          await toPng(ref.current, options).then(function (dataUrl) {
+            downloadImage({ data: dataUrl, format: "png" });
+          });
           break;
         case "svg":
-          await getSvg();
+          await toSvg(ref.current, { ...options, filter }).then(function (
+            dataUrl
+          ) {
+            downloadImage({ data: dataUrl, format: "svg" });
+          });
           break;
         default:
           break;
