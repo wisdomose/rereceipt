@@ -24,6 +24,11 @@ export default function Document() {
           rel="stylesheet"
           crossOrigin="anonymous"
         ></link>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap"
+          rel="stylesheet"
+          crossOrigin="anonymous"
+        ></link>
       </Head>
       <body>
         <Main />
