@@ -28,6 +28,7 @@ import {
 import { FiCheck, FiImage } from "react-icons/fi";
 import Button from "../../components/button";
 import Image from "next/image";
+import { NormalizeError } from "next/dist/shared/lib/utils";
 
 // settings: ,
 
@@ -113,7 +114,7 @@ export default function Create() {
       },
     };
     RECEIPT_KEYS.map((key) => {
-      receipt = { ...receipt, [key]: defaultItem };
+      receipt = { ...receipt, [key]: { ...defaultItem } };
     });
     // @ts-ignore
     setReceipt(receipt);
@@ -168,6 +169,7 @@ export default function Create() {
                 />
               </label>
             </div>
+            <br />
 
             {/* metadata - firebase special properties */}
             {/* general settings for the receipt */}
@@ -249,6 +251,7 @@ export default function Create() {
 
 /*
   TODO - HOW TO IMPROVE THIS COMPONENT
+  - label input not working for all fields
   - no need for the intermediate states passed to the select component
   - find a way to remove them
   - only the receipt state can use this component it should not be so
@@ -310,6 +313,15 @@ function Field({ name }: { name: RECEIPT_KEY }) {
       return { ...receipt };
     });
   };
+  const updateName = (value: string) => {
+    if (name === "products") return;
+
+    setReceipt((receipt) => {
+      if (!receipt) return receipt;
+      receipt[name].label = value;
+      return { ...receipt };
+    });
+  };
 
   if (!receipt || name === "products") return null;
 
@@ -327,18 +339,15 @@ function Field({ name }: { name: RECEIPT_KEY }) {
           <Disclosure.Panel className="p-4 shadow-md rounded-b-md  w-full z-20 bg-white">
             {/* LABEL */}
             <Input
-              id="label"
+              key={name}
+              id={name}
               label="label"
               type="text"
               placeholder={name}
               value={receipt[name].label}
               labelClassName="font-semibold"
               onChange={(e) => {
-                setReceipt((receipt) => {
-                  if (!receipt) return;
-                  receipt[name].label = e.target.value;
-                  return receipt;
-                });
+                updateName(e.target.value);
               }}
             />
             <br />

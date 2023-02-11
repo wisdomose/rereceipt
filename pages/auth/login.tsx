@@ -84,7 +84,7 @@ export default function Login(p: any) {
           >
             <Image
               className="bg-cover h-10 w-10"
-              src={google.src}
+              src={google}
               alt="sign in with google"
             />
             <p className="font-medium ml-5 text-[#757575] capitalize">
