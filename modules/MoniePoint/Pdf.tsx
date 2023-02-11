@@ -6,9 +6,9 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import { Structure } from "./types";
+import { RECEIPT } from "../../types";
 
-export default function Pdf({ structure }: { structure: Structure }) {
+export default function Pdf({ structure }: { structure: Required<RECEIPT> }) {
   Font.register({
     family: "Raleway",
     fonts: [

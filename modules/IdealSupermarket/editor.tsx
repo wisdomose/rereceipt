@@ -1,10 +1,14 @@
-import structure from "./structure.json";
 import Input from "../../components/editor/input";
 import Table from "../../components/editor/table";
+import useEditor from "../../store/editor/useEditor";
 import { genEditorStyle } from "../../utils";
 
 export default function Editor() {
-  const data = structure;
+  const { structure } = useEditor();
+
+  if (Object.keys(structure).length == 0) return null;
+
+  // console.log(structure);
 
   return (
     <section style={{ width: structure.settings.width }}>
@@ -13,14 +17,14 @@ export default function Editor() {
         className={`bg-white text-black mx-auto my-0 px-1 py-[6px]`}
       >
         <div>
-          <Input label="title" />
+          <Input label="name" />
         </div>
         <div>
           <Input label="location" />
         </div>
         <div className="flex flex-row mx-auto w-fit items-center">
           <p className="mr-1">TEL:</p>
-          <Input label="contacts" index={0} />
+          <Input label="contacts" />
         </div>
         <div>
           <Input label="email" />
@@ -35,14 +39,14 @@ export default function Editor() {
             <div className="table-cell">
               <div className="flex">
                 <Input label="date" />
-                <Input label="time" />
+                <Input label="time_in" />
               </div>
             </div>
           </div>
           <div className="table-row">
             <div className="table-cell">Staff</div>
             <div className="table-cell">
-              <Input label="staff" />
+              <Input label="cashier_name" />
             </div>
           </div>
           <div className="table-row">
@@ -88,7 +92,7 @@ export default function Editor() {
               <Input label="payment_type" />
             </div>
             <div className="table-cell">
-              <Input label="amount" />
+              <Input label="total" />
             </div>
           </div>
         </div>
@@ -118,7 +122,7 @@ export default function Editor() {
 
         <div className="my-2 h-[1px] rounded-full bg-gray-700 tracking-[5px] overflow-hidden text-clip whitespace-nowrap"></div>
 
-        <Input label="footer_message" />
+        <Input label="footer_message_01" />
       </div>
     </section>
   );

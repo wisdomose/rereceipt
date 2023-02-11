@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head>
+        <link rel="shortcut icon" href="logo.png" type="image/x-icon" />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"

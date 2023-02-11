@@ -1,10 +1,12 @@
-import structure from "./structure.json";
 import Input from "../../components/editor/input";
 import { genEditorStyle } from "../../utils";
 import Table from "../../components/editor/table";
+import useEditor from "../../store/editor/useEditor";
 
 export default function Editor() {
-  const data = structure;
+  const { structure } = useEditor();
+
+  if (Object.keys(structure).length == 0) return null;
 
   return (
     <>
@@ -49,7 +51,7 @@ export default function Editor() {
               <div className="table-cell">
                 <div className="flex flex-row mx-auto w-fit items-center">
                   <p className="mr-1">Time: </p>
-                  <Input label="time" />
+                  <Input label="time_in" />
                 </div>
               </div>
 
@@ -77,7 +79,7 @@ export default function Editor() {
           <div className="mt-2">
             <Input label="order_type" />
           </div>
-          
+
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             ============================================================
           </div>
@@ -87,7 +89,7 @@ export default function Editor() {
           </div>
           <div className="flex justify-end flex-row mx-auto w-full items-center">
             <p className="whitespace-nowrap capitalize">Subtotal..........</p>
-            <Input label="subtotal" />
+            <Input label="sub_total" />
           </div>
           <div className="flex justify-end flex-row mx-auto w-full items-center">
             <p className="whitespace-nowrap capitalize">Received..........</p>
@@ -119,10 +121,10 @@ export default function Editor() {
           <div className="mb-2 tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             ---------------------------------------------------
           </div>
-          
+
           {/* footer */}
           <>
-            <Input label="footer_message" />
+            <Input label="footer_message_01" />
             <Input label="contacts" />
             <div className="flex flex-row mx-auto w-3/4 items-center">
               <p className="whitespace-nowrap mr-1">WhatsApp only:</p>
@@ -137,19 +139,19 @@ export default function Editor() {
               <p className="whitespace-nowrap mr-1 capitalize">
                 bill prepared by:
               </p>
-              <Input label="bill_prepared_by" />
+              <Input label="cashier_name" />
             </div>
             <div className="flex flex-row mx-auto w-full items-center">
               <p className="whitespace-nowrap mr-1 capitalize">
                 bill printed time:
               </p>
-              <Input label="time" />
+              <Input label="time_in" />
             </div>
             <div className="flex flex-row mx-auto w-full items-center">
               <p className="whitespace-nowrap mr-1 capitalize">
                 bill settled by:
               </p>
-              <Input label="bill_prepared_by" />
+              <Input label="cashier_name" />
             </div>
             <div className="flex flex-row mx-auto w-full items-center">
               <p className="whitespace-nowrap mr-1 capitalize">payment type:</p>

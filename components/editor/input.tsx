@@ -11,10 +11,18 @@ import {
   RxLetterCaseLowercase,
 } from "react-icons/rx";
 import useEditor from "../../store/editor/useEditor";
-import { Elem } from "../../utils";
+import {
+  FONT_WEIGHT,
+  ITEM,
+  POS_KEY,
+  RECEIPT_KEY,
+  TEXT_ALIGN,
+  TEXT_TRANSFORM,
+} from "../../types";
 
 type Props = {
-  label: string;
+  label: RECEIPT_KEY | POS_KEY;
+  subLabel?: string;
   index?: number | number[];
 };
 
@@ -22,18 +30,21 @@ export default function Input(props: Props) {
   const { structure, setStructure } = useEditor();
   const defaultValue = {
     label: "",
-    font_weight: "",
-    font_size: "",
-    text_align: "",
-    transform: "",
+    font_weight: FONT_WEIGHT.NORMAL,
+    text_align: TEXT_ALIGN.LEFT,
+    transform: TEXT_TRANSFORM.NORMAL,
   };
 
-  const [value, setValue] = useState<Elem>(defaultValue);
+  const [value, setValue] = useState<ITEM>(defaultValue);
 
   // get the cell to be edited
   const getElem = useCallback(() => {
     if (props.index != undefined && Array.isArray(props.index)) {
-      return structure[props.label][props.index[0]][props.index[1]];
+      return !props.subLabel
+        ? structure[props.label][props.index[0]][props.index[1]]
+        : structure[props.label][props.index[0]][props.index[1]][
+            props.subLabel
+          ][props.index[2]];
     } else if (typeof props.index === "number") {
       return structure[props.label][props.index];
     } else {
@@ -55,18 +66,35 @@ export default function Input(props: Props) {
   // move the changes in the local component to global state
   function propagateChange() {
     if (props.index != undefined && Array.isArray(props.index)) {
-      setStructure((s: Record<string, any>) => {
-        const index = props.index;
-        if (!Array.isArray(index)) return;
+      if (props.subLabel) {
+        setStructure((s: Record<string, any>) => {
+          const index = props.index;
+          if (!Array.isArray(index)) return;
 
-        let newState = { ...s };
-        let table: Record<string, any>[][] = newState[props.label];
-        let row = table[index[0]];
-        row[index[1]] = value;
-        table[index[0]] = row;
-        newState[props.label] = table;
-        return newState;
-      });
+          let newState = { ...s };
+          let table: Record<string, any>[][] = newState[props.label];
+          let row = table[index[0]];
+          let field = row[index[1]];
+          field[props.subLabel as string][index[2]] = value;
+          row[index[1]] = field;
+          table[index[0]] = row;
+          newState[props.label] = table;
+          return newState;
+        });
+      } else {
+        setStructure((s: Record<string, any>) => {
+          const index = props.index;
+          if (!Array.isArray(index)) return;
+
+          let newState = { ...s };
+          let table: Record<string, any>[][] = newState[props.label];
+          let row = table[index[0]];
+          row[index[1]] = value;
+          table[index[0]] = row;
+          newState[props.label] = table;
+          return newState;
+        });
+      }
     } else if (typeof props.index === "number") {
       setStructure((s: Record<string, any>) => {
         const index = props.index;
@@ -89,24 +117,24 @@ export default function Input(props: Props) {
   }
 
   // edit the local state
-  function actionHandler(update: Partial<Elem>) {
+  function actionHandler(update: Partial<ITEM>) {
     setValue((v) => ({ ...value, ...update }));
   }
 
   // get the different properties of the cell
-  function getProp(key: keyof Elem): string {
-    // console.log(props.label);
+  function getProp(key: keyof ITEM) {
+    !value && console.log(props.label, value);
     return value[key] || "inherit";
   }
 
   return (
     <div className="relative group/input">
       {/* settings tray */}
-      <div className="absolute hidden group-focus-within/input:flex -top-0 -translate-y-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden">
+      <div className="absolute hidden group-focus-within/input:flex -top-0 -translate-y-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden z-50">
         <button
           className={btnStyle}
           onClick={() => {
-            actionHandler({ ...value, text_align: "left" });
+            actionHandler({ ...value, text_align: TEXT_ALIGN.LEFT });
           }}
         >
           <FiAlignLeft className={svgStyle} />
@@ -114,7 +142,7 @@ export default function Input(props: Props) {
         <button
           className={btnStyle}
           onClick={() => {
-            actionHandler({ text_align: "center" });
+            actionHandler({ text_align: TEXT_ALIGN.CENTER });
           }}
         >
           <FiAlignCenter className={svgStyle} />
@@ -122,7 +150,7 @@ export default function Input(props: Props) {
         <button
           className={btnStyle}
           onClick={() => {
-            actionHandler({ text_align: "end" });
+            actionHandler({ text_align: TEXT_ALIGN.END });
           }}
         >
           <FiAlignRight className={svgStyle} />
@@ -132,7 +160,7 @@ export default function Input(props: Props) {
             btnStyle +
             " " +
             `${
-              getProp("font_weight") === "bold"
+              getProp("font_weight") === FONT_WEIGHT.BOLD
                 ? "bg-gray-100"
                 : "bg-transparent"
             }`
@@ -140,7 +168,9 @@ export default function Input(props: Props) {
           onClick={() => {
             actionHandler({
               font_weight:
-                getProp("font_weight") === "bold" ? "normal" : "bold",
+                getProp("font_weight") === FONT_WEIGHT.BOLD
+                  ? FONT_WEIGHT.NORMAL
+                  : FONT_WEIGHT.BOLD,
             });
           }}
         >
@@ -151,17 +181,17 @@ export default function Input(props: Props) {
           onClick={() => {
             actionHandler({
               transform:
-                getProp("transform") === "capitalize"
-                  ? "uppercase"
-                  : getProp("transform") === "uppercase"
-                  ? "lowercase"
-                  : "capitalize",
+                getProp("transform") === TEXT_TRANSFORM.CAPITALIZE
+                  ? TEXT_TRANSFORM.UPPERCASE
+                  : getProp("transform") === TEXT_TRANSFORM.UPPERCASE
+                  ? TEXT_TRANSFORM.LOWERCASE
+                  : TEXT_TRANSFORM.CAPITALIZE,
             });
           }}
         >
-          {getProp("transform") === "capitalize" ? (
+          {getProp("transform") === TEXT_TRANSFORM.CAPITALIZE ? (
             <RxLetterCaseUppercase className={svgStyle} />
-          ) : getProp("transform") === "uppercase" ? (
+          ) : getProp("transform") === TEXT_TRANSFORM.UPPERCASE ? (
             <RxLetterCaseLowercase className={svgStyle} />
           ) : (
             <RxLetterCaseCapitalize className={svgStyle} />

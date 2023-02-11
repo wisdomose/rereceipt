@@ -1,9 +1,9 @@
 import Image from "./Image";
 import Pdf from "./Pdf";
-import structure from "./structure.json";
+import structure from "./structure";
 import Editor from "./editor";
 import IdealSupermarket from "../../src/img/ideal supermarket.jpg";
-import { CATEGORIES } from "../../receipts/types";
+import { DOC_TYPES } from "../../types";
 
 export default {
   name: "ideal supermarket",
@@ -12,5 +12,5 @@ export default {
   structure,
   Editor,
   img: IdealSupermarket,
-  category: CATEGORIES.RECEIPT,
+  category: DOC_TYPES.RECEIPT,
 };

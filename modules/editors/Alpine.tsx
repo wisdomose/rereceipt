@@ -13,6 +13,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import Link from "next/link";
+import logo from "../../src/img/icons/logo.png";
 
 type Props = {
   receipt: UseEditorProps["receipt"];
@@ -36,17 +37,9 @@ export default function Alpine(props: Props) {
   }, []);
 
   return (
-    <div className="bg-gray-200 h-full grid grid-rows-[max-content,1fr]">
-      <nav className="bg-black/80 flex justify-between items-center h-14 box-border max-w-screen">
-        {/* w-14 */}
-        <Link
-          href="/"
-          className="text-gray-50 hover:bg-gray-50/10 focus:bg-gray-50/10 h-full pr-3 flex items-center justify-center focus:ring-0 focus:outline-none"
-        >
-          <FiChevronLeft className="text-2xl" />
-          <p>back</p>
-          {/* <FiMenu className="text-2xl" /> */}
-        </Link>
+    <div className="bg-gray-200 h-[calc(100%_-_56px)] grid grid-rows-[max-content,1fr]">
+      <nav className="bg-black/80 flex justify-end items-center h-14 box-border max-w-screen">
+        {/* other settings here */}
 
         <div className="flex items-center h-full">
           <p className="bg-gray-200 text-xs px-2 rounded-full h-fit mr-5">
@@ -99,6 +92,8 @@ function SideBar() {
     exportFile,
   } = useEditor();
 
+  const fonts = ["Raleway", "Moulpali", "Ubuntu Mono"];
+
   return (
     <>
       {/* mode selector */}
@@ -119,6 +114,88 @@ function SideBar() {
         >
           preview
         </button>
+      </div>
+
+      {/* settings */}
+      <div className="p-3 border-b-[1px] border-gray-200/50">
+        <Disclosure>
+          {({ open: disOpen }: { open: boolean }) => (
+            <>
+              <div className="flex justify-between items-center">
+                <p
+                  className={`text-sm ${
+                    disOpen ? "font-bold text-white" : "font-normal"
+                  }`}
+                >
+                  Settings
+                </p>
+                <Disclosure.Button>
+                  {disOpen ? <FiMinus /> : <FiPlus />}
+                </Disclosure.Button>
+              </div>
+              <Disclosure.Panel>
+                <div className="mt-5">
+                  {/* font family */}
+                  <>
+                    <p className="text-sm capitalize mb-1">font family</p>
+                    <Menu>
+                      {({ open }: { open: boolean }) => (
+                        <div className="relative inline-block overflow-visible w-full">
+                          <Menu.Button
+                            className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full"
+                            style={{
+                              fontFamily: fonts[0],
+                            }}
+                          >
+                            <span className="text-sm py-1 lowercase">
+                              {fonts[0]}
+                            </span>
+                            {open ? (
+                              <FiChevronDown className="text-gray-400" />
+                            ) : (
+                              <FiChevronUp className="text-gray-400" />
+                            )}
+                          </Menu.Button>
+                          <Menu.Items className="absolute right-0 w-full bg-black min-w-max shadow-lg pb-2">
+                            {fonts.map((displayFormat) => (
+                              <Menu.Item key={displayFormat}>
+                                {({ active }: { active: boolean }) => (
+                                  <button
+                                    // onClick={() => updateFormat(displayFormat)}
+                                    className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${
+                                      active ? "text-white" : "text-gray-50/50"
+                                    }`}
+                                  >
+                                    {displayFormat === format ? (
+                                      <FiCheck />
+                                    ) : (
+                                      <span></span>
+                                    )}
+                                    <span className="block text-start w-full"
+                                      style={{
+                                        fontFamily: displayFormat,
+                                      }}
+                                    >
+                                      {displayFormat}
+                                    </span>
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            ))}
+                          </Menu.Items>
+                        </div>
+                      )}
+                    </Menu>
+                  </>
+
+                  {/* font size */}
+
+                  {/* color */}
+                </div>
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
       </div>
 
       {/* export */}

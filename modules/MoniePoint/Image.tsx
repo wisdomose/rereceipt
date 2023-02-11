@@ -1,12 +1,13 @@
 import { Context } from "../../store/editor/type";
 import useEditor from "../../store/editor/useEditor";
+import { POS } from "../../types";
 import { genEditorStyle, genStyle } from "../../utils";
-import { Props, Structure } from "./types";
+import { Props } from "./types";
 import { forwardRef } from "react";
 
 const Image = forwardRef<any, Props>((props, ref) => {
   const { structure } = useEditor<
-    Omit<Context, "structure"> & { structure: Structure }
+    Omit<Context, "structure"> & { structure: Required<POS> }
   >();
 
   if (Object.keys(structure).length === 0) return null;
@@ -19,8 +20,12 @@ const Image = forwardRef<any, Props>((props, ref) => {
           className={`bg-white text-black mx-auto my-0 px-1 py-[6px]`}
         >
           <p className="text-center">**** CUSTOMER’S COPY ****</p>
-          <p style={genStyle(structure.name)}>{structure.name.label}</p>
-          <p style={genStyle(structure.location)}>{structure.location.label}</p>
+          <p style={genStyle(structure.merchant_name)}>
+            {structure.merchant_name.label}
+          </p>
+          <p style={genStyle(structure.merchant_address)}>
+            {structure.merchant_address.label}
+          </p>
           <p style={genStyle(structure.payment_type)}>
             {structure.payment_type.label}
           </p>
@@ -39,8 +44,8 @@ const Image = forwardRef<any, Props>((props, ref) => {
           <div className="table w-full">
             <div className="table-row">
               <p className="table-cell">TERMINAL :</p>
-              <p style={genStyle(structure.terminal)}>
-                {structure.terminal.label}
+              <p style={genStyle(structure.terminal_id)}>
+                {structure.terminal_id.label}
               </p>
             </div>
             <div className="table-row">
@@ -65,7 +70,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
             </div>
             <div className="table-row">
               <p className="table-cell">CLIENT :</p>
-              <p style={genStyle(structure.client)}>{structure.client.label}</p>
+              <p style={genStyle(structure.card_client)}>{structure.card_client.label}</p>
             </div>
             <div className="table-row">
               <p className="table-cell">PAN :</p>
@@ -114,8 +119,8 @@ const Image = forwardRef<any, Props>((props, ref) => {
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             .................................................
           </div>
-          <p style={genStyle(structure.footer_message)}>
-            {structure.footer_message.label}
+          <p style={genStyle(structure.footer_message_01)}>
+            {structure.footer_message_01.label}
           </p>
         </div>
       </div>

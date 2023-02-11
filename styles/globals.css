@@ -5,7 +5,7 @@
 html,
 body,
 #__next {
-  @apply h-full;
+  @apply h-full bg-gray-100 text-black/80;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {
@@ -31,4 +31,11 @@ body,
 
 .scrollbar::-webkit-scrollbar-button {
   display: none;
+}
+.table-equal {
+}
+.table-equal ::after {
+  content: "===";
+  display: block;
+  text-align: center;
 }

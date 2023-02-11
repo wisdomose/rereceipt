@@ -2,17 +2,17 @@ import Image from "./Image";
 import Pdf from "./Pdf";
 import structure from "./structure";
 import Editor from "./editor";
-import MoniePoint from "../../src/img/monie point.jpg";
+import img from "../../src/img/chicken republic.jpg";
 import { DOC_TYPES } from "../../types";
 
 const a = {
-  name: "monie point",
+  name: "chicken republic",
   Image,
   Pdf,
   structure,
   Editor,
-  img: MoniePoint,
-  category: DOC_TYPES.POS,
+  img,
+  category: DOC_TYPES.RECEIPT,
 };
 
 export default a;

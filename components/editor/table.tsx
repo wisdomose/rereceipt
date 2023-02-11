@@ -1,5 +1,6 @@
 import useTable from "../../hooks/useTable";
 import useEditor from "../../store/editor/useEditor";
+import { POS_KEY, RECEIPT_KEY } from "../../types";
 import Input from "./input";
 import {
   RiInsertColumnRight,
@@ -8,8 +9,17 @@ import {
   RiDeleteRow,
 } from "react-icons/ri";
 
+export enum DIVIDER {
+  DASH = "-",
+  EQUAL_TO = "=",
+}
+
 export type TableProps = {
-  label: string;
+  label: RECEIPT_KEY | POS_KEY;
+  headerDivider?: DIVIDER;
+  subDetails?: boolean;
+  subLabels?: string[];
+  largeCol?: number;
 };
 
 // TODO: IF A TABLE HAS ONLY ONE ROW, IT CANNOT BE DELETED.
@@ -17,6 +27,10 @@ export type TableProps = {
 
 export default function Table<T extends Record<string, any>>({
   label,
+  headerDivider,
+  subDetails = false,
+  subLabels,
+  largeCol = 0,
 }: TableProps) {
   const { structure } = useEditor();
 
@@ -48,27 +62,64 @@ export default function Table<T extends Record<string, any>>({
           <RiDeleteRow className={svgStyle} />
         </button>
       </div>
-      <div className="table w-full" tabIndex={-1}>
-        {(structure[label] as Record<string, any>[]).map((row, index) => (
-          <div key={index} className="table-row w-full">
-            {(row as Record<string, any>[]).map((cell, position) => (
-              <div
-                className="table-cell"
-                style={{
-                  width:
-                    row.length <= 4
-                      ? position === 0
-                        ? "50%"
-                        : 50 / (row.length - 1) + "%"
-                      : 100 / row.length + "%",
-                }}
-                key={cell.label + position}
-              >
-                <Input label="products" index={[index, position]} />
-              </div>
-            ))}
-          </div>
-        ))}
+
+      <div className="w-full overflow-hidden">
+        <div className="table overflow-hidden" tabIndex={-1}>
+          {(structure[label] as Record<string, any>[]).map(
+            (row, index, elems) => (
+              <>
+                <div
+                  key={index}
+                  className={`table-row w-full ${
+                    headerDivider && index == 0 ? "table-equal" : ""
+                  }`}
+                >
+                  {(row as Record<string, any>[]).map((cell, position) => (
+                    <div
+                      className="table-cell"
+                      style={{
+                        width:
+                          row.length <= 4
+                            ? position === largeCol
+                              ? "50%"
+                              : 50 / (row.length - 1) + "%"
+                            : 100 / row.length + "%",
+                      }}
+                      key={cell.label + position}
+                    >
+                      <Input label={label} index={[index, position]} />
+                      {cell?.items && (
+                        <>
+                          {(cell.items as Record<string, any>[]).map(
+                            (item, innerIndex) => (
+                              <>
+                                <Input
+                                  label={label}
+                                  subLabel="items"
+                                  index={[index, position, innerIndex]}
+                                />
+                                {/* <br /> */}
+                              </>
+                            )
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* divider */}
+                {/* {headerDivider && index == 0 && (
+                  <div className="table-row w-full mb-2">
+                    <p className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap bg-green-200">
+                      ============================================================
+                    </p>
+                  </div>
+                )} */}
+              </>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

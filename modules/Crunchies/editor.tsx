@@ -1,10 +1,12 @@
-import structure from "./structure.json";
 import Input from "../../components/editor/input";
 import { genEditorStyle } from "../../utils";
 import Table from "../../components/editor/table";
+import useEditor from "../../store/editor/useEditor";
 
 export default function Editor() {
-  const data = structure;
+  const { structure } = useEditor();
+
+  if (Object.keys(structure).length == 0) return null;
 
   return (
     <>
@@ -44,7 +46,7 @@ export default function Editor() {
               <div className="table-cell">
                 <div className="flex flex-row mx-auto w-fit items-center">
                   <p className="mr-1">Time: </p>
-                  <Input label="time" />
+                  <Input label="time_in" />
                 </div>
               </div>
             </div>
@@ -54,7 +56,7 @@ export default function Editor() {
           <Table label="products" />
 
           <div className="mt-1">
-            <Input label="total_quantity" />
+            <Input label="total_qty" />
           </div>
 
           <div className="flex justify-end flex-row mx-auto w-full items-center mt-4">
@@ -78,7 +80,7 @@ export default function Editor() {
 
           {/* footer */}
           <div className="my-8">
-            <Input label="footer_message" />
+            <Input label="footer_message_01" />
           </div>
 
           {/* billing */}

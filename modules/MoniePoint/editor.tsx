@@ -1,12 +1,15 @@
-import structure from "./structure.json";
+import structure from "./structure";
 import Input from "../../components/editor/input";
 import { genEditorStyle } from "../../utils";
+import useEditor from "../../store/editor/useEditor";
 
 export default function Editor() {
   const btnStyle =
     "h-4 w-4 grid place-items-center hover:text-black hover:bg-gray-100 text-gray-900";
 
-  const data = structure;
+  const { structure } = useEditor();
+
+  if (Object.keys(structure).length == 0) return null;
 
   return (
     <>
@@ -25,10 +28,10 @@ export default function Editor() {
         >
           <p className="text-center">**** CUSTOMER’S COPY ****</p>
           <div className="text-center">
-            <Input label="name" />
+            <Input label="merchant_name" />
           </div>
           <div className="text-center">
-            <Input label="location" />
+            <Input label="merchant_address" />
           </div>
           <div className="text-center">
             <Input label="payment_type" />
@@ -48,7 +51,7 @@ export default function Editor() {
           <div className="table w-full">
             <div className="table-row">
               <p className="table-cell">TERMINAL :</p>
-              <Input label="terminal" />
+              <Input label="terminal_id" />
             </div>
             <div className="table-row">
               <p className="table-cell">DATE :</p>
@@ -68,7 +71,7 @@ export default function Editor() {
             </div>
             <div className="table-row">
               <p className="table-cell">CLIENT :</p>
-              <Input label="client" />
+              <Input label="card_client" />
             </div>
             <div className="table-row">
               <p className="table-cell">PAN :</p>
@@ -115,7 +118,7 @@ export default function Editor() {
             .................................................
           </div>
 
-          <Input label="footer_message" />
+          <Input label="footer_message_01" />
         </div>
       </section>
     </>

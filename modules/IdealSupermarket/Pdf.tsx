@@ -7,9 +7,9 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { genPdfStyle } from "../../utils";
-import { Structure } from "./types";
+import { RECEIPT } from "../../types";
 
-export default function Pdf({ structure }: { structure: Structure }) {
+export default function Pdf({ structure }: { structure: Required<RECEIPT> }) {
   Font.register({
     family: "Moulpali",
     fonts: [
@@ -83,9 +83,7 @@ export default function Pdf({ structure }: { structure: Structure }) {
         size={[Number(structure.settings.width.slice(0, -2))]}
         style={styles.page}
       >
-        <Text style={genPdfStyle(structure.title)}>
-          {structure.title.label}
-        </Text>
+        <Text style={genPdfStyle(structure.name)}>{structure.name.label}</Text>
         <Text
           style={{
             ...genPdfStyle(structure.location),
@@ -105,14 +103,13 @@ export default function Pdf({ structure }: { structure: Structure }) {
           }}
         >
           <Text style={{ marginRight: "4px" }}>TEL:</Text>
-          {structure.contacts.map((contact) => (
-            <Text
-              key={contact.label}
-              style={{ ...genPdfStyle(contact), marginRight: "4px" }}
-            >
-              {contact.label}
-            </Text>
-          ))}
+
+          <Text
+            key={structure.contacts.label}
+            style={{ ...genPdfStyle(structure.contacts), marginRight: "4px" }}
+          >
+            {structure.contacts.label}
+          </Text>
         </View>
 
         <Text style={genPdfStyle(structure.email)}>
@@ -149,16 +146,16 @@ export default function Pdf({ structure }: { structure: Structure }) {
               >
                 {structure.date.label}
               </Text>
-              <Text style={genPdfStyle(structure.time)}>
-                {structure.time.label}
+              <Text style={genPdfStyle(structure.time_in)}>
+                {structure.time_in.label}
               </Text>
             </View>
           </View>
           {/* staff */}
           <View style={styles.table_row}>
             <Text>Staff</Text>
-            <Text style={genPdfStyle(structure.staff)}>
-              {structure.staff.label}
+            <Text style={genPdfStyle(structure.cashier_name)}>
+              {structure.cashier_name.label}
             </Text>
           </View>
           {/* device */}
@@ -230,8 +227,8 @@ export default function Pdf({ structure }: { structure: Structure }) {
             <Text style={genPdfStyle(structure.payment_type)}>
               {structure.payment_type.label}
             </Text>
-            <Text style={genPdfStyle(structure.amount)}>
-              {structure.amount.label}
+            <Text style={genPdfStyle(structure.total)}>
+              {structure.total.label}
             </Text>
           </View>
         </View>
@@ -300,8 +297,8 @@ export default function Pdf({ structure }: { structure: Structure }) {
 
         <View style={styles.divider}></View>
 
-        <Text style={genPdfStyle(structure.footer_message)}>
-          {structure.footer_message.label}
+        <Text style={genPdfStyle(structure.footer_message_01)}>
+          {structure.footer_message_01.label}
         </Text>
       </Page>
     </Document>

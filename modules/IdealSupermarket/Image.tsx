@@ -1,36 +1,40 @@
 import { Context } from "../../store/editor/type";
 import useEditor from "../../store/editor/useEditor";
-import { Props, Structure } from "./types";
+import { Props } from "./types";
 import { forwardRef } from "react";
 import { genEditorStyle, genStyle } from "../../utils";
+import { RECEIPT } from "../../types";
 
 const Image = forwardRef<any, Props>((props, ref) => {
   const { structure } = useEditor<
-    Omit<Context, "structure"> & { structure: Structure }
+    Omit<Context, "structure"> & { structure: RECEIPT }
   >();
-
+  const getStructure = () => structure as Required<RECEIPT>;
   if (Object.keys(structure).length === 0) return null;
 
   return (
     <div ref={ref}>
-      <div style={{ width: structure.settings.width }}>
+      <div style={{ width: getStructure().settings.width }}>
         <div
-          style={genEditorStyle(structure.settings)}
+          style={genEditorStyle(getStructure().settings)}
           className={`bg-white text-black mx-auto my-0 px-1 py-[6px]`}
         >
-          <p style={genStyle(structure.title)}>{structure.title.label}</p>
-          <p style={genStyle(structure.location)} className="w-3/4 mx-auto">
-            {structure.location.label}
+          <p style={genStyle(getStructure().name)}>
+            {getStructure().name.label}
+          </p>
+          <p
+            style={genStyle(getStructure().location)}
+            className="w-3/4 mx-auto"
+          >
+            {getStructure().location.label}
           </p>
           <div className="flex flex-row gap-1 mx-auto w-fit items-center">
             <p>TEL:</p>
-            {structure.contacts.map((contact) => (
-              <p key={contact.label} style={genStyle(contact)}>
-                {contact.label}
-              </p>
-            ))}
+            {getStructure().contacts.label}
           </div>
-          <p style={genStyle(structure.email)}>{structure.email.label}</p>
+          <p style={genStyle(getStructure().email)}>
+            {getStructure().email.label}
+          </p>
 
           <div className="my-2 h-[1px] rounded-full bg-gray-700"></div>
 
@@ -40,25 +44,31 @@ const Image = forwardRef<any, Props>((props, ref) => {
               <div className="table-cell">Receipt of Purchase(Inc Tax)</div>
               <div className="table-cell">
                 <div className="flex justify-end gap-1">
-                  <div style={genStyle(structure.date)}>
-                    {structure.date.label}
+                  <div style={genStyle(getStructure().date)}>
+                    {getStructure().date.label}
                   </div>
-                  <div style={genStyle(structure.time)}>
-                    {structure.time.label}
+                  <div style={genStyle(getStructure().time_in)}>
+                    {getStructure().time_in.label}
                   </div>
                 </div>
               </div>
             </div>
             <div className="table-row">
               <div className="table-cell">Staff</div>
-              <div className="table-cell" style={genStyle(structure.staff)}>
-                {structure.staff.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().cashier_name)}
+              >
+                {getStructure().cashier_name.label}
               </div>
             </div>
             <div className="table-row">
               <div className="table-cell">Device</div>
-              <div className="table-cell" style={genStyle(structure.device)}>
-                {structure.device.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().device)}
+              >
+                {getStructure().device.label}
               </div>
             </div>
           </div>
@@ -69,7 +79,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
 
           {/* products */}
           <div className="relative group table table-fixed w-full">
-            {structure.products.map((product, index) => (
+            {getStructure().products.map((product, index) => (
               <div key={index} className="table-row">
                 {product.map((col, position) => (
                   <p
@@ -96,14 +106,20 @@ const Image = forwardRef<any, Props>((props, ref) => {
           <div className="table w-full">
             <div className="table-row">
               <div className="table-cell whitespace-nowrap pr-2">Sub Total</div>
-              <div className="table-cell" style={genStyle(structure.sub_total)}>
-                {structure.sub_total.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().sub_total)}
+              >
+                {getStructure().sub_total.label}
               </div>
             </div>
             <div className="table-row w-full">
               <div className="table-cell">Total</div>
-              <div className="table-cell" style={genStyle(structure.total)}>
-                {structure.total.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().total)}
+              >
+                {getStructure().total.label}
               </div>
             </div>
           </div>
@@ -120,12 +136,15 @@ const Image = forwardRef<any, Props>((props, ref) => {
             <div className="table-row w-full">
               <div
                 className="table-cell"
-                style={genStyle(structure.payment_type)}
+                style={genStyle(getStructure().payment_type)}
               >
-                {structure.payment_type.label}
+                {getStructure().payment_type.label}
               </div>
-              <div className="table-cell" style={genStyle(structure.amount)}>
-                {structure.amount.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().total)}
+              >
+                {getStructure().total.label}
               </div>
             </div>
           </div>
@@ -136,30 +155,36 @@ const Image = forwardRef<any, Props>((props, ref) => {
           <div className="grid grid-cols-3 w-full">
             <div className="flex flex-col">
               <div className="table-cell uppercase">tax rate</div>
-              <div className="table-cell" style={genStyle(structure.tax_rate)}>
-                {structure.tax_rate.label} vat
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().tax_rate)}
+              >
+                {getStructure().tax_rate.label} vat
               </div>
             </div>
             <div className="flex flex-col">
               <div className="table-cell uppercase text-end">percentage</div>
               <div
                 className="table-cell"
-                style={genStyle(structure.tax_percentage)}
+                style={genStyle(getStructure().tax_percentage)}
               >
-                {structure.tax_percentage.label}%
+                {getStructure().tax_percentage.label}%
               </div>
             </div>
             <div className="flex flex-col">
               <div className="table-cell uppercase text-end">percentage</div>
-              <div className="table-cell" style={genStyle(structure.tax_paid)}>
-                {structure.tax_paid.label}
+              <div
+                className="table-cell"
+                style={genStyle(getStructure().tax_paid)}
+              >
+                {getStructure().tax_paid.label}
               </div>
             </div>
           </div>
 
           <div className="my-2 h-[1px] rounded-full bg-gray-700"></div>
-          <p style={genStyle(structure.footer_message)}>
-            {structure.footer_message.label}
+          <p style={genStyle(getStructure().footer_message_01)}>
+            {getStructure().footer_message_01.label}
           </p>
         </div>
       </div>

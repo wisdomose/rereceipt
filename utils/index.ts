@@ -1,20 +1,7 @@
-// types
-export type Elem = {
-  label: string;
-  text_align: string;
-  transform: string;
-  font_weight: string;
-  font_size?: string;
-};
-
-type EditorSettings = {
-  font_family: string;
-  font_size: string;
-  width: string;
-};
+import { ITEM, SETTING } from "../types";
 
 // functions
-export function genStyle(elem: Elem) {
+export function genStyle(elem: ITEM) {
   let style: Record<string, any> = {};
   if (!elem) return {};
   Object.keys(elem).forEach((field) => {
@@ -38,7 +25,7 @@ export function genStyle(elem: Elem) {
   return style;
 }
 
-export function genPdfStyle(elem: Elem) {
+export function genPdfStyle(elem: ITEM) {
   let style: Record<string, any> = {};
   if (!elem) return {};
   Object.keys(elem).forEach((field) => {
@@ -68,7 +55,7 @@ export function genPdfStyle(elem: Elem) {
   return style;
 }
 
-export function genEditorStyle(elem: EditorSettings) {
+export function genEditorStyle(elem: SETTING) {
   let style: Record<string, any> = {};
 
   Object.keys(elem).forEach((field) => {
