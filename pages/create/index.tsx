@@ -173,7 +173,7 @@ export default function Create() {
             {/* general settings for the receipt */}
             <>
               <p className="font-bold text-lg mb-4">Settings</p>
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 gap-5">
                 <Select
                   label="font family"
                   items={Object.values(FONT_FAMILY)}
@@ -342,7 +342,7 @@ function Field({ name }: { name: RECEIPT_KEY }) {
               }}
             />
             <br />
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid md:grid-cols-2 gap-5">
               <Select
                 initial={fontWeight}
                 items={Object.values(FONT_WEIGHT)}
