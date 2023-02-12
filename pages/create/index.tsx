@@ -1,6 +1,5 @@
 import { Disclosure, Listbox, Menu, Switch } from "@headlessui/react";
 import Page from "../../components/layout/Page";
-import useInput from "../../hooks/useInput";
 import {
   FONT_WEIGHT,
   TEXT_TRANSFORM,
@@ -28,7 +27,8 @@ import {
 import { FiCheck, FiImage } from "react-icons/fi";
 import Button from "../../components/button";
 import Image from "next/image";
-import { NormalizeError } from "next/dist/shared/lib/utils";
+import { createReceipt } from "../../utils/firebase";
+import { useRouter } from "next/router";
 
 // settings: ,
 
@@ -56,6 +56,13 @@ const CreateContext = createContext<{
   toggleIsActive: () => {},
 });
 
+/*
+  TODO
+  - loading state for when the receipt is being uploaded
+  - after saving, reset state
+  - give accurate error messages for when each required value isn't present
+*/
+
 export default function Create() {
   const [name, setName] = useState("");
   const [isActive, setIsActive] = useState(false);
@@ -79,6 +86,8 @@ export default function Create() {
     text_align: TEXT_ALIGN.LEFT,
     transform: TEXT_TRANSFORM.NORMAL,
   };
+
+  const router = useRouter();
 
   const updateType = (value: DOC_TYPES) => setType(value);
 
@@ -104,6 +113,28 @@ export default function Create() {
     });
   };
 
+  async function create() {
+    if (!image || !name || !receipt) {
+      alert("something is left");
+      return;
+    }
+
+    await createReceipt(
+      {
+        data: {
+          ...receipt,
+          settings: { ...setting, width: `${setting.width}px` },
+        },
+        type,
+        isActive,
+        name,
+      },
+      image
+    ).then(() => {
+      router.reload();
+    });
+  }
+
   useEffect(() => {
     let receipt: RECEIPT = {
       products: [[defaultItem, defaultItem, defaultItem]],
@@ -120,6 +151,7 @@ export default function Create() {
     setReceipt(receipt);
   }, []);
 
+  const disabled = !image || !name || !setting.width;
   const value = {
     isActive,
     name,
@@ -142,11 +174,14 @@ export default function Create() {
             <div className="flex flex-col items-end">
               <div className="h-[50vh] w-full">
                 {image ? (
-                  <Image
-                    alt=""
-                    src={URL.createObjectURL(image)}
-                    className="w-full h-full object-center object-contain"
-                  />
+                  <div className="relative h-full">
+                    <Image
+                      alt=""
+                      src={URL.createObjectURL(image)}
+                      className="w-full h-full object-center object-contain"
+                      fill
+                    />
+                  </div>
                 ) : (
                   <FiImage className="h-full w-full" />
                 )}
@@ -181,6 +216,7 @@ export default function Create() {
                   items={Object.values(FONT_FAMILY)}
                   initial={setting.font_family}
                   onChange={updateFontFamily}
+                  required
                 />
 
                 <Select
@@ -188,6 +224,7 @@ export default function Create() {
                   items={Object.values(FONT_SIZE)}
                   initial={setting.font_size}
                   onChange={updateFontSize}
+                  required
                 />
 
                 <Input
@@ -198,6 +235,7 @@ export default function Create() {
                   type="text"
                   placeholder="name"
                   labelClassName="font-semibold"
+                  required
                 />
 
                 <Select
@@ -205,6 +243,7 @@ export default function Create() {
                   items={Object.values(DOC_TYPES)}
                   label="type of document"
                   onChange={updateType}
+                  required
                 />
 
                 <Input
@@ -220,6 +259,7 @@ export default function Create() {
                   type="number"
                   placeholder="width"
                   labelClassName="font-semibold"
+                  required
                 />
 
                 <div>
@@ -241,7 +281,7 @@ export default function Create() {
               </div>
             </div>
 
-            <Button label="create" onClick={() => {}} />
+            <Button label="create" onClick={create} disabled={disabled} />
           </div>
         </Page.Body>
       </Page>
@@ -251,7 +291,6 @@ export default function Create() {
 
 /*
   TODO - HOW TO IMPROVE THIS COMPONENT
-  - label input not working for all fields
   - no need for the intermediate states passed to the select component
   - find a way to remove them
   - only the receipt state can use this component it should not be so
@@ -392,10 +431,12 @@ function Select({
   items,
   label,
   onChange,
+  required = false,
 }: {
   initial: any;
   items: string[];
   label: string;
+  required?: boolean;
   onChange: (item: any) => void;
 }) {
   const [value, setValue] = useState(initial);
@@ -408,6 +449,7 @@ function Select({
       <Listbox value={value} onChange={setValue}>
         <Listbox.Label className="block capitalize mb-1 font-semibold">
           {label}
+          {required && <span className="text-red-600 pl-1">*</span>}
         </Listbox.Label>
         <Listbox.Button className="w-full rounded-md px-3 py-3 bg-gray-200 text-left focus:outline-none focus:ring-2 focus:shadow-lg">
           {value}
