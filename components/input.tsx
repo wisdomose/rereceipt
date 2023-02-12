@@ -8,6 +8,7 @@ type Props = {
   type: "password" | "text" | "number" | "email";
   placeholder?: string;
   id: string;
+  required?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -23,6 +24,7 @@ export default function Input(props: Props) {
           }`}
         >
           {props.label}
+          {props.required && <span className="text-red-600 pl-1">*</span>}
         </label>
       )}
       <input

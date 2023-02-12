@@ -5,6 +5,11 @@ type Props = {
   disabled?: boolean;
 };
 
+/* 
+  TODO
+  - loading button state
+*/
+
 export default function Button({
   type = "submit",
   disabled = false,
