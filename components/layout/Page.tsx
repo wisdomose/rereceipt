@@ -89,7 +89,7 @@ export default function Page(props: PageProps) {
   // at least md for side menu and logged in
   else if (props.isProtected && width > 768 && user) {
     return (
-      <div className="h-full grid grid-cols-[300px,1fr]">
+      <div className="h-full grid grid-cols-[250px,1fr]">
         <nav className="bg-black/80 h-full flex flex-col items-start py-6 relative">
           <div className="px-6 mb-6">
             {user?.photoURL ? (
