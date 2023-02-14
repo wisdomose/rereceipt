@@ -24,12 +24,12 @@ const routes = [
     icon: RxDashboard,
     protected: true,
   },
-  {
-    label: "templates",
-    href: "/templates",
-    icon: BiBrush,
-    protected: true,
-  },
+  // {
+  //   label: "templates",
+  //   href: "/templates",
+  //   icon: BiBrush,
+  //   protected: true,
+  // },
   {
     label: "saved",
     href: "/saved",
