@@ -171,7 +171,7 @@ export default function Pdf({ structure }: { structure: Required<RECEIPT> }) {
 
         {/* products */}
         <View style={styles.table}>
-          {structure.products.map((product, index) => (
+          {structure.products.map(({ data: product }, index) => (
             <View key={index} style={styles.table_row}>
               {product.map((col, position) => (
                 <Text

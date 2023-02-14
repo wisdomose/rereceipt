@@ -121,90 +121,94 @@ const structure: RECEIPT = {
   },
 
   products: [
-    [
-      {
-        label: "QTY",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+    {
+      data: [
+        {
+          label: "QTY",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "DESCRIPTION",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "DESCRIPTION",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "PRICE",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "PRICE",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "AMOUNT",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "15",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "AMOUNT",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "15",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "REFUEL MAX",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-        items: [
-          {
-            label: "1PC SPICY FRIED CHICKEN",
-            text_align: TEXT_ALIGN.LEFT,
-            transform: TEXT_TRANSFORM.UPPERCASE,
-            font_weight: FONT_WEIGHT.NORMAL,
-          },
-          {
-            label: "FRIED RICE",
-            text_align: TEXT_ALIGN.LEFT,
-            transform: TEXT_TRANSFORM.UPPERCASE,
-            font_weight: FONT_WEIGHT.NORMAL,
-          },
-          {
-            label: "COLESLAW",
-            text_align: TEXT_ALIGN.LEFT,
-            transform: TEXT_TRANSFORM.UPPERCASE,
-            font_weight: FONT_WEIGHT.NORMAL,
-          },
-          {
-            label: "PET DRINK 35CL",
-            text_align: TEXT_ALIGN.LEFT,
-            transform: TEXT_TRANSFORM.UPPERCASE,
-            font_weight: FONT_WEIGHT.NORMAL,
-          },
-        ],
-      },
+        {
+          label: "REFUEL MAX",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+          items: [
+            {
+              label: "1PC SPICY FRIED CHICKEN",
+              text_align: TEXT_ALIGN.LEFT,
+              transform: TEXT_TRANSFORM.UPPERCASE,
+              font_weight: FONT_WEIGHT.NORMAL,
+            },
+            {
+              label: "FRIED RICE",
+              text_align: TEXT_ALIGN.LEFT,
+              transform: TEXT_TRANSFORM.UPPERCASE,
+              font_weight: FONT_WEIGHT.NORMAL,
+            },
+            {
+              label: "COLESLAW",
+              text_align: TEXT_ALIGN.LEFT,
+              transform: TEXT_TRANSFORM.UPPERCASE,
+              font_weight: FONT_WEIGHT.NORMAL,
+            },
+            {
+              label: "PET DRINK 35CL",
+              text_align: TEXT_ALIGN.LEFT,
+              transform: TEXT_TRANSFORM.UPPERCASE,
+              font_weight: FONT_WEIGHT.NORMAL,
+            },
+          ],
+        },
 
-      {
-        label: "1,500.00",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "1,500.00",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "22,500.00",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
+        {
+          label: "22,500.00",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
   ],
 
   settings: {

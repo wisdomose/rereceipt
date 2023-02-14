@@ -93,7 +93,7 @@ export default function Create() {
 
   const toggleIsActive = () => setIsActive((s) => !s);
 
-  const updateName = (value: string) => setName(value);
+  const updateName = (value: string) => setName(value.toLowerCase());
 
   const updateImg = (value: string) => setImg(value);
 
@@ -137,7 +137,7 @@ export default function Create() {
 
   useEffect(() => {
     let receipt: RECEIPT = {
-      products: [[defaultItem, defaultItem, defaultItem]],
+      products: [{ data: [defaultItem, defaultItem, defaultItem] }],
       settings: {
         font_family: FONT_FAMILY.INHERIT,
         font_size: FONT_SIZE.TEXT_12,
@@ -148,7 +148,7 @@ export default function Create() {
       receipt = { ...receipt, [key]: { ...defaultItem } };
     });
     // @ts-ignore
-    setReceipt(receipt);
+    setReceipt({ ...receipt });
   }, []);
 
   const disabled = !image || !name || !setting.width;

@@ -60,110 +60,118 @@ const structure: RECEIPT = {
   },
 
   products: [
-    [
-      {
-        label: "product",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "price",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "qty",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "amount",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "VM - F/rice & Curry",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "170.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "10",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "1000.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "COKE, FANTA, SPRITE, LIMCA",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "170.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "15",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "2550.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "FIVE ALIVE APPL, TROP, B",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "450.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "2",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "900.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
+    {
+      data: [
+        {
+          label: "product",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "price",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "qty",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "amount",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "VM - F/rice & Curry",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "170.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "10",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "1000.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "COKE, FANTA, SPRITE, LIMCA",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "170.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "15",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "2550.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "FIVE ALIVE APPL, TROP, B",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "450.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "2",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "900.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
   ],
   total_qty: {
     label: "29",

@@ -71,51 +71,57 @@ const structure: RECEIPT = {
   },
 
   products: [
-    [
-      {
-        label: "1.00 X MOI MOI",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+    {
+      data: [
+        {
+          label: "1.00 X MOI MOI",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "500.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "1.00 X MOI MOI",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "500.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "1.00 X MOI MOI",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "500.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "1.00 X MOI MOI",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
+        {
+          label: "500.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "1.00 X MOI MOI",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
 
-      {
-        label: "500.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
+        {
+          label: "500.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
   ],
   total_qty: {
     label: "3.00",

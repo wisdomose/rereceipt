@@ -79,7 +79,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
 
           {/* products */}
           <div className="relative group table table-fixed w-full">
-            {getStructure().products.map((product, index) => (
+            {getStructure().products.map(({ data: product }, index) => (
               <div key={index} className="table-row">
                 {product.map((col, position) => (
                   <p

@@ -106,58 +106,62 @@ const structure: RECEIPT = {
     font_weight: FONT_WEIGHT.NORMAL,
   },
   products: [
-    [
-      {
-        label: "Item Name",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "Unit",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "Qty",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "AMOUNT",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
-    [
-      {
-        label: "VMm - J/rice & Curr",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "portion",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "2",
-        text_align: TEXT_ALIGN.LEFT,
-        transform: TEXT_TRANSFORM.CAPITALIZE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-      {
-        label: "1,600.00",
-        text_align: TEXT_ALIGN.END,
-        transform: TEXT_TRANSFORM.UPPERCASE,
-        font_weight: FONT_WEIGHT.NORMAL,
-      },
-    ],
+    {
+      data: [
+        {
+          label: "Item Name",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "Unit",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "Qty",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "AMOUNT",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          label: "VMm - J/rice & Curr",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "portion",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "2",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.CAPITALIZE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+        {
+          label: "1,600.00",
+          text_align: TEXT_ALIGN.END,
+          transform: TEXT_TRANSFORM.UPPERCASE,
+          font_weight: FONT_WEIGHT.NORMAL,
+        },
+      ],
+    },
   ],
   settings: {
     font_family: FONT_FAMILY.MOULPALI,

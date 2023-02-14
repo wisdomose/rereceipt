@@ -1,6 +1,7 @@
 import useTable from "../../hooks/useTable";
+import { Context } from "../../store/editor/type";
 import useEditor from "../../store/editor/useEditor";
-import { POS_KEY, RECEIPT_KEY } from "../../types";
+import { POS_KEY, RECEIPT, RECEIPT_KEY } from "../../types";
 import Input from "./input";
 import {
   RiInsertColumnRight,
@@ -15,7 +16,7 @@ export enum DIVIDER {
 }
 
 export type TableProps = {
-  label: RECEIPT_KEY | POS_KEY;
+  label?: RECEIPT_KEY | POS_KEY;
   headerDivider?: DIVIDER;
   subDetails?: boolean;
   subLabels?: string[];
@@ -26,17 +27,17 @@ export type TableProps = {
 // TODO: TO DELETE THE ROW, YOU HAVE TO DELETE THE WHOLE TABLE (add a delete btn)
 
 export default function Table<T extends Record<string, any>>({
-  label,
   headerDivider,
   subDetails = false,
   subLabels,
   largeCol = 0,
 }: TableProps) {
-  const { structure } = useEditor();
+  const label = "products";
+  const { structure } = useEditor<
+    Omit<Context, "structure"> & { structure: RECEIPT }
+  >();
 
-  const { addColumn, addRow, deleteColumn, deleteRow } = useTable<T>({
-    label: "products",
-  });
+  const { addColumn, addRow, deleteColumn, deleteRow } = useTable();
 
   const btnStyle =
     "p-2 grid place-items-center hover:text-black hover:bg-gray-100 text-gray-900";
@@ -63,62 +64,60 @@ export default function Table<T extends Record<string, any>>({
         </button>
       </div>
 
-      <div className="w-full overflow-hidden">
-        <div className="table overflow-hidden" tabIndex={-1}>
-          {(structure[label] as Record<string, any>[]).map(
-            (row, index, elems) => (
-              <>
-                <div
-                  key={index}
-                  className={`table-row w-full ${
-                    headerDivider && index == 0 ? "table-equal" : ""
-                  }`}
-                >
-                  {(row as Record<string, any>[]).map((cell, position) => (
-                    <div
-                      className="table-cell"
-                      style={{
-                        width:
-                          row.length <= 4
-                            ? position === largeCol
-                              ? "50%"
-                              : 50 / (row.length - 1) + "%"
-                            : 100 / row.length + "%",
-                      }}
-                      key={cell.label + position}
-                    >
-                      <Input label={label} index={[index, position]} />
-                      {cell?.items && (
-                        <>
-                          {(cell.items as Record<string, any>[]).map(
-                            (item, innerIndex) => (
-                              <>
-                                <Input
-                                  label={label}
-                                  subLabel="items"
-                                  index={[index, position, innerIndex]}
-                                />
-                                {/* <br /> */}
-                              </>
-                            )
-                          )}
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
+      <div className="w-full">
+        <div className="table" tabIndex={-1}>
+          {structure[label].map(({ data: row }, index, elems) => (
+            <>
+              <div
+                key={index}
+                className={`table-row w-full ${
+                  headerDivider && index == 0 ? "table-equal" : ""
+                }`}
+              >
+                {row.map((cell, position) => (
+                  <div
+                    className="table-cell"
+                    style={{
+                      width:
+                        row.length <= 4
+                          ? position === largeCol
+                            ? "50%"
+                            : 50 / (row.length - 1) + "%"
+                          : 100 / row.length + "%",
+                    }}
+                    key={cell.label + position}
+                  >
+                    <Input label={label} index={[index, position]} />
+                    {cell?.items && (
+                      <>
+                        {(cell.items as Record<string, any>[]).map(
+                          (item, innerIndex) => (
+                            <>
+                              <Input
+                                label={label}
+                                subLabel="items"
+                                index={[index, position, innerIndex]}
+                              />
+                              {/* <br /> */}
+                            </>
+                          )
+                        )}
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
 
-                {/* divider */}
-                {/* {headerDivider && index == 0 && (
+              {/* divider */}
+              {/* {headerDivider && index == 0 && (
                   <div className="table-row w-full mb-2">
                     <p className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap bg-green-200">
                       ============================================================
                     </p>
                   </div>
                 )} */}
-              </>
-            )
-          )}
+            </>
+          ))}
         </div>
       </div>
     </div>

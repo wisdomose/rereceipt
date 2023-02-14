@@ -14,15 +14,16 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import logo from "../../src/img/icons/logo.png";
+import { POS, RECEIPT } from "../../types";
 
-type Props = {
-  receipt: UseEditorProps["receipt"];
+type Props = UseEditorProps & {
   children: ReactNode;
 };
 
 export default function Alpine(props: Props) {
   const {} = useEditor({
-    receipt: props.receipt,
+    name: props.name,
+    structure: props.structure,
   });
 
   const ref = useRef<HTMLDivElement>(null);
@@ -171,7 +172,8 @@ function SideBar() {
                                     ) : (
                                       <span></span>
                                     )}
-                                    <span className="block text-start w-full"
+                                    <span
+                                      className="block text-start w-full"
                                       style={{
                                         fontFamily: displayFormat,
                                       }}

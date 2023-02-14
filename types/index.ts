@@ -148,13 +148,13 @@ type RECEIPT = Omit<
     settings: SETTING;
   } & Partial<Record<RECEIPT_KEY, ITEM>>,
   "products"
-> & { products: PRODUCT[][] };
+> & { products: { data: PRODUCT[] }[] };
 
 type POS = Partial<Record<POS_KEY, ITEM>> & {
   settings: SETTING;
 };
 
-export type { RECEIPT, RECEIPT_KEY, POS_KEY, POS, DOC, ITEM, SETTING };
+export type { RECEIPT, RECEIPT_KEY, POS_KEY, POS, DOC, ITEM, SETTING, PRODUCT };
 
 export {
   TEXT_ALIGN,

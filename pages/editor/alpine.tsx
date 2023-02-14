@@ -10,30 +10,41 @@ import { Popover } from "@headlessui/react";
 import Link from "next/link";
 import logo from "../../src/img/icons/logo.png";
 import { FiSettings } from "react-icons/fi";
+import { getOneReceipt } from "../../utils/firebase";
+import { useState } from "react";
+import { DOC, POS, RECEIPT } from "../../types";
 
 export default function AlpineWrapper() {
+  const router = useRouter();
+  const [receipt, setReceipt] = useState<DOC | null>(null);
+
+  useEffect(() => {
+    const id = router.query.receipt;
+    if (!id || typeof id !== "string") return;
+
+    getOneReceipt(id).then((structure) => {
+      if (!structure) throw "No receipt found";
+      setReceipt(structure);
+    });
+  }, [router.query.receipt]);
+
   return (
     <EditorProvider>
-      <Wrapped />
+      <Wrapped data={receipt} />
     </EditorProvider>
   );
 }
 
-function Wrapped() {
-  const router = useRouter();
+function Wrapped({ data }: { data: DOC | null }) {
   const { pdfFile, previewMode, ref } = useEditor();
 
-  if (!router.query.receipt) return null;
+  if (!data) return <p>invalid file</p>;
 
-  const receipt = receipts.find(
-    (receipt) => receipt.default.name === router.query.receipt
-  );
+  const file = receipts.find((receipt) => receipt.default.name === data.name);
 
-  if (!receipt) {
-    return <p>invalid file</p>;
-  }
+  if (!file) return <p>invalid file</p>;
 
-  const { Editor, Image } = receipt.default;
+  const { Editor, Image } = file.default;
 
   return (
     // <Page isProtected={true}>
@@ -55,7 +66,11 @@ function Wrapped() {
           {/* <FiMenu className="text-2xl" /> */}
         </Link>
       </nav>
-      <Alpine receipt={router.query.receipt as UseEditorProps["receipt"]}>
+      <Alpine
+        name={data.name}
+        // receipt={data.name as UseEditorProps["receipt"]}
+        structure={data.data}
+      >
         {/* {previewMode ? <Pdf structure={structure} /> : <Editor />} */}
         {previewMode ? <Image ref={ref} /> : <Editor />}
       </Alpine>

@@ -1,5 +1,6 @@
 import { SetStateAction, Dispatch } from "react";
 import * as receipts from "../../receipts";
+import { POS, RECEIPT } from "../../types";
 
 export type Pdf = JSX.Element;
 
@@ -22,9 +23,11 @@ export type Context = {
   name: string;
   ref: any;
   isLoading: boolean;
-  structure: Record<string, any>;
+  structure: RECEIPT | POS;
 };
 
 export type UseEditorProps = {
-  receipt: keyof typeof receipts.default;
+  name: string;
+  // name: keyof typeof receipts.default;
+  structure: RECEIPT | POS;
 };

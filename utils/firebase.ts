@@ -8,8 +8,18 @@ import {
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getApp } from "firebase/app";
-import { getFirestore, doc, collection, addDoc } from "firebase/firestore";
-import { DOC } from "../types";
+import {
+  getFirestore,
+  query,
+  where,
+  collection,
+  addDoc,
+  getCountFromServer,
+  getDocs,
+  getDoc,
+  doc,
+} from "firebase/firestore";
+import { DOC, DOC_TYPES } from "../types";
 
 export const signUpWithGoogle = async () => {
   const auth = getAuth();
@@ -89,6 +99,10 @@ export const uploadFile = async ({
   });
 };
 
+/**
+ * TODO
+ * - check if a receipt has already been created
+ */
 export const createReceipt = async (
   data: Pick<DOC, "data" | "isActive" | "name" | "type">,
   image: File
@@ -100,4 +114,55 @@ export const createReceipt = async (
     ...data,
     img,
   });
+};
+
+export const saveProgress = async (
+  data: Pick<DOC, "data" | "name" | "type">
+) => {
+  const auth = getAuth();
+  if (!auth.currentUser) return;
+  const uid = auth.currentUser.uid;
+
+  const db = getFirestore(getApp());
+  const coll = collection(db, "saved");
+  const query_ = query(coll, where("uid", "==", uid));
+  const snapshot = await getCountFromServer(query_);
+  const count = snapshot.data().count;
+
+  if (count === 5) return -1;
+  await addDoc(collection(db, "saved"), {
+    ...data,
+    uid,
+  });
+};
+
+export const getAllActiveReceipts = async () => {
+  const db = getFirestore(getApp());
+  const querySnapshot = await getDocs(collection(db, "receipts"));
+  let receipts: any[] = [];
+  let pos: any[] = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.type === DOC_TYPES.RECEIPT
+      ? receipts.push({ id: doc.id, ...doc.data() })
+      : data.type === DOC_TYPES.POS
+      ? pos.push({ id: doc.id, ...doc.data() })
+      : null;
+  });
+  return { receipts, pos } as unknown as {
+    receipts: Pick<DOC, "id" | "img" | "name" | "type">[];
+    pos: Pick<DOC, "id" | "img" | "name" | "type">[];
+  };
+};
+
+export const getOneReceipt = async (id: string) => {
+  const db = getFirestore(getApp());
+  const docRef = doc(db, "receipts", id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data() as DOC;
+  } else {
+    return null;
+  }
 };

@@ -22,11 +22,15 @@ const Image = forwardRef<any, Props>((props, ref) => {
           className={`bg-white text-black mx-auto my-0 px-1 py-[6px]`}
         >
           <>
-            <p style={genStyle(getStructure().name)}>{getStructure().name.label}</p>
+            <p style={genStyle(getStructure().name)}>
+              {getStructure().name.label}
+            </p>
             <p style={genStyle(getStructure().location)}>
               {getStructure().location.label}
             </p>
-            <p style={genStyle(getStructure().email)}>{getStructure().email.label}</p>
+            <p style={genStyle(getStructure().email)}>
+              {getStructure().email.label}
+            </p>
           </>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
@@ -104,7 +108,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
 
           {/* products */}
           <div className="relative group table table-fixed w-full">
-            {getStructure().products.map((product, index) => (
+            {getStructure().products.map(({ data: product }, index) => (
               <div key={index} className="table-row">
                 {product.map((col, position) => (
                   <p
@@ -141,14 +145,18 @@ const Image = forwardRef<any, Props>((props, ref) => {
             <p className="whitespace-nowrap capitalize mr-1">
               Received..........
             </p>
-            <p style={genStyle(getStructure().total)}>{getStructure().total.label}</p>
+            <p style={genStyle(getStructure().total)}>
+              {getStructure().total.label}
+            </p>
           </div>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             ============================================================
           </div>
 
-          <p style={genStyle(getStructure().status)}>{getStructure().status.label}</p>
+          <p style={genStyle(getStructure().status)}>
+            {getStructure().status.label}
+          </p>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             --------------------------------------------
@@ -169,7 +177,9 @@ const Image = forwardRef<any, Props>((props, ref) => {
               </div>
             </div>
             <div>
-              <p style={genStyle(getStructure().total)}>{getStructure().total.label}</p>
+              <p style={genStyle(getStructure().total)}>
+                {getStructure().total.label}
+              </p>
             </div>
           </div>
 
@@ -208,7 +218,9 @@ const Image = forwardRef<any, Props>((props, ref) => {
               <p className="whitespace-nowrap mr-1 capitalize">
                 bill printed time:
               </p>
-              <p style={genStyle(getStructure().time_in)}>{getStructure().time_in.label}</p>
+              <p style={genStyle(getStructure().time_in)}>
+                {getStructure().time_in.label}
+              </p>
             </div>
             <div className="flex flex-row mx-auto w-full items-center">
               <p className="whitespace-nowrap mr-1 capitalize">
