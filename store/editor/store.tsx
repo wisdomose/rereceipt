@@ -12,6 +12,7 @@ import { Context, Format, Pdf, formats } from "./type";
 import { useRouter } from "next/router";
 import { toPng, toJpeg, toCanvas, toSvg } from "html-to-image";
 import jspdf from "jspdf";
+import { FONT_FAMILY } from "../../types";
 
 export const EditorStore = createContext<Context>({
   updatePdfFile: () => {},
@@ -20,6 +21,7 @@ export const EditorStore = createContext<Context>({
   exportFile: async () => {},
   updateName: () => {},
   updateStructure: () => {},
+  updateFont: () => {},
   setStructure: () => {},
   format: formats[0],
   pdfFile: undefined,
@@ -27,13 +29,13 @@ export const EditorStore = createContext<Context>({
   name: "document",
   ref: {},
   isLoading: false,
-  structure: {},
+  structure: undefined,
 });
 
 export default function EditorProvider(props: { children: ReactNode }) {
   const [pdfFile, setPdfFile] = useState<Pdf>();
   const [name, setName] = useState("document");
-  const [structure, setStructure] = useState<Context["structure"]>({});
+  const [structure, setStructure] = useState<Context["structure"]>(undefined);
   const [previewMode, setPreviewMode] = useState(false);
   const [format, setFormat] = useState<Context["format"]>(formats[0]);
   const router = useRouter();
@@ -44,7 +46,7 @@ export default function EditorProvider(props: { children: ReactNode }) {
     return () => {
       setPdfFile(undefined);
       setName("document");
-      setStructure({});
+      setStructure(undefined);
       setPreviewMode(false);
       setFormat(formats[0]);
       console.log("unmounted");
@@ -146,6 +148,12 @@ export default function EditorProvider(props: { children: ReactNode }) {
     setStructure(structure);
   const updatePreviewMode = (value: boolean) => setPreviewMode(value);
   const updateFormat = (value: Context["format"]) => setFormat(value);
+  const updateFont = (value: FONT_FAMILY) =>
+    setStructure((s) => {
+      if (!s) return undefined;
+      s.settings.font_family = value;
+      return { ...s };
+    });
 
   const value = {
     updatePdfFile,
@@ -154,6 +162,7 @@ export default function EditorProvider(props: { children: ReactNode }) {
     updatePreviewMode,
     exportFile,
     updateStructure,
+    updateFont,
     setStructure,
     format,
     name,
