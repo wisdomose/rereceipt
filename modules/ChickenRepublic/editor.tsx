@@ -7,7 +7,7 @@ import useEditor from "../../store/editor/useEditor";
 export default function Editor() {
   const { structure } = useEditor();
 
-  if (Object.keys(structure).length == 0) return null;
+  if (Object.keys(structure).length == 0) return <p>no structure</p>;
 
   return (
     <>

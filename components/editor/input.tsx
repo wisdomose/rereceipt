@@ -14,6 +14,7 @@ import useEditor from "../../store/editor/useEditor";
 import {
   FONT_WEIGHT,
   ITEM,
+  POS,
   POS_KEY,
   PRODUCT,
   RECEIPT,
@@ -24,14 +25,14 @@ import {
 import { Context } from "../../store/editor/type";
 
 type Props = {
-  label: RECEIPT_KEY;
+  label: RECEIPT_KEY | POS_KEY;
   subLabel?: "items";
   index?: number[];
 };
 
 export default function Input({ label, subLabel, ...props }: Props) {
   const { structure, setStructure } = useEditor<
-    Omit<Context, "structure"> & { structure: Required<RECEIPT> }
+    Omit<Context, "structure"> & { structure: RECEIPT & POS }
   >();
 
   const defaultValue = {

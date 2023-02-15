@@ -75,3 +75,12 @@ export function genEditorStyle(elem: SETTING) {
   });
   return style;
 }
+
+export function pick<T extends Record<string, any>>(obj: T, pick: string[]) {
+  Object.keys(obj).map((key) => {
+    if (!pick.includes(key)) {
+      delete obj[key];
+    } 
+  });
+  return obj;
+}

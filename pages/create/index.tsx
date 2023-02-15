@@ -27,7 +27,7 @@ import {
 import { FiCheck, FiImage } from "react-icons/fi";
 import Button from "../../components/button";
 import Image from "next/image";
-import { createReceipt } from "../../utils/firebase";
+import { createTemplate } from "../../utils/firebase";
 import { useRouter } from "next/router";
 
 // settings: ,
@@ -119,7 +119,7 @@ export default function Create() {
       return;
     }
 
-    await createReceipt(
+    await createTemplate(
       {
         data: {
           ...receipt,

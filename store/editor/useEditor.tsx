@@ -11,7 +11,7 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
    * - in the pdf file, make the structure props not required
    */
   useEffect(() => {
-    if (!props?.name || !props?.structure) return;
+    if (!props || !props?.name || !props?.structure) return;
 
     const receipt = receipts.find(
       (receipt) => receipt.default.name === props.name
@@ -19,6 +19,7 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
 
     if (!receipt) return;
     const { Pdf } = receipt.default;
+
     // @ts-ignore
     store.updatePdfFile(<Pdf structure={store.structure} />);
     store.updateName(props.name);

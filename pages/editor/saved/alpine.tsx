@@ -1,28 +1,29 @@
-import { UseEditorProps } from "../../store/editor/type";
-import Alpine from "../../modules/editors/Alpine";
+import { UseEditorProps } from "../../../store/editor/type";
+import Alpine from "../../../modules/editors/Alpine";
 import { useRouter } from "next/router";
-import receipts from "../../receipts/index";
-import useEditor from "../../store/editor/useEditor";
+import receipts from "../../../receipts/index";
+import useEditor from "../../../store/editor/useEditor";
 import { useEffect } from "react";
-import EditorProvider from "../../store/editor/store";
-import Page from "../../components/layout/Page";
+import EditorProvider from "../../../store/editor/store";
+import Page from "../../../components/layout/Page";
 import { Popover } from "@headlessui/react";
 import Link from "next/link";
-import logo from "../../src/img/icons/logo.png";
+import logo from "../../../src/img/icons/logo.png";
 import { FiSettings } from "react-icons/fi";
-import { getOneTemplate } from "../../utils/firebase";
+import { getOneSavedTemplate, getOneTemplate } from "../../../utils/firebase";
 import { useState } from "react";
-import { DOC, POS, RECEIPT } from "../../types";
+import { DOC, POS, RECEIPT, SAVED } from "../../../types";
+import { pick } from "../../../utils";
 
 export default function AlpineWrapper() {
   const router = useRouter();
-  const [receipt, setReceipt] = useState<DOC | null>(null);
+  const [receipt, setReceipt] = useState<SAVED | null>(null);
 
   useEffect(() => {
     const id = router.query.receipt;
     if (!id || typeof id !== "string") return;
 
-    getOneTemplate(id).then((structure) => {
+    getOneSavedTemplate(id).then((structure) => {
       if (!structure) throw "No receipt found";
       setReceipt(structure);
     });
@@ -35,7 +36,7 @@ export default function AlpineWrapper() {
   );
 }
 
-function Wrapped({ data }: { data: DOC | null }) {
+function Wrapped({ data }: { data: SAVED | null }) {
   const { pdfFile, previewMode, ref } = useEditor();
 
   if (!data) return <p>invalid file</p>;
@@ -71,6 +72,8 @@ function Wrapped({ data }: { data: DOC | null }) {
         structure={data.data}
         type={data.type}
         img={data.img}
+        saved={true}
+        templateId={data.templateId}
       >
         {/* {previewMode ? <Pdf structure={structure} /> : <Editor />} */}
         {previewMode ? <Image ref={ref} /> : <Editor />}

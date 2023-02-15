@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Page from "../components/layout/Page";
 import { DOC, DOC_TYPES } from "../types";
-import { getAllActiveReceipts } from "../utils/firebase";
+import { getAllActiveTemplates } from "../utils/firebase";
 import { useEffect, useState } from "react";
+import Receipt from "../components/layout/Receipt";
 
 export default function Home() {
   const [receiptReceipts, setReceiptReceipts] = useState<
@@ -14,7 +15,7 @@ export default function Home() {
     Pick<DOC, "id" | "img" | "name" | "type">[]
   >([]);
   useEffect(() => {
-    getAllActiveReceipts().then((a) => {
+    getAllActiveTemplates().then((a) => {
       setReceiptReceipts(a.receipts);
       setPosReceipts(a.pos);
     });
@@ -34,7 +35,11 @@ export default function Home() {
                     {posReceipts
                       .filter((route) => route.type === DOC_TYPES.POS)
                       .map((route) => (
-                        <Receipt {...route} key={route.id} />
+                        <Receipt
+                          href={"/editor/alpine?receipt=" + route.id}
+                          {...route}
+                          key={route.id}
+                        />
                       ))}
                   </>
                 )}
@@ -51,7 +56,11 @@ export default function Home() {
                     {receiptReceipts
                       .filter((route) => route.type === DOC_TYPES.RECEIPT)
                       .map((route) => (
-                        <Receipt {...route} key={route.id} />
+                        <Receipt
+                          href={"/editor/alpine?receipt=" + route.id}
+                          {...route}
+                          key={route.id}
+                        />
                       ))}
                   </>
                 )}
@@ -61,29 +70,5 @@ export default function Home() {
         </>
       </Page.Body>
     </Page>
-  );
-}
-
-function Receipt({ name, img, id }: Pick<DOC, "id" | "img" | "name" | "type">) {
-  return (
-    <Link
-      href={"/editor/alpine?receipt=" + id}
-      className="group bg-white shadow-md text-center hover:shadow-slate-500/50 focus:shadow-slate-500/50 focus:outline-none"
-    >
-      <div key={name}>
-        <div className="w-full h-44 overflow-hidden object-cover relative">
-          <Image
-            src={img}
-            alt={name}
-            className="w-full object-cover object-top"
-            quality={70}
-            fill
-          />
-        </div>
-        <p className="py-2 group-hover:font-semibold group-focus:font-semibold capitalize">
-          {name}
-        </p>
-      </div>
-    </Link>
   );
 }

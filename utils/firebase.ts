@@ -17,10 +17,23 @@ import {
   getCountFromServer,
   getDocs,
   getDoc,
+  updateDoc,
   doc,
+  serverTimestamp,
 } from "firebase/firestore";
-import { DOC, DOC_TYPES } from "../types";
+import { DOC, DOC_TYPES, SAVED } from "../types";
 
+enum COLLECTION {
+  TEMPLATES = "templates",
+  SAVED = "saved",
+}
+
+enum IMAGES {
+  GENERAL = "/",
+  RECEIPTS = "/receipts/",
+}
+
+// auth
 export const signUpWithGoogle = async () => {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
@@ -90,7 +103,7 @@ export const uploadFile = async ({
   name: string;
 }) => {
   const storage = getStorage(getApp());
-  const fileRef = ref(storage, "/receipts/" + name);
+  const fileRef = ref(storage, IMAGES.RECEIPTS + name);
 
   return await uploadBytes(fileRef, file).then((snapshot) => {
     return getDownloadURL(fileRef).then((url) => {
@@ -103,42 +116,105 @@ export const uploadFile = async ({
  * TODO
  * - check if a receipt has already been created
  */
-export const createReceipt = async (
+export const createTemplate = async (
   data: Pick<DOC, "data" | "isActive" | "name" | "type">,
   image: File
 ) => {
   const db = getFirestore(getApp());
 
   const img = await uploadFile({ file: image, name: data.name });
-  await addDoc(collection(db, "receipts"), {
+  await addDoc(collection(db, COLLECTION.TEMPLATES), {
+    timestamp: serverTimestamp(),
     ...data,
     img,
   });
 };
 
+/**
+ *
+ * @param data
+ * @param id {string} saved document id optional if this is a new save
+ * @returns
+ */
 export const saveProgress = async (
-  data: Pick<DOC, "data" | "name" | "type">
+  data: Pick<SAVED, "data" | "name" | "type" | "img" | "templateId">,
+  id?: string
 ) => {
+  try {
+    const auth = getAuth();
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+
+    const db = getFirestore(getApp());
+    const coll = collection(db, COLLECTION.SAVED);
+
+    if (!id) {
+      const query_ = query(coll, where("uid", "==", uid));
+      const snapshot = await getCountFromServer(query_);
+      const count = snapshot.data().count;
+
+      if (count === 5) return -1;
+      await addDoc(collection(db, "saved"), {
+        timestamp: serverTimestamp(),
+        ...data,
+        uid,
+      });
+    } else {
+      console.log("updating");
+      const ref = doc(db, COLLECTION.SAVED, id);
+      await updateDoc(ref, {
+        uid,
+        timestamp: serverTimestamp(),
+        ...data,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllSavedTemplates = async () => {
   const auth = getAuth();
   if (!auth.currentUser) return;
   const uid = auth.currentUser.uid;
 
   const db = getFirestore(getApp());
-  const coll = collection(db, "saved");
-  const query_ = query(coll, where("uid", "==", uid));
-  const snapshot = await getCountFromServer(query_);
-  const count = snapshot.data().count;
 
-  if (count === 5) return -1;
-  await addDoc(collection(db, "saved"), {
-    ...data,
-    uid,
+  const q = query(collection(db, COLLECTION.SAVED), where("uid", "==", uid));
+
+  const querySnapshot = await getDocs(q);
+
+  const saved: SAVED[] = [];
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    saved.push({
+      id: doc.id,
+      ...(data as Pick<
+        SAVED,
+        "data" | "img" | "name" | "templateId" | "timestamp" | "type" | "uid"
+      >),
+    });
   });
+
+  return saved;
 };
 
-export const getAllActiveReceipts = async () => {
+export const getOneSavedTemplate = async (id: string) => {
   const db = getFirestore(getApp());
-  const querySnapshot = await getDocs(collection(db, "receipts"));
+  const docRef = doc(db, COLLECTION.SAVED, id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data() as SAVED;
+  } else {
+    return null;
+  }
+};
+
+export const getAllActiveTemplates = async () => {
+  const db = getFirestore(getApp());
+  const querySnapshot = await getDocs(collection(db, COLLECTION.TEMPLATES));
   let receipts: any[] = [];
   let pos: any[] = [];
   querySnapshot.forEach((doc) => {
@@ -155,9 +231,9 @@ export const getAllActiveReceipts = async () => {
   };
 };
 
-export const getOneReceipt = async (id: string) => {
+export const getOneTemplate = async (id: string) => {
   const db = getFirestore(getApp());
-  const docRef = doc(db, "receipts", id);
+  const docRef = doc(db, COLLECTION.TEMPLATES, id);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {

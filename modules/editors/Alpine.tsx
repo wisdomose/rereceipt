@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useCallback } from "react";
 import useEditor from "../../store/editor/useEditor";
 import { UseEditorProps, formats } from "../../store/editor/type";
 import EditorZoom from "../../components/layout/EditorZoom";
@@ -14,33 +14,62 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import logo from "../../src/img/icons/logo.png";
-import { POS, RECEIPT } from "../../types";
+import { DOC_TYPES, POS, RECEIPT, SAVED } from "../../types";
+import { saveProgress } from "../../utils/firebase";
+import { useRouter } from "next/router";
 
 type Props = UseEditorProps & {
   children: ReactNode;
+  type: DOC_TYPES;
+  img: string;
+  saved?: boolean;
+  templateId?: string;
 };
 
-export default function Alpine(props: Props) {
-  const {} = useEditor({
+export default function Alpine({ saved = false, templateId, ...props }: Props) {
+  const { structure } = useEditor({
     name: props.name,
     structure: props.structure,
   });
 
+  const router = useRouter();
+
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // ref.current?.scrollTo(
-    //   (ref?.current?.scrollWidth ?? 0) / 2 -
-    //     (ref?.current?.clientWidth ?? 0) / 2,
-    //   (ref?.current?.scrollHeight ?? 0) / 2 -
-    //     (ref?.current?.clientWidth ?? 0) / 2
-    // );
-  }, []);
+  const save = useCallback(async () => {
+    let id = router.query.receipt;
+
+    if (!id || typeof id !== "string") return;
+    if (saved) {
+      if (!templateId) return;
+      await saveProgress(
+        {
+          type: props.type,
+          img: props.img,
+          data: structure,
+          name: props.name,
+          templateId: templateId,
+        },
+        id
+      );
+    } else {
+      await saveProgress({
+        type: props.type,
+        img: props.img,
+        data: structure,
+        name: props.name,
+        templateId: id,
+      });
+    }
+  }, [props.name, router.query.receipt, structure]);
 
   return (
     <div className="bg-gray-200 h-[calc(100%_-_56px)] grid grid-rows-[max-content,1fr]">
       <nav className="bg-black/80 flex justify-end items-center h-14 box-border max-w-screen">
         {/* other settings here */}
+        <button onClick={save} className="text-white px-5">
+          save
+        </button>
 
         <div className="flex items-center h-full">
           <p className="bg-gray-200 text-xs px-2 rounded-full h-fit mr-5">

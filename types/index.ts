@@ -154,7 +154,28 @@ type POS = Partial<Record<POS_KEY, ITEM>> & {
   settings: SETTING;
 };
 
-export type { RECEIPT, RECEIPT_KEY, POS_KEY, POS, DOC, ITEM, SETTING, PRODUCT };
+type SAVED = {
+  id: string;
+  uid: string;
+  templateId: string;
+  timestamp: any;
+  name: string;
+  type: DOC_TYPES;
+  img: string;
+  data: RECEIPT | POS;
+};
+
+export type {
+  RECEIPT,
+  RECEIPT_KEY,
+  POS_KEY,
+  POS,
+  DOC,
+  ITEM,
+  SETTING,
+  PRODUCT,
+  SAVED,
+};
 
 export {
   TEXT_ALIGN,
