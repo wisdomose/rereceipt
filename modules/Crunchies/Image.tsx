@@ -6,11 +6,9 @@ import { Props } from "./types";
 import { forwardRef } from "react";
 
 const Image = forwardRef<any, Props>((props, ref) => {
-  const { structure } = useEditor<
-    Omit<Context, "structure"> & { structure: Required<RECEIPT> }
-  >();
+    const { structure } = useEditor();
 
-  if (Object.keys(structure).length === 0) return null;
+    if (!structure) return null;
 
   return (
     <div ref={ref}>

@@ -25,7 +25,10 @@ enum FONT_WEIGHT {
 enum FONT_SIZE {
   TEXT_02 = "2px",
   TEXT_04 = "4px",
+  TEXT_06 = "6px",
   TEXT_08 = "8px",
+  TEXT_10 = "10px",
+  TEXT_11 = "11px",
   TEXT_12 = "12px",
   TEXT_14 = "14px",
   TEXT_16 = "16px",
@@ -146,11 +149,11 @@ type POS_KEY = typeof POS_KEYS[number];
 type RECEIPT = Omit<
   {
     settings: SETTING;
-  } & Partial<Record<RECEIPT_KEY, ITEM>>,
+  } & Required<Record<RECEIPT_KEY, ITEM>>,
   "products"
 > & { products: { data: PRODUCT[] }[] };
 
-type POS = Partial<Record<POS_KEY, ITEM>> & {
+type POS = Required<Record<POS_KEY, ITEM>> & {
   settings: SETTING;
 };
 

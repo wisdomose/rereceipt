@@ -12,7 +12,7 @@ import { Context, Format, Pdf, formats } from "./type";
 import { useRouter } from "next/router";
 import { toPng, toJpeg, toCanvas, toSvg } from "html-to-image";
 import jspdf from "jspdf";
-import { FONT_FAMILY } from "../../types";
+import { FONT_FAMILY, FONT_SIZE } from "../../types";
 
 export const EditorStore = createContext<Context>({
   updatePdfFile: () => {},
@@ -22,6 +22,8 @@ export const EditorStore = createContext<Context>({
   updateName: () => {},
   updateStructure: () => {},
   updateFont: () => {},
+  updateFontSize: () => {},
+  updateWidth: () => {},
   setStructure: () => {},
   format: formats[0],
   pdfFile: undefined,
@@ -148,10 +150,24 @@ export default function EditorProvider(props: { children: ReactNode }) {
     setStructure(structure);
   const updatePreviewMode = (value: boolean) => setPreviewMode(value);
   const updateFormat = (value: Context["format"]) => setFormat(value);
+
+  // settings specific functions
   const updateFont = (value: FONT_FAMILY) =>
     setStructure((s) => {
       if (!s) return undefined;
       s.settings.font_family = value;
+      return { ...s };
+    });
+  const updateFontSize = (value: FONT_SIZE) =>
+    setStructure((s) => {
+      if (!s) return undefined;
+      s.settings.font_size = value;
+      return { ...s };
+    });
+  const updateWidth = (value: string) =>
+    setStructure((s) => {
+      if (!s) return undefined;
+      s.settings.width = value;
       return { ...s };
     });
 
@@ -163,7 +179,9 @@ export default function EditorProvider(props: { children: ReactNode }) {
     exportFile,
     updateStructure,
     updateFont,
+    updateFontSize,
     setStructure,
+    updateWidth,
     format,
     name,
     ref,

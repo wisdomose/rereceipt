@@ -14,7 +14,14 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import logo from "../../src/img/icons/logo.png";
-import { DOC_TYPES, POS, RECEIPT, SAVED } from "../../types";
+import {
+  DOC_TYPES,
+  FONT_FAMILY,
+  FONT_SIZE,
+  POS,
+  RECEIPT,
+  SAVED,
+} from "../../types";
 import { saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 
@@ -39,7 +46,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
   const save = useCallback(async () => {
     let id = router.query.receipt;
 
-    if (!id || typeof id !== "string") return;
+    if (!id || typeof id !== "string" || !structure) return;
     if (saved) {
       if (!templateId) return;
       await saveProgress(
@@ -120,9 +127,13 @@ function SideBar() {
     format,
     updateName,
     exportFile,
+    updateFont,
+    updateFontSize,
+    updateWidth,
+    structure,
   } = useEditor();
 
-  const fonts = ["Raleway", "Moulpali", "Ubuntu Mono"];
+  if (!structure) return null;
 
   return (
     <>
@@ -168,59 +179,38 @@ function SideBar() {
                   {/* font family */}
                   <>
                     <p className="text-sm capitalize mb-1">font family</p>
-                    <Menu>
-                      {({ open }: { open: boolean }) => (
-                        <div className="relative inline-block overflow-visible w-full">
-                          <Menu.Button
-                            className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full"
-                            style={{
-                              fontFamily: fonts[0],
-                            }}
-                          >
-                            <span className="text-sm py-1 lowercase">
-                              {fonts[0]}
-                            </span>
-                            {open ? (
-                              <FiChevronDown className="text-gray-400" />
-                            ) : (
-                              <FiChevronUp className="text-gray-400" />
-                            )}
-                          </Menu.Button>
-                          <Menu.Items className="absolute right-0 w-full bg-black min-w-max shadow-lg pb-2">
-                            {fonts.map((displayFormat) => (
-                              <Menu.Item key={displayFormat}>
-                                {({ active }: { active: boolean }) => (
-                                  <button
-                                    // onClick={() => updateFormat(displayFormat)}
-                                    className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${
-                                      active ? "text-white" : "text-gray-50/50"
-                                    }`}
-                                  >
-                                    {displayFormat === format ? (
-                                      <FiCheck />
-                                    ) : (
-                                      <span></span>
-                                    )}
-                                    <span
-                                      className="block text-start w-full"
-                                      style={{
-                                        fontFamily: displayFormat,
-                                      }}
-                                    >
-                                      {displayFormat}
-                                    </span>
-                                  </button>
-                                )}
-                              </Menu.Item>
-                            ))}
-                          </Menu.Items>
-                        </div>
-                      )}
-                    </Menu>
+                    <Select
+                      current={structure.settings.font_family}
+                      items={Object.values(FONT_FAMILY)}
+                      style={{ fontFamily: structure.settings.font_family }}
+                      update={updateFont}
+                    />
                   </>
 
                   {/* font size */}
+                  <>
+                    <p className="text-sm capitalize mb-1 mt-3">font size</p>
+                    <Select
+                      current={structure.settings.font_size}
+                      items={Object.values(FONT_SIZE)}
+                      update={updateFontSize}
+                    />
+                  </>
 
+                  {/* width */}
+                  <>
+                    <p className="text-sm capitalize mb-1 mt-3">width</p>
+                    <input
+                      type="number"
+                      className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full bg-transparent py-1 focus:outline-none"
+                      min={100}
+                      max={500}
+                      value={structure.settings.width.slice(0, -2)}
+                      onChange={(e) => {
+                        updateWidth(e.target.value + "px");
+                      }}
+                    />
+                  </>
                   {/* color */}
                 </div>
               </Disclosure.Panel>
@@ -312,5 +302,53 @@ function SideBar() {
         </Disclosure>
       </div>
     </>
+  );
+}
+
+type SelectProps = {
+  current: any;
+  update: (value: any) => void;
+  items: any[];
+  style?: Record<string, any>;
+};
+function Select({ update, items, current, style }: SelectProps) {
+  return (
+    <Menu>
+      {({ open }: { open: boolean }) => (
+        <div className="relative inline-block overflow-visible w-full">
+          <Menu.Button
+            className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full"
+            style={style}
+          >
+            <span className="text-sm py-1 lowercase">{current}</span>
+            {open ? (
+              <FiChevronDown className="text-gray-400" />
+            ) : (
+              <FiChevronUp className="text-gray-400" />
+            )}
+          </Menu.Button>
+
+          <Menu.Items className="absolute right-0 w-full bg-black min-w-max shadow-lg pb-2 z-10">
+            {items.map((item) => (
+              <Menu.Item key={item}>
+                {({ active }: { active: boolean }) => (
+                  <button
+                    className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${
+                      active ? "text-white" : "text-gray-50/50"
+                    }`}
+                    onClick={() => update(item)}
+                  >
+                    {item === current ? <FiCheck /> : <span></span>}
+                    <span className="block text-start w-full" style={style}>
+                      {item}
+                    </span>
+                  </button>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Items>
+        </div>
+      )}
+    </Menu>
   );
 }

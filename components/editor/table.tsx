@@ -33,9 +33,7 @@ export default function Table<T extends Record<string, any>>({
   largeCol = 0,
 }: TableProps) {
   const label = "products";
-  const { structure } = useEditor<
-    Omit<Context, "structure"> & { structure: RECEIPT }
-  >();
+  const { structure } = useEditor();
 
   const { addColumn, addRow, deleteColumn, deleteRow } = useTable();
 
@@ -44,7 +42,7 @@ export default function Table<T extends Record<string, any>>({
 
   const svgStyle = "w-4 h-auto";
 
-  if (Object.keys(structure).length === 0) return null;
+  if (!structure) return null;
 
   return (
     <div className="relative group/table">

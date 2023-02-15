@@ -6,7 +6,7 @@ import { genEditorStyle } from "../../utils";
 export default function Editor() {
   const { structure } = useEditor();
 
-  if (Object.keys(structure).length == 0) return <p>no structure</p>;
+  if (structure === undefined) return <p>no structure</p>;
 
   // console.log(structure);
 

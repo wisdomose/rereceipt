@@ -31,9 +31,7 @@ type Props = {
 };
 
 export default function Input({ label, subLabel, ...props }: Props) {
-  const { structure, setStructure } = useEditor<
-    Omit<Context, "structure"> & { structure: RECEIPT & POS }
-  >();
+  const { structure, setStructure } = useEditor();
 
   const defaultValue = {
     label: "",
@@ -47,6 +45,7 @@ export default function Input({ label, subLabel, ...props }: Props) {
   // get the cell to be edited
   const getElem = useCallback(() => {
     const index = props.index;
+    if (!structure) return;
     if (label === "products") {
       if (index != undefined && Array.isArray(index)) {
         const row = structure[label][index[0]].data;
@@ -60,13 +59,13 @@ export default function Input({ label, subLabel, ...props }: Props) {
   }, [structure]);
 
   useEffect(() => {
-    if (Object.keys(structure).length > 0) {
+    if (structure) {
       const elem = getElem();
       elem && setValue(elem);
     }
   }, [structure]);
 
-  if (Object.keys(structure).length === 0) return null;
+  if (structure === undefined) return null;
 
   const btnStyle =
     "p-2 grid place-items-center hover:text-black hover:bg-gray-100 text-gray-900";
@@ -77,7 +76,8 @@ export default function Input({ label, subLabel, ...props }: Props) {
   function propagateChange() {
     if (props.index != undefined && Array.isArray(props.index)) {
       if (subLabel) {
-        setStructure((s: RECEIPT) => {
+        setStructure((s) => {
+          if (s === undefined) return;
           const index = props.index;
           const label = "products";
           if (!Array.isArray(index)) return;
@@ -98,7 +98,8 @@ export default function Input({ label, subLabel, ...props }: Props) {
           }
         });
       } else {
-        setStructure((s: RECEIPT) => {
+        setStructure((s) => {
+          if (s === undefined) return;
           const label = "products";
           const index = props.index;
           if (!Array.isArray(index)) return;
@@ -112,24 +113,14 @@ export default function Input({ label, subLabel, ...props }: Props) {
           return newState;
         });
       }
-    } else if (typeof props.index === "number") {
-      setStructure((s: Record<string, any>) => {
-        const index = props.index;
-        if (typeof index != "number") return;
-
-        let row = s[label]; // get the row
-        let cell = row[index]; // get the cell
-        cell = { ...cell, ...value }; // edit the cell
-        row[index] = cell;
-
-        return { ...s, [label]: row }; // append row to state
-      });
     } else {
-      setStructure((s) => ({
-        ...s,
-        // @ts-ignore
-        [label]: { ...s[label], ...value },
-      }));
+      setStructure((s) => {
+        if (s === undefined) return s;
+        return {
+          ...s,
+          [label]: { ...s[label], ...value },
+        };
+      });
     }
   }
 

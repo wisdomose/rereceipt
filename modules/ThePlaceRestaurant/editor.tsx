@@ -2,11 +2,17 @@ import Input from "../../components/editor/input";
 import { genEditorStyle } from "../../utils";
 import Table from "../../components/editor/table";
 import useEditor from "../../store/editor/useEditor";
+import { useCallback } from "react";
 
 export default function Editor() {
   const { structure } = useEditor();
 
-  if (Object.keys(structure).length == 0) return <p>no structure</p>;
+  const genStyle = useCallback(() => {
+    if (!structure) return {};
+    return genEditorStyle(structure.settings);
+  }, [structure]);
+
+  if (structure === undefined) return <p>no structure</p>;
 
   return (
     <>
