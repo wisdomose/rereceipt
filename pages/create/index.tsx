@@ -70,9 +70,7 @@ export default function Create() {
   const file = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<File | undefined>(undefined);
   const [img, setImg] = useState("");
-  const [receipt, setReceipt] = useState<Required<RECEIPT> | undefined>(
-    undefined
-  );
+  const [receipt, setReceipt] = useState<RECEIPT | undefined>(undefined);
   const [setting, setSetting] = useState<SETTING>({
     font_family: FONT_FAMILY.UBUNTU_MONO,
     font_size: FONT_SIZE.TEXT_12,
@@ -136,7 +134,7 @@ export default function Create() {
   }
 
   useEffect(() => {
-    let receipt: RECEIPT = {
+    let receipt = {
       products: [{ data: [defaultItem, defaultItem, defaultItem] }],
       settings: {
         font_family: FONT_FAMILY.INHERIT,

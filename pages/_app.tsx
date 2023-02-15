@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { ToastContainer } from "react-toastify";
-
+import "react-toastify/dist/ReactToastify.css";
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -27,9 +27,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         ></meta>
       </Head>
-
       <Component {...pageProps} />
-      <ToastContainer />
+      <ToastContainer position="bottom-center" />
     </>
   );
 }

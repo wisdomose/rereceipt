@@ -14,20 +14,30 @@ import { getOneSavedTemplate, getOneTemplate } from "../../../utils/firebase";
 import { useState } from "react";
 import { DOC, POS, RECEIPT, SAVED } from "../../../types";
 import { pick } from "../../../utils";
+import { toast } from "react-toastify";
+import Loader from "../../../components/layout/Loader";
 
 export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<SAVED | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const id = router.query.receipt;
     if (!id || typeof id !== "string") return;
 
-    getOneSavedTemplate(id).then((structure) => {
-      if (!structure) throw "No receipt found";
-      setReceipt(structure);
-    });
+    getOneSavedTemplate(id)
+      .then((structure) => {
+        if (!structure) throw "No receipt found";
+        setReceipt(structure);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast(err.message ?? "an error occured");
+      });
   }, [router.query.receipt]);
+
+  if (loading) return <Loader />;
 
   return (
     <EditorProvider>

@@ -22,6 +22,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { DOC, DOC_TYPES, SAVED } from "../types";
+import { toast } from "react-toastify";
 
 enum COLLECTION {
   TEMPLATES = "templates",
@@ -168,6 +169,12 @@ export const saveProgress = async (
         ...data,
       });
     }
+
+    console.log("file saved");
+    toast("file saved", {
+      position: "bottom-center",
+      autoClose: 100000,
+    });
   } catch (error) {
     console.log(error);
   }

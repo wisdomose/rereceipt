@@ -4,6 +4,7 @@ import { getAllSavedTemplates } from "../utils/firebase";
 import { SAVED } from "../types";
 import Link from "next/link";
 import Receipt from "../components/layout/Receipt";
+import Loader from "../components/layout/Loader";
 
 export default function Saved() {
   // If undefined, it means no user
@@ -21,7 +22,7 @@ export default function Saved() {
       });
   }, []);
 
-  if (loading) return <p>loading</p>;
+  if (loading) return <Loader />;
 
   if (saved === undefined) return <p>login to view saved documents</p>;
 
