@@ -31,7 +31,5 @@ export type Context = {
 
 export type UseEditorProps = {
   name: string;
-
-  // name: keyof typeof receipts.default;
-  structure: RECEIPT | POS;
+  structure: Context["structure"];
 };

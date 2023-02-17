@@ -21,7 +21,7 @@ import {
   doc,
   serverTimestamp,
 } from "firebase/firestore";
-import { DOC, DOC_TYPES, SAVED } from "../types";
+import { DOC, DOC_TYPES, POS, RECEIPT, SAVED } from "../types";
 import { toast } from "react-toastify";
 
 enum COLLECTION {
@@ -118,7 +118,7 @@ export const uploadFile = async ({
  * - check if a receipt has already been created
  */
 export const createTemplate = async (
-  data: Pick<DOC, "data" | "isActive" | "name" | "type">,
+  data: Pick<DOC, "isActive" | "name" | "type"> & { data: RECEIPT | POS },
   image: File
 ) => {
   const db = getFirestore(getApp());

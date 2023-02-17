@@ -7,7 +7,7 @@ import {
   TEXT_TRANSFORM,
 } from "../../types";
 
-const structure: RECEIPT = {
+const structure: Partial<RECEIPT> = {
   name: {
     label: "The Place Restaurant",
     text_align: TEXT_ALIGN.CENTER,

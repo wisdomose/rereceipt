@@ -2,12 +2,13 @@ import { TableProps } from "../components/editor/table";
 import useEditor from "../store/editor/useEditor";
 import { FONT_WEIGHT, RECEIPT, TEXT_ALIGN, TEXT_TRANSFORM } from "../types";
 
-export default function useTable<T extends RECEIPT>() {
+export default function useTable() {
   const { setStructure } = useEditor();
   const label = "products";
 
   const addRow = () => {
-    setStructure((s: T) => {
+    setStructure((s) => {
+      if (s === undefined) return;
       let table = s[label];
       let length = table[0].data.length;
 
@@ -28,7 +29,8 @@ export default function useTable<T extends RECEIPT>() {
   };
 
   const addColumn = () => {
-    setStructure((s: T) => {
+    setStructure((s) => {
+      if (s === undefined) return s;
       const headerFontSize = s[label][0].data[0].font_size;
       (s[label] as Record<string, any>[]).map((col, index) => {
         return col.push({
@@ -45,17 +47,19 @@ export default function useTable<T extends RECEIPT>() {
   };
 
   const deleteColumn = () => {
-    setStructure((s: T) => {
+    setStructure((s) => {
+      if (s === undefined) return s;
       s[label].map(({ data: col }) => {
         return col.splice(col.length - 1, 1);
       });
- 
+
       return { ...s };
     });
   };
 
   const deleteRow = () => {
-    setStructure((s: T) => {
+    setStructure((s) => {
+      if (s === undefined) return s;
       s[label].splice(s[label].length - 1, 1);
       return { ...s };
     });

@@ -62,7 +62,7 @@ type DOC = {
   name: string;
   isActive: boolean;
   img: string;
-  data: RECEIPT | POS;
+  data: RECEIPT & POS;
 };
 
 type PRODUCT = ITEM & { items?: ITEM[] };
@@ -165,7 +165,7 @@ type SAVED = {
   name: string;
   type: DOC_TYPES;
   img: string;
-  data: RECEIPT | POS;
+  data: RECEIPT & POS;
 };
 
 export type {

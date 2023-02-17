@@ -25,12 +25,13 @@ import {
 import { saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 
-type Props = UseEditorProps & {
+type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
   type: DOC_TYPES;
   img: string;
   saved?: boolean;
   templateId?: string;
+  structure: RECEIPT & POS;
 };
 
 export default function Alpine({ saved = false, templateId, ...props }: Props) {

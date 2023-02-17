@@ -7,7 +7,7 @@ import {
   TEXT_TRANSFORM,
 } from "../../types";
 
-const structure: POS = {
+const structure: Partial<POS> = {
   merchant_name: {
     label: "TOPMCAND TEMPERATE JUNIOR",
     text_align: TEXT_ALIGN.CENTER,
