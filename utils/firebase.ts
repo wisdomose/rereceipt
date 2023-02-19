@@ -10,6 +10,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getApp } from "firebase/app";
 import {
   getFirestore,
+  setDoc,
   query,
   where,
   collection,
@@ -20,18 +21,62 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { DOC, DOC_TYPES, POS, RECEIPT, SAVED } from "../types";
 import { toast } from "react-toastify";
-
+import { log } from "next-axiom";
+import { pick } from ".";
 enum COLLECTION {
   TEMPLATES = "templates",
   SAVED = "saved",
+  USERS = "users",
 }
 
 enum IMAGES {
   GENERAL = "/",
   RECEIPTS = "/receipts/",
+}
+
+const defaultProfile = {
+  paid: false,
+  timestamp: serverTimestamp(),
+  trial_ends_in: Timestamp.fromDate(
+    new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
+  ),
+};
+
+async function createUser({
+  email,
+  first_name,
+  last_name,
+  uid,
+}: {
+  email: string;
+  first_name: string;
+  last_name: string;
+  uid: string;
+}) {
+  const db = getFirestore(getApp());
+
+  // create a collection with the user data
+  const resp = await fetch("/api/billing/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      first_name,
+      last_name,
+    }),
+  });
+  const res = await resp.json();
+
+  await setDoc(doc(db, COLLECTION.USERS, uid), {
+    ...defaultProfile,
+    billing: pick(res, ["customer_code", "id"]),
+  });
 }
 
 // auth
@@ -45,10 +90,48 @@ export const signUpWithGoogle = async () => {
       const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
+
+      createUser({
+        email: user.email ?? "",
+        first_name: user.displayName?.split(" ")[0] ?? "",
+        last_name: user.displayName?.split(" ")[1] ?? "",
+        uid: user.uid,
+      });
     })
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const signupWithEmail = async ({
+  email,
+  password,
+  firstname,
+  lastname,
+}: {
+  email: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+}) => {
+  const auth = getAuth();
+  const db = getFirestore(getApp());
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(async (user) => {
+      auth.currentUser &&
+        updateProfile(auth.currentUser, {
+          displayName: `${lastname} ${firstname}`,
+        });
+      // create a collection with the user data
+      createUser({
+        email: email,
+        first_name: firstname,
+        last_name: lastname,
+        uid: user.user.uid,
+      });
+    })
+    .catch((err) => {});
 };
 
 export const loginWithEmail = async ({
@@ -64,28 +147,6 @@ export const loginWithEmail = async ({
     .catch((err) => {});
 };
 
-export const signupWithEmail = async ({
-  email,
-  password,
-  firstname,
-  lastname,
-}: {
-  email: string;
-  password: string;
-  firstname: string;
-  lastname: string;
-}) => {
-  const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((user) => {
-      auth.currentUser &&
-        updateProfile(auth.currentUser, {
-          displayName: `${lastname} ${firstname}`,
-        });
-    })
-    .catch((err) => {});
-};
-
 export const logoutUser = async () => {
   const auth = getAuth();
   await auth.signOut();
@@ -96,6 +157,19 @@ export const fetchCurrentUser = () => {
   return auth.currentUser;
 };
 
+export const fetchUserDetails = async (uid: string) => {
+  const db = getFirestore(getApp());
+  const docRef = doc(db, COLLECTION.USERS, uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    return null;
+  }
+};
+
+// firestore
 export const uploadFile = async ({
   file,
   name,
@@ -248,4 +322,22 @@ export const getOneTemplate = async (id: string) => {
   } else {
     return null;
   }
+};
+
+export const updatePaid = async (uid: string, paid: boolean) => {
+  const db = getFirestore(getApp());
+
+  const docRef = doc(db, COLLECTION.USERS, uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    await updateDoc(docRef, {
+      timestamp: serverTimestamp(),
+      paid: paid,
+    });
+    return true;
+  }
+
+  log.error("no user found in DB", { uid, action: "purchase" });
+  return false;
 };

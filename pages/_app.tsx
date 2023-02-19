@@ -5,6 +5,10 @@ import { useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import UserContextProvider from "../store/user/user";
+export { reportWebVitals } from "next-axiom";
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -18,9 +22,8 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useEffect(() => {}, []);
   return (
-    <>
+    <UserContextProvider>
       <Head>
         <meta
           name="viewport"
@@ -29,7 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Component {...pageProps} />
       <ToastContainer position="bottom-center" />
-    </>
+    </UserContextProvider>
   );
 }
 

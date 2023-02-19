@@ -65,6 +65,16 @@ type DOC = {
   data: RECEIPT & POS;
 };
 
+type BILLING = {
+  message: string;
+  redirecturl: string;
+  reference: string;
+  status: string;
+  trans: string;
+  transaction: string;
+  trxref: string;
+};
+
 type PRODUCT = ITEM & { items?: ITEM[] };
 
 const RECEIPT_KEYS = [

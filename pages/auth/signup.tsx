@@ -31,6 +31,8 @@ export default function Signup(p: any) {
     await signupWithEmail({ email, password, firstname, lastname });
   }
 
+  const disabled = !firstname || !lastname || !password || !email;
+
   return (
     <Page>
       {/* <Page.Nav></Page.Nav> */}
@@ -83,7 +85,12 @@ export default function Signup(p: any) {
           </div>
 
           <br />
-          <Button type="submit" label="Submit" onClick={() => {}} />
+          <Button
+            type="submit"
+            label="Submit"
+            onClick={() => {}}
+            disabled={disabled}
+          />
 
           <div className="relative w-full my-12">
             <div className="w-full h-[1px] bg-gray-900/50"></div>
@@ -100,7 +107,7 @@ export default function Signup(p: any) {
           >
             <Image
               className="bg-cover h-10 w-10"
-              src={google.src}
+              src={google}
               alt="sign in with google"
             />
             <p className="font-medium ml-5 text-[#757575] capitalize">
