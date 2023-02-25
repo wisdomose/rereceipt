@@ -24,6 +24,8 @@ import {
 } from "../../types";
 import { saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
+import Button from "../../components/button";
+import useUser from "../../store/user/useUser";
 
 type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
@@ -39,6 +41,8 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     name: props.name,
     structure: props.structure,
   });
+
+  const { loading, loggedIn } = useUser();
 
   const router = useRouter();
 
@@ -72,46 +76,28 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
   }, [props.name, router.query.receipt, structure]);
 
   return (
-    <div className="bg-gray-200 h-[calc(100%_-_56px)] grid grid-rows-[max-content,1fr]">
-      <nav className="bg-black/80 flex justify-end items-center h-14 box-border max-w-screen">
-        {/* other settings here */}
-        <button onClick={save} className="text-white px-5">
-          save
-        </button>
+    <div className="h-screen scrollbar">
+      {/* <div className="h-[calc(100%_-_77px)]"> */}
+      <div className="h-full grid grid-rows-[max-content,1fr]">
+        <nav className="w-full h-14 pl-14 pr-4 flex justify-end items-center gap-6">
+          <Select
+            items={["Standard", "Simple"]}
+            current={"Standard"}
+            update={() => {}}
+            block
+            btnStyle="px-3 gap-3"
+          />
 
-        <div className="flex items-center h-full">
-          <p className="bg-gray-200 text-xs px-2 rounded-full h-fit mr-5">
-            0.0.0 - BETA
-          </p>
-          {/* sidemenu */}
-          <Popover className="lg:hidden h-full">
-            {({ open }: { open: boolean }) => (
-              <>
-                <Popover.Button className="text-gray-50 hover:bg-gray-50/10 focus:bg-gray-50/10 h-full w-14 flex items-center justify-center focus:ring-0 focus:outline-none">
-                  <FiSettings />
-                </Popover.Button>
-                <Popover.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 " />
-                <Popover.Panel
-                  className={`w-[250px] bg-black/80 h-full text-gray-200 fixed top-0 z-50 ${
-                    open ? "right-0" : "right-full"
-                  }`}
-                >
-                  <SideBar />
-                </Popover.Panel>
-              </>
-            )}
-          </Popover>
-        </div>
-      </nav>
-
-      <div className="h-full  lg:grid lg:grid-cols-[max-content,1fr,max-content]">
-        <div className="w-[200px] bg-black/80 h-full absolute -left-full lg:left-0 lg:static"></div>
-
-        <EditorZoom ref={ref}>{props.children}</EditorZoom>
-
-        {/* sidebar */}
-        <div className="w-[250px] bg-black/80 h-full text-gray-200 absolute right-full lg:static lg:right-0">
-          <SideBar />
+          <Button label="Save" onClick={save} disabled={!loggedIn || loading} />
+        </nav>
+        <div className="h-full lg:grid ">
+          <div className="grid lg:grid-cols-[1fr,max-content]">
+            <EditorZoom ref={ref}>{props.children}</EditorZoom>
+            {/* sidebar */}
+            <div className="w-[250px] border-l border-l-[#828282] h-full text-[#4F4F4F] absolute right-full lg:static lg:right-0">
+              <SideBar />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -139,10 +125,10 @@ function SideBar() {
   return (
     <>
       {/* mode selector */}
-      <div className="flex gap-4 p-3 border-b-[1px] border-gray-200/50">
+      <div className="flex gap-4 p-3 border-b-[1px] border-[#828282]">
         <button
           className={`capitalize text-sm ${
-            !previewMode ? "font-bold text-white" : "font-normal"
+            !previewMode ? "font-semibold" : "font-normal"
           }`}
           onClick={() => updatePreviewMode(false)}
         >
@@ -150,7 +136,7 @@ function SideBar() {
         </button>
         <button
           className={`capitalize text-sm ${
-            previewMode ? "font-bold text-white" : "font-normal"
+            previewMode ? "font-semibold" : "font-normal"
           }`}
           onClick={() => updatePreviewMode(true)}
         >
@@ -159,14 +145,14 @@ function SideBar() {
       </div>
 
       {/* settings */}
-      <div className="p-3 border-b-[1px] border-gray-200/50">
+      <div className="p-3 border-b-[1px] border-[#828282]">
         <Disclosure>
           {({ open: disOpen }: { open: boolean }) => (
             <>
               <div className="flex justify-between items-center">
                 <p
                   className={`text-sm ${
-                    disOpen ? "font-bold text-white" : "font-normal"
+                    disOpen ? "font-semibold " : "font-normal"
                   }`}
                 >
                   Settings
@@ -179,7 +165,9 @@ function SideBar() {
                 <div className="mt-5">
                   {/* font family */}
                   <>
-                    <p className="text-sm capitalize mb-1">font family</p>
+                    <p className="text-xs capitalize mb-1 font-semibold">
+                      font family
+                    </p>
                     <Select
                       current={structure.settings.font_family}
                       items={Object.values(FONT_FAMILY)}
@@ -190,7 +178,9 @@ function SideBar() {
 
                   {/* font size */}
                   <>
-                    <p className="text-sm capitalize mb-1 mt-3">font size</p>
+                    <p className="text-xs capitalize mb-1 mt-3 font-semibold">
+                      font size
+                    </p>
                     <Select
                       current={structure.settings.font_size}
                       items={Object.values(FONT_SIZE)}
@@ -200,10 +190,12 @@ function SideBar() {
 
                   {/* width */}
                   <>
-                    <p className="text-sm capitalize mb-1 mt-3">width</p>
+                    <p className="text-xs capitalize mb-1 mt-3 font-semibold">
+                      width
+                    </p>
                     <input
                       type="number"
-                      className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full bg-transparent py-1 focus:outline-none"
+                      className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-gray-300 w-full bg-transparent py-1 focus:outline-none"
                       min={100}
                       max={500}
                       value={structure.settings.width.slice(0, -2)}
@@ -221,14 +213,14 @@ function SideBar() {
       </div>
 
       {/* export */}
-      <div className="p-3 border-b-[1px] border-gray-200/50">
+      <div className="p-3 border-b-[1px] border-[#828282]">
         <Disclosure>
           {({ open: disOpen }: { open: boolean }) => (
             <>
               <div className="flex justify-between items-center">
                 <p
                   className={`text-sm ${
-                    disOpen ? "font-bold text-white" : "font-normal"
+                    disOpen ? "font-semibold " : "font-normal"
                   }`}
                 >
                   Export
@@ -242,7 +234,7 @@ function SideBar() {
                 <div className="grid gap-4 grid-cols-[1fr,max-content] mt-5">
                   <input
                     type="text"
-                    className="w-full text-sm bg-transparent text-gray-200 border-0 border-b-[1px] rounded-0 overflow-hidden focus:outline-none"
+                    className="w-full text-sm bg-transparent border-0 border-b-[1px] border-gray-300 rounded-0 overflow-hidden focus:outline-none"
                     value={name}
                     onChange={(e) => updateName(e.target.value)}
                   />
@@ -253,9 +245,9 @@ function SideBar() {
                         <Menu.Button className="text-sm flex items-center justify-center uppercase">
                           <span className="text-sm">{format}</span>
                           {open ? (
-                            <FiChevronDown className="text-gray-400" />
+                            <FiChevronDown className="text-gray-300" />
                           ) : (
-                            <FiChevronUp className="text-gray-400" />
+                            <FiChevronUp className="text-gray-300" />
                           )}
                         </Menu.Button>
                         <Menu.Items className="absolute top-0 right-0 bg-black min-w-max shadow-lg pb-2">
@@ -265,7 +257,7 @@ function SideBar() {
                                 <button
                                   onClick={() => updateFormat(displayFormat)}
                                   className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 ${
-                                    active ? "text-white" : "text-gray-50/50"
+                                    active ? "" : "text-gray-50/50"
                                   }`}
                                 >
                                   {displayFormat === format ? (
@@ -311,14 +303,29 @@ type SelectProps = {
   update: (value: any) => void;
   items: any[];
   style?: Record<string, any>;
+  block?: boolean;
+  btnStyle?: string;
 };
-function Select({ update, items, current, style }: SelectProps) {
+function Select({
+  update,
+  items,
+  current,
+  style,
+  block = false,
+  btnStyle,
+}: SelectProps) {
   return (
     <Menu>
       {({ open }: { open: boolean }) => (
-        <div className="relative inline-block overflow-visible w-full">
+        <div
+          className={`relative inline-block overflow-visible ${
+            block ? "w-fit" : "w-full"
+          }`}
+        >
           <Menu.Button
-            className="text-sm rounded-md flex items-center justify-between px-2 uppercase border border-white w-full"
+            className={`text-sm rounded-md flex items-center justify-between px-2 uppercase border border-gray-300 w-full ${
+              btnStyle ? btnStyle : ""
+            }`}
             style={style}
           >
             <span className="text-sm py-1 lowercase">{current}</span>
@@ -329,13 +336,13 @@ function Select({ update, items, current, style }: SelectProps) {
             )}
           </Menu.Button>
 
-          <Menu.Items className="absolute right-0 w-full bg-black min-w-max shadow-lg pb-2 z-10">
+          <Menu.Items className="absolute right-0 w-full bg-[#FAFAFA] min-w-max shadow-lg pb-2 z-10">
             {items.map((item) => (
               <Menu.Item key={item}>
                 {({ active }: { active: boolean }) => (
                   <button
                     className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${
-                      active ? "text-white" : "text-gray-50/50"
+                      active ? "font-semibold" : ""
                     }`}
                     onClick={() => update(item)}
                   >

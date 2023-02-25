@@ -34,10 +34,14 @@
   display: none;
 }
 
+* {
+  font-family: inter;
+}
+
 html,
 body,
 #__next {
-  @apply h-full bg-gray-100 text-black/80;
+  @apply h-full bg-[#FAFAFA] text-black/80;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {

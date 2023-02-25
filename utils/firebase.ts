@@ -150,6 +150,7 @@ export const loginWithEmail = async ({
 export const logoutUser = async () => {
   const auth = getAuth();
   await auth.signOut();
+  window.location.replace("/auth/login");
 };
 
 export const fetchCurrentUser = () => {
@@ -255,8 +256,9 @@ export const saveProgress = async (
 };
 
 export const getAllSavedTemplates = async () => {
+  const saved: SAVED[] = [];
   const auth = getAuth();
-  if (!auth.currentUser) return;
+  if (!auth.currentUser) return saved;
   const uid = auth.currentUser.uid;
 
   const db = getFirestore(getApp());
@@ -264,8 +266,6 @@ export const getAllSavedTemplates = async () => {
   const q = query(collection(db, COLLECTION.SAVED), where("uid", "==", uid));
 
   const querySnapshot = await getDocs(q);
-
-  const saved: SAVED[] = [];
 
   querySnapshot.forEach((doc) => {
     const data = doc.data();

@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import {
+  FiDollarSign,
   FiLogIn,
   FiLogOut,
   FiMenu,
@@ -11,18 +12,20 @@ import {
 } from "react-icons/fi";
 import { logoutUser } from "../../utils/firebase";
 import { User } from "firebase/auth";
-import { BiBrush, BiSave } from "react-icons/bi";
+import { BiSave } from "react-icons/bi";
 import { RxDashboard } from "react-icons/rx";
 import Link from "next/link";
 import useWidth from "../../hooks/useWidth";
 import logo from "../../src/img/icons/logo.png";
+import NavBar from "./NavBar";
+import Loader from "./Loader";
 
-const routes = [
+export const routes = [
   {
     label: "dashboard",
-    href: "/",
+    href: "/playground",
     icon: RxDashboard,
-    protected: true,
+    protected: false,
   },
   // {
   //   label: "templates",
@@ -43,17 +46,23 @@ const routes = [
     protected: true,
   },
   {
+    label: "billing",
+    href: "/billing",
+    icon: FiDollarSign,
+    protected: true,
+  },
+  {
     label: "login",
     href: "/auth/login",
     icon: FiLogIn,
     protected: false,
   },
-  {
-    label: "signup",
-    href: "/auth/signup",
-    icon: FiUserPlus,
-    protected: false,
-  },
+  // {
+  //   label: "signup",
+  //   href: "/auth/signup",
+  //   icon: FiUserPlus,
+  //   protected: false,
+  // },
 ] as const;
 
 const version = "0.0.0 - BETA";
@@ -67,88 +76,19 @@ type PageProps = Props & {
 };
 
 export default function Page(props: PageProps) {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>();
-  const width = useWidth();
-
-  // redirect if no user is loggedin
-  useEffect(() => {
-    if (props.isProtected) {
-      const auth = getAuth();
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(auth.currentUser);
-        } else {
-          router.replace("/auth/login");
-        }
-      });
-    }
-  }, []);
-
-  if (props.isProtected && !user) return null;
-  // at least md for side menu and logged in
-  else if (props.isProtected && width > 768 && user) {
-    return (
-      <div className="h-full grid grid-cols-[250px,1fr]">
-        <nav className="bg-black/80 h-full flex flex-col items-start py-6 relative">
-          <div className="px-6 mb-6">
-            {user?.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="dp"
-                className="rounded-full h-24 w-24"
-              />
-            ) : (
-              <FiUser className="rounded-full h-24 w-24 text-white bg-white/10" />
-            )}
-            <p className="text-white mt-3">{user?.displayName ?? "no name"}</p>
-          </div>
-
-          {routes.map((route) => (
-            <>
-              {route.protected ? (
-                <Link
-                  key={route.href}
-                  href={route.href}
-                  className={`flex items-center text-white w-full px-6 py-4 ${
-                    props?.active === route.label
-                      ? "bg-white/20"
-                      : "hover:bg-white/10"
-                  }`}
-                >
-                  <route.icon className="w-6 h-auto" />
-                  <span className="inline-block ml-2 capitalize text-base">
-                    {route.label}
-                  </span>
-                </Link>
-              ) : null}
-            </>
-          ))}
-
-          <div className="absolute bottom-6 w-full">
-            <button
-              className={`flex items-center justify-center text-white w-full px-6 py-4 hover:bg-white/10`}
-              onClick={logoutUser}
-            >
-              <FiLogOut />
-              <span className="inline-block ml-2 capitalize text-base">
-                logout
-              </span>
-            </button>
-            <p className="text-xs text-white/50 text-center">{version}</p>
-          </div>
-        </nav>
-
-        <main>{props.children}</main>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <Nav loggedIn={!!user} />
-      {props.children}
-    </>
+    <Protected {...props}>
+      {({ user, loading }) => {
+        if ((props.isProtected && !user) || loading) return <Loader />;
+
+        return (
+          <>
+            <NavBar isLoggedIn={!!user} user={user} />
+            {props.children}
+          </>
+        );
+      }}
+    </Protected>
   );
 }
 
@@ -300,5 +240,33 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
 };
 
 Page.Body = function Body(props: Props) {
-  return <main className="max-w-7xl mx-auto px-4">{props.children}</main>;
+  return (
+    <main className="max-w-[1512px] mx-auto px-14 pb-14">{props.children}</main>
+  );
 };
+
+export function Protected(
+  props: Pick<PageProps, "isProtected"> & {
+    children: (props: { user: User | null; loading: boolean }) => ReactElement;
+  }
+) {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // redirect if no user is loggedin
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(auth.currentUser);
+      } else {
+        props.isProtected && router.replace("/no-access");
+      }
+    });
+
+    setLoading(false);
+  }, []);
+
+  return <>{props.children({ user, loading })}</>;
+}

@@ -1,4 +1,5 @@
 import { ReactNode, forwardRef } from "react";
+import { FiChevronDown } from "react-icons/fi";
 import { RiFocus2Line } from "react-icons/ri";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
@@ -6,7 +7,7 @@ const EditorZoom = forwardRef<HTMLDivElement, { children: ReactNode }>(
   (props, ref) => {
     return (
       <section
-        className="overflow-auto relative h-full max-h-screen w-full scrollbar"
+        className="overflow-auto relative h-full max-h-screen w-full scrollbar bg-[#F2F2F2]"
         ref={ref}
       >
         <TransformWrapper
@@ -32,7 +33,6 @@ const EditorZoom = forwardRef<HTMLDivElement, { children: ReactNode }>(
                 }}
               >
                 <div className="grid place-items-center min-h-[500vh] w-full">
-                  {/* <div className="min-w-[100vw] min-h-[100vh] w-full h-full bg-green-700 grid place-items-center  box-content"> */}
                   {props.children}
                 </div>
               </TransformComponent>

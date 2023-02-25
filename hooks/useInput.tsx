@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface InputProps {
   value: string;
@@ -6,16 +6,18 @@ interface InputProps {
   [key: string]: any;
 }
 
-const useInput = (initialValue: string): [string, InputProps] => {
+const useInput = (
+  initialValue: string
+): [string, InputProps, (v: string) => void] => {
   const [value, setValue] = useState(initialValue);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  return [value, { value, onChange }];
+  const updateValue = (v: string) => setValue(v);
+
+  return [value, { value, onChange }, updateValue];
 };
 
 export default useInput;
-
-

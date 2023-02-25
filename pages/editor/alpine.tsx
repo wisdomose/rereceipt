@@ -13,6 +13,7 @@ import { FiSettings } from "react-icons/fi";
 import { getOneTemplate } from "../../utils/firebase";
 import { useState } from "react";
 import { DOC, POS, RECEIPT } from "../../types";
+import NavBar from "../../components/layout/NavBar";
 
 export default function AlpineWrapper() {
   const router = useRouter();
@@ -50,22 +51,7 @@ function Wrapped({ data }: { data: DOC | null }) {
     // <Page isProtected={true}>
     //   <Page.Body>
     <>
-      <nav className="bg-black/80 flex justify-between items-center h-14 box-border max-w-screen">
-        {/* w-14 */}
-        <Link
-          href="/"
-          className="text-gray-50 hover:bg-gray-50/10 focus:bg-gray-50/10 w-14 h-full mr-3 flex items-center justify-center focus:ring-0 focus:outline-none"
-        >
-          <img
-            src={logo.src}
-            alt="logo"
-            className="w-full h-6 object-contain"
-          />
-          {/* <FiChevronLeft className="text-2xl" />
-          <p>back</p> */}
-          {/* <FiMenu className="text-2xl" /> */}
-        </Link>
-      </nav>
+      <NavBar isLoggedIn={!false} />
       <Alpine
         name={data.name}
         structure={data.data}
