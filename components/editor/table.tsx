@@ -1,36 +1,14 @@
-import { Dialog, Popover } from "@headlessui/react";
-import { useState } from "react";
 import useTable from "../../hooks/useTable";
-import { Context } from "../../store/editor/type";
 import useEditor from "../../store/editor/useEditor";
-import {
-  FONT_WEIGHT,
-  POS_KEY,
-  RECEIPT,
-  RECEIPT_KEY,
-  TEXT_ALIGN,
-  TEXT_TRANSFORM,
-} from "../../types";
+import { POS_KEY, RECEIPT_KEY } from "../../types";
 import Input from "./input";
-import BaseInput from "../input";
 import {
   RiInsertColumnRight,
   RiInsertRowBottom,
   RiDeleteColumn,
   RiDeleteRow,
 } from "react-icons/ri";
-import {
-  FiDelete,
-  FiEdit,
-  FiEdit2,
-  FiPlayCircle,
-  FiPlusCircle,
-  FiTrash,
-  FiTrash2,
-  FiX,
-} from "react-icons/fi";
-import Button from "../button";
-import useInput from "../../hooks/useInput";
+import { FiPlusCircle, FiTrash2 } from "react-icons/fi";
 
 export enum DIVIDER {
   DASH = "-",
@@ -57,14 +35,7 @@ export default function Table<T extends Record<string, any>>({
   basic = false,
 }: TableProps) {
   const label = "products";
-  const [open, setOpen] = useState(false);
-  const onClose = () => setOpen(false);
-  const onOpen = () => setOpen(true);
   const { structure, setStructure } = useEditor();
-  const [name, nameOptions, updateName] = useInput("");
-  const [amount, amountOptions, updateAmount] = useInput("");
-  const [qty, qtyOptions, updateQty] = useInput("");
-  const [unit, unitOptions, updateUnit] = useInput("");
 
   const { addColumn, addRow, deleteColumn, deleteRow } = useTable();
 
@@ -104,7 +75,6 @@ export default function Table<T extends Record<string, any>>({
                   <tr key={"row" + id} className="border-t">
                     {row.data.map((cell, cellId) => (
                       <td key={`${id}${cellId}`} className="py-6">
-                        {/* {cell.label} */}
                         <Input
                           label="products"
                           // +1 because i am slicing the heading from the table
@@ -118,8 +88,7 @@ export default function Table<T extends Record<string, any>>({
                       <button
                         className="group border rounded-lg py-[10px] px-3"
                         onClick={() => {
-                          console.log("deleted");
-                          deleteRow(id);
+                          deleteRow(id + 1);
                         }}
                       >
                         <FiTrash2 className="group-hover:text-[#EF5DA8] focus:text-[#EF5DA8]" />
@@ -134,7 +103,6 @@ export default function Table<T extends Record<string, any>>({
 
         <button
           onClick={addRow}
-          // onClick={onOpen}
           className="flex items-center justify-center gap-4 text-[#EF5DA8]"
         >
           <FiPlusCircle />
