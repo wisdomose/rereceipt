@@ -99,7 +99,7 @@ export default function NavBar({
                     className="object-cover"
                   />
                 ) : (
-                  <FiUser className="rounded-full h-8 w-8 object-contain object-center text-[#4f4f4f] bg-white/10" />
+                  <FiUser className="rounded-full text-lg object-contain object-center text-[#4f4f4f] bg-white/10" />
                 )}
               </Menu.Button>
               <Menu.Items
@@ -127,11 +127,11 @@ export default function NavBar({
           </Menu>
         )}
 
-        <Popover className="relative z-50 md:hidden">
+        <Popover className="relative z-50 md:hidden flex items-center justify-center">
           {({ open }: { open: boolean }) => (
             <>
               <Popover.Button>
-                <FiMenu className="h-8 w-auto" />
+                <FiMenu className="text-lg" />
               </Popover.Button>
 
               {open && (
