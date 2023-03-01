@@ -242,26 +242,21 @@ export const saveProgress = async (
       const count = snapshot.data().count;
 
       if (count === 5) return -1;
-      await addDoc(collection(db, "saved"), {
+      const doc = await addDoc(collection(db, "saved"), {
         timestamp: serverTimestamp(),
         ...data,
         uid,
       });
+      return doc.id;
     } else {
-      console.log("updating");
       const ref = doc(db, COLLECTION.SAVED, id);
-      await updateDoc(ref, {
+      const docu = await updateDoc(ref, {
         uid,
         timestamp: serverTimestamp(),
         ...data,
       });
+      return id;
     }
-
-    console.log("file saved");
-    toast("file saved", {
-      position: "bottom-center",
-      autoClose: 100000,
-    });
   } catch (error) {
     console.log(error);
   }

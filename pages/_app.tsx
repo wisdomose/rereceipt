@@ -1,11 +1,9 @@
 import Head from "next/head";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { onAuthStateChanged, getAuth } from "firebase/auth";
 import UserContextProvider from "../store/user/user";
 export { reportWebVitals } from "next-axiom";
 
@@ -31,7 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         ></meta>
       </Head>
       <Component {...pageProps} />
-      <ToastContainer position="bottom-center" />
+      <ToastContainer position="bottom-center" hideProgressBar pauseOnFocusLoss={false} pauseOnHover={false} />
     </UserContextProvider>
   );
 }

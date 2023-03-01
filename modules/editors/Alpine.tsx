@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useCallback } from "react";
+import { ReactNode, useRef, useCallback } from "react";
 import useEditor from "../../store/editor/useEditor";
 import { UseEditorProps, formats } from "../../store/editor/type";
 import EditorZoom from "../../components/layout/EditorZoom";
@@ -14,8 +14,6 @@ import {
   FiPlus,
   FiSettings,
 } from "react-icons/fi";
-import Link from "next/link";
-import logo from "../../src/img/icons/logo.png";
 import {
   DOC_TYPES,
   EDITING_MODE,
@@ -23,13 +21,13 @@ import {
   FONT_SIZE,
   POS,
   RECEIPT,
-  SAVED,
 } from "../../types";
 import { saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
 import useUser from "../../store/user/useUser";
 import { overrideTailwindClasses } from "tailwind-override";
+import { notify } from "../../utils";
 
 type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
@@ -60,6 +58,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
   const save = useCallback(async () => {
     let id = router.query.receipt;
+    let savedId = "";
 
     if (!id || typeof id !== "string" || !structure) return;
     if (saved) {
@@ -73,7 +72,9 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
           templateId: templateId,
         },
         id
-      );
+      ).then((res) => {
+        savedId = typeof res === "string" ? res : "";
+      });
     } else {
       await saveProgress({
         type: props.type,
@@ -81,8 +82,13 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
         data: structure,
         name: props.name,
         templateId: id,
+      }).then((res) => {
+        savedId = typeof res === "string" ? res : "";
+        router.push(`/editor/saved/alpine?receipt=${savedId}`);
       });
     }
+    notify("file saved");
+
   }, [props.name, router.query.receipt, structure]);
 
   return (
@@ -215,8 +221,8 @@ function SideBar() {
                     <Select
                       current={structure.settings.font_family}
                       items={Object.values(FONT_FAMILY)}
-                      style={{ fontFamily: structure.settings.font_family }}
                       update={updateFont}
+                      isFont
                     />
                   </>
 
@@ -349,6 +355,7 @@ type SelectProps = {
   style?: Record<string, any>;
   block?: boolean;
   btnStyle?: string;
+  isFont?: boolean;
 };
 
 function Select({
@@ -358,6 +365,7 @@ function Select({
   style,
   block = false,
   btnStyle = "",
+  isFont = false,
 }: SelectProps) {
   return (
     <Menu>
@@ -392,7 +400,13 @@ function Select({
                     onClick={() => update(item)}
                   >
                     {item === current ? <FiCheck /> : <span></span>}
-                    <span className="block text-start w-full" style={style}>
+                    <span
+                      className="block text-start w-full"
+                      style={{
+                        ...style,
+                        fontFamily: isFont ? item : undefined,
+                      }}
+                    >
                       {item}
                     </span>
                   </button>

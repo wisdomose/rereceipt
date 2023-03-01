@@ -17,6 +17,7 @@ import NavBar from "../../components/layout/NavBar";
 import Loader from "../../components/layout/Loader";
 import PaidProtected from "../../components/layout/PaidProtected";
 import useUser from "../../store/user/useUser";
+import { notify } from "../../utils";
 
 export default function AlpineWrapper() {
   const router = useRouter();
@@ -33,10 +34,14 @@ export default function AlpineWrapper() {
     const id = router.query.receipt;
     if (!id || typeof id !== "string") return;
 
-    getOneTemplate(id).then((structure) => {
-      if (!structure) throw "No receipt found";
-      setReceipt(structure);
-    });
+    getOneTemplate(id)
+      .then((structure) => {
+        if (!structure) throw "No receipt found";
+        setReceipt(structure);
+      })
+      .catch((err) => {
+        notify(err.message ?? "an error occured");
+      });
   }, [router.query.receipt]);
 
   if (!receipt || !loggedIn || loading) return <Loader />;

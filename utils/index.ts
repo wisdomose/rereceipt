@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { ITEM, SETTING } from "../types";
 
 // functions
@@ -92,6 +93,12 @@ export function omit<T extends Record<string, any>>(obj: T, omit: string[]) {
     }
   });
   return obj;
+}
+
+export function notify(text: string) {
+  toast(text, {
+    toastId: text,
+  });
 }
 
 const month = [

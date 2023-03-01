@@ -133,47 +133,46 @@ export default function Table<T extends Record<string, any>>({
       <div className="w-full">
         <div className="table" tabIndex={-1}>
           {structure[label].map(({ data: row }, index, elems) => (
-            <>
-              <div
-                key={index}
-                className={`table-row w-full ${
-                  headerDivider && index == 0 ? "table-equal" : ""
-                }`}
-              >
-                {row.map((cell, position) => (
-                  <div
-                    className="table-cell"
-                    style={{
-                      width:
-                        row.length <= 4
-                          ? position === largeCol
-                            ? "50%"
-                            : 50 / (row.length - 1) + "%"
-                          : 100 / row.length + "%",
-                    }}
-                    key={cell.label + position}
-                  >
-                    <Input label={label} index={[index, position]} />
-                    {cell?.items && (
-                      <>
-                        {(cell.items as Record<string, any>[]).map(
-                          (item, innerIndex) => (
-                            <>
-                              <Input
-                                label={label}
-                                subLabel="items"
-                                index={[index, position, innerIndex]}
-                              />
-                              {/* <br /> */}
-                            </>
-                          )
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-
+            // <>
+            <div
+              key={"row" + index}
+              className={`table-row w-full ${
+                headerDivider && index == 0 ? "table-equal" : ""
+              }`}
+            >
+              {row.map((cell, position) => (
+                <div
+                  className="table-cell"
+                  style={{
+                    width:
+                      row.length <= 4
+                        ? position === largeCol
+                          ? "50%"
+                          : 50 / (row.length - 1) + "%"
+                        : 100 / row.length + "%",
+                  }}
+                  key={`${index}${position}`}
+                >
+                  <Input label={label} index={[index, position]} />
+                  {cell?.items && (
+                    <>
+                      {(cell.items as Record<string, any>[]).map(
+                        (item, innerIndex) => (
+                          <>
+                            <Input
+                              key={`${index}${position}${innerIndex}`}
+                              label={label}
+                              subLabel="items"
+                              index={[index, position, innerIndex]}
+                            />
+                            {/* <br /> */}
+                          </>
+                        )
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
               {/* divider */}
               {/* {headerDivider && index == 0 && (
                   <div className="table-row w-full mb-2">
@@ -182,7 +181,8 @@ export default function Table<T extends Record<string, any>>({
                     </p>
                   </div>
                 )} */}
-            </>
+              {/* </> */}
+            </div>
           ))}
         </div>
       </div>

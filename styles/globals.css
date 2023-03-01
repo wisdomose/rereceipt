@@ -28,15 +28,11 @@
   display: block;
 } */
 
+/* .Toastify__progress-bar, */
 .Toastify__toast-icon,
-.Toastify__progress-bar,
 .Toastify__close-button {
   display: none;
 }
-
-/* * {
-  font-family: inter;
-} */
 
 html,
 body,
