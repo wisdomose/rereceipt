@@ -31,14 +31,14 @@ export default function PaidProtected({
 
   const onSubClose = () => router.push("/billing");
 
-  if (loading || !initialized) {
+  if (loading || !initialized || paidLoading) {
     return <Loader />;
   }
 
   return (
     <>
       <Dialog
-        open={noAccess && !loading && initialized}
+        open={noAccess && !loading && initialized && !paidLoading}
         onClose={() => {}}
         className="relative z-50"
       >
