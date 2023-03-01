@@ -2,9 +2,29 @@ import { ReactNode, forwardRef } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiFocus2Line } from "react-icons/ri";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import useEditor from "../../store/editor/useEditor";
+import { EDITING_MODE } from "../../types";
 
 const EditorZoom = forwardRef<HTMLDivElement, { children: ReactNode }>(
   (props, ref) => {
+    const { editingMode , previewMode} = useEditor();
+    // bg-[#F2F2F2]
+
+    if (editingMode === EDITING_MODE.BASIC && !previewMode) {
+      return (
+        <section
+          className="overflow-auto relative h-full w-full scrollbar"
+          ref={ref}
+        >
+          <div className="absolute inset-0">
+            <div className="grid place-items-center h-full w-full">
+              {props.children}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section
         className="overflow-auto relative h-full max-h-screen w-full scrollbar bg-[#F2F2F2]"

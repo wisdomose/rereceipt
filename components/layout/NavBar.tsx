@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { routes } from "./Page";
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiUser, FiX } from "react-icons/fi";
 import { logoutUser } from "../../utils/firebase";
 import logoDark from "../../src/img/icons/logo.png";
 import Image, { StaticImageData } from "next/image";
 import useUser from "../../store/user/useUser";
-import { Menu } from "@headlessui/react";
+import { Dialog, Menu, Popover } from "@headlessui/react";
 import { User } from "firebase/auth";
+import { useState } from "react";
 
 const version = "0.0.0 - BETA";
 
@@ -19,8 +20,11 @@ export default function NavBar({
   user?: User | null;
   logo?: StaticImageData;
 }) {
+  const [open, setOpen] = useState(false);
+  const onClose = () => setOpen(false);
+  const onOpen = () => setOpen(true);
   return (
-    <nav className="flex justify-between items-center py-5 px-14 relative">
+    <nav className="flex justify-between items-center py-5 px-6 md:px-14 relative">
       {/* logo */}
       <Link
         href="/"
@@ -34,8 +38,9 @@ export default function NavBar({
         />
       </Link>
 
-      <div className="flex items-center font-semibold text-[#4F4F4F] text-sm gap-14">
-        <div className="flex items-center font-semibold text-[#4F4F4F] text-sm gap-14">
+      <div className="flex items-center font-semibold text-[#4F4F4F] text-sm gap-6 md:gap-14">
+        {/* medium screen and above */}
+        <div className="hidden md:flex items-center font-semibold text-[#4F4F4F] text-sm gap-14">
           <Link
             href="/playground"
             className="capitalize group focus:outline-none"
@@ -47,22 +52,20 @@ export default function NavBar({
           </Link>
           {isLoggedIn && (
             <>
-              {routes.map((route) => (
-                <>
-                  {route.protected ? (
-                    <Link
-                      key={route.href}
-                      href={route.href}
-                      className="capitalize group focus:outline-none"
-                    >
-                      {route.label}
-                      <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-                        <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
-                      </div>
-                    </Link>
-                  ) : null}
-                </>
-              ))}
+              {routes.map((route) => {
+                return route.protected ? (
+                  <Link
+                    key={route.href}
+                    href={route.href}
+                    className="capitalize group focus:outline-none"
+                  >
+                    {route.label}
+                    <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+                      <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+                    </div>
+                  </Link>
+                ) : null;
+              })}
             </>
           )}
 
@@ -74,9 +77,12 @@ export default function NavBar({
                   <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)] group-hover:w-full group-focus:w-full  duration-150"></div>
                 </div>
               </Link>
-              <button className="border border-[#4F4F4F] rounded-lg py-2 px-3">
+              <Link
+                href="/auth/signup"
+                className="border border-[#4F4F4F] rounded-lg py-2 px-3"
+              >
                 Create account
-              </button>
+              </Link>
             </>
           )}
         </div>
@@ -120,6 +126,81 @@ export default function NavBar({
             </div>
           </Menu>
         )}
+
+        <Popover className="relative z-50 md:hidden">
+          {({ open }: { open: boolean }) => (
+            <>
+              <Popover.Button>
+                <FiMenu className="h-8 w-auto" />
+              </Popover.Button>
+
+              {open && (
+                <>
+                  <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md" />
+                  <div className="fixed max-h-[calc(100vh_-_154px)] h-auto left-6 right-6 top-[77px] flex items-center justify-center">
+                    <Popover.Panel
+                      className="bg-white h-full w-full overflow-hidden rounded-xl  relative flex flex-col items-start justify-start isolate pb-3"
+                      static
+                    >
+                      {/* header */}
+                      <div className="flex px-6 pb-3 pt-6 justify-between w-full">
+                        <p></p>
+                        <Popover.Button className="border p-2 rounded-md">
+                          <FiX className="text-[rgb(229, 231, 235)]" />
+                        </Popover.Button>
+                      </div>
+                      <Popover.Button
+                        as={Link}
+                        href="/playground"
+                        className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
+                      >
+                        playground
+                      </Popover.Button>
+                      {isLoggedIn && (
+                        <>
+                          {routes.map((route) => {
+                            return route.protected ? (
+                              <Popover.Button
+                                as={Link}
+                                key={route.href}
+                                href={route.href}
+                                className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
+                              >
+                                {route.label}
+                                {/* <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+                                  <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+                                </div> */}
+                              </Popover.Button>
+                            ) : null;
+                          })}
+                        </>
+                      )}
+
+                      {!isLoggedIn && (
+                        <>
+                          <Popover.Button
+                            as={Link}
+                            href="/auth/login"
+                            className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
+                          >
+                            login
+                          </Popover.Button>
+                          <Popover.Button
+                            as={Link}
+                            href="/auth/signup"
+                            className="border border-[#4F4F4F] rounded-lg py-2 px-3 mx-6 my-3 w-[calc(100%_-_48px)] text-center "
+                          >
+                            Create account
+                          </Popover.Button>
+                        </>
+                      )}
+                    </Popover.Panel>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </Popover>
       </div>
     </nav>
   );

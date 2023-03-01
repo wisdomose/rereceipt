@@ -57,10 +57,10 @@ export default function useTable() {
     });
   };
 
-  const deleteRow = () => {
+  const deleteRow = (row?: number) => {
     setStructure((s) => {
       if (s === undefined) return s;
-      s[label].splice(s[label].length - 1, 1);
+      s[label].splice(row ? row : s[label].length - 1, 1);
       return { ...s };
     });
   };

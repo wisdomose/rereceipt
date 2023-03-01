@@ -241,7 +241,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
 
 Page.Body = function Body(props: Props) {
   return (
-    <main className="max-w-[1512px] mx-auto px-14 pb-6 md:pb-14">{props.children}</main>
+    <main className="max-w-[1512px] mx-auto px-6 pb-6 md:pb-14">{props.children}</main>
   );
 };
 

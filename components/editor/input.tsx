@@ -12,6 +12,7 @@ import {
 } from "react-icons/rx";
 import useEditor from "../../store/editor/useEditor";
 import {
+  EDITING_MODE,
   FONT_WEIGHT,
   ITEM,
   POS,
@@ -28,9 +29,17 @@ type Props = {
   label: RECEIPT_KEY | POS_KEY;
   subLabel?: "items";
   index?: number[];
+  basic?: boolean;
+  id?: string;
 };
 
-export default function Input({ label, subLabel, ...props }: Props) {
+export default function Input({
+  label,
+  subLabel,
+  basic = false,
+  id = "",
+  ...props
+}: Props) {
   const { structure, setStructure } = useEditor();
 
   const defaultValue = {
@@ -135,8 +144,62 @@ export default function Input({ label, subLabel, ...props }: Props) {
     return value[key] || "inherit";
   }
 
+  if (basic) {
+    return (
+      <div className="relative w-full">
+        {/* input */}
+        <div className="w-full relative">
+          {label !== "products" && (
+            <label
+              htmlFor={id}
+              className={`block capitalize mb-2 text-[#4F4F4F] text-base`}
+            >
+              {label.replaceAll("_", " ")}
+            </label>
+          )}
+
+          <div className="relative w-full">
+            <input
+              id={id}
+              type="text"
+              value={value.label.toLowerCase()}
+              onChange={(e) => {
+                actionHandler({ label: e.target.value });
+              }}
+              onBlur={() => {
+                propagateChange();
+              }}
+              className="w-full rounded-md px-3 py-3 text-[#4F4F4F] bg-[#F2F2F2] focus:outline-none focus:ring-1 focus:shadow-lg ring-[#EF5DA8]"
+            />
+          </div>
+        </div>
+      </div>
+    );
+
+    {
+      /* <input
+          type="text"
+          className={`bg-gray-100 border-white border w-full focus:outline-none focus:shadow-inner ${getProp(
+            "transform"
+          )}`}
+          value={value.label.toLowerCase()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            actionHandler({ label: e.target.value });
+          }}
+          onBlur={() => {
+            propagateChange();
+          }}
+          style={{
+            fontWeight: getProp("font_weight"),
+            textAlign: getProp("text_align") as any,
+          }}
+        /> */
+    }
+  }
+
   return (
-    <div className="relative group/input">
+    <div className="relative group/input w-full">
       {/* settings tray */}
       <div className="absolute hidden group-focus-within/input:flex -top-0 -translate-y-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden z-50">
         <button
@@ -223,7 +286,7 @@ export default function Input({ label, subLabel, ...props }: Props) {
             propagateChange();
           }}
           style={{
-            fontSize: getProp("font_size") ?? "",
+            fontSize: basic ? undefined : getProp("font_size") ?? "",
             fontWeight: getProp("font_weight"),
             textAlign: getProp("text_align") as any,
           }}

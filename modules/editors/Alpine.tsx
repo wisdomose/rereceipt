@@ -8,6 +8,8 @@ import {
   FiChevronDown,
   FiChevronLeft,
   FiChevronUp,
+  FiEye,
+  FiEyeOff,
   FiMinus,
   FiPlus,
   FiSettings,
@@ -16,6 +18,7 @@ import Link from "next/link";
 import logo from "../../src/img/icons/logo.png";
 import {
   DOC_TYPES,
+  EDITING_MODE,
   FONT_FAMILY,
   FONT_SIZE,
   POS,
@@ -26,6 +29,7 @@ import { saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
 import useUser from "../../store/user/useUser";
+import { overrideTailwindClasses } from "tailwind-override";
 
 type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
@@ -37,7 +41,13 @@ type Props = Pick<UseEditorProps, "name"> & {
 };
 
 export default function Alpine({ saved = false, templateId, ...props }: Props) {
-  const { structure } = useEditor({
+  const {
+    structure,
+    editingMode,
+    updateEditingMode,
+    previewMode,
+    updatePreviewMode,
+  } = useEditor({
     name: props.name,
     structure: props.structure,
   });
@@ -79,19 +89,53 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     <div className="h-screen scrollbar">
       {/* <div className="h-[calc(100%_-_77px)]"> */}
       <div className="h-full grid grid-rows-[max-content,1fr]">
-        <nav className="w-full h-14 pl-14 pr-4 flex justify-end items-center gap-6">
+        <nav className="w-full h-14 pr-6 md:pr-14 flex justify-end items-center gap-6">
           <Select
-            items={["Standard", "Simple"]}
-            current={"Standard"}
-            update={() => {}}
+            items={Object.values(EDITING_MODE)}
+            current={editingMode}
+            update={(mode) => updateEditingMode(mode)}
             block
-            btnStyle="px-3 gap-3"
+            btnStyle="px-3 gap-3 py-1"
           />
 
-          <Button label="Save" onClick={save} disabled={!loggedIn || loading} />
+          <Button
+            label="save"
+            onClick={save}
+            disabled={!loggedIn || loading}
+            minimal
+            className="border py-[6px]"
+          />
+
+          <button
+            className="border lg:hidden rounded-lg py-[10px] px-3"
+            onClick={() => updatePreviewMode(!previewMode)}
+          >
+            {previewMode ? <FiEyeOff /> : <FiEye />}
+          </button>
+
+          <Popover className="relative lg:hidden">
+            {({ open }: { open: boolean }) => (
+              <>
+                <Popover.Button className="border rounded-lg py-[10px] px-3">
+                  <FiSettings />
+                </Popover.Button>
+                <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md z-10" />
+                <div
+                  className={`z-10 fixed max-h-[calc(100vh_-_154px)] h-auto left-6 top-[77px] flex items-center justify-center ${
+                    open ? "right-6" : "right-full"
+                  }`}
+                >
+                  <Popover.Panel className="bg-white w-[501px] max-w-[90vw] mx-auto rounded-xl aspect-auto relative max-h-screen overflow-auto">
+                    <SideBar />
+                  </Popover.Panel>
+                </div>
+              </>
+            )}
+          </Popover>
         </nav>
-        <div className="h-full lg:grid ">
-          <div className="grid lg:grid-cols-[1fr,max-content]">
+
+        <div className="h-full lg:grid">
+          <div className="grid h-full lg:grid-cols-[1fr,max-content]">
             <EditorZoom ref={ref}>{props.children}</EditorZoom>
             {/* sidebar */}
             <div className="w-[250px] border-l border-l-[#828282] h-full text-[#4F4F4F] absolute right-full lg:static lg:right-0">
@@ -306,13 +350,14 @@ type SelectProps = {
   block?: boolean;
   btnStyle?: string;
 };
+
 function Select({
   update,
   items,
   current,
   style,
   block = false,
-  btnStyle,
+  btnStyle = "",
 }: SelectProps) {
   return (
     <Menu>
@@ -323,9 +368,9 @@ function Select({
           }`}
         >
           <Menu.Button
-            className={`text-sm rounded-md flex items-center justify-between px-2 uppercase border border-gray-300 w-full ${
-              btnStyle ? btnStyle : ""
-            }`}
+            className={overrideTailwindClasses(
+              `border border-gray-300 text-sm rounded-md flex items-center justify-between px-2 uppercase w-full ${btnStyle}`
+            )}
             style={style}
           >
             <span className="text-sm py-1 lowercase">{current}</span>

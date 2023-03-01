@@ -12,7 +12,7 @@ import { Context, Format, Pdf, formats } from "./type";
 import { useRouter } from "next/router";
 import { toPng, toJpeg, toCanvas, toSvg } from "html-to-image";
 import jspdf from "jspdf";
-import { FONT_FAMILY, FONT_SIZE } from "../../types";
+import { EDITING_MODE, FONT_FAMILY, FONT_SIZE } from "../../types";
 
 export const EditorStore = createContext<Context>({
   updatePdfFile: () => {},
@@ -25,6 +25,8 @@ export const EditorStore = createContext<Context>({
   updateFontSize: () => {},
   updateWidth: () => {},
   setStructure: () => {},
+  updateEditingMode: () => {},
+  editingMode:EDITING_MODE.BASIC,
   format: formats[0],
   pdfFile: undefined,
   previewMode: false,
@@ -43,6 +45,9 @@ export default function EditorProvider(props: { children: ReactNode }) {
   const router = useRouter();
   const ref = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingMode, setEditingMode] = useState<EDITING_MODE>(
+    EDITING_MODE.ADVANCED
+  );
 
   useEffect(() => {
     return () => {
@@ -170,6 +175,9 @@ export default function EditorProvider(props: { children: ReactNode }) {
       s.settings.width = value;
       return { ...s };
     });
+  const updateEditingMode = (mode: EDITING_MODE) => {
+    setEditingMode(mode);
+  };
 
   const value = {
     updatePdfFile,
@@ -182,6 +190,8 @@ export default function EditorProvider(props: { children: ReactNode }) {
     updateFontSize,
     setStructure,
     updateWidth,
+    updateEditingMode,
+    editingMode,
     format,
     name,
     ref,

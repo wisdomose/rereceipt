@@ -7,6 +7,7 @@ import Image from "next/image";
 import Input from "../components/input";
 import useInput from "../hooks/useInput";
 import Button from "../components/button";
+import { FiUser } from "react-icons/fi";
 
 export default function Profile() {
   const { user, loading } = useUser();
@@ -31,22 +32,26 @@ export default function Profile() {
         <div className="max-w-[1000px] mx-auto">
           <div className="flex items-end gap-14 py-8 border-b border-b-gray-300">
             <div className="relative overflow-hidden w-24 aspect-square rounded-full">
-              <Image fill src={user?.photoURL ?? ""} alt="" />
+              {user?.photoURL ? (
+                <Image fill src={user.photoURL} alt="" />
+              ) : (
+                <FiUser className="w-full h-full" />
+              )}
             </div>
 
             <button className="border h-fit border-[#4F4F4F] rounded-lg py-2 px-3 text-xs">
               Update picture
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-14 py-8 border-b border-b-gray-300">
+          <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
             <p className="font-semibold">Email</p>
             <Input {...emailOptions} id="email" type="email" />
           </div>
-          <div className="grid grid-cols-2 gap-14 py-8 border-b border-b-gray-300">
+          <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
             <p className="font-semibold">Phone number</p>
             <Input {...phoneNumberOptions} id="phone-number" type="text" />
           </div>
-          <div className="grid grid-cols-2 gap-14 py-8">
+          <div className="grid md:grid-cols-2 md:gap-14 py-8">
             <p className="font-semibold">Password</p>
             <div>
               <Input {...emailOptions} id="email" type="email" />

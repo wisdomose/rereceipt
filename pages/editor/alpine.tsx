@@ -14,10 +14,20 @@ import { getOneTemplate } from "../../utils/firebase";
 import { useState } from "react";
 import { DOC, POS, RECEIPT } from "../../types";
 import NavBar from "../../components/layout/NavBar";
+import Loader from "../../components/layout/Loader";
+import PaidProtected from "../../components/layout/PaidProtected";
+import useUser from "../../store/user/useUser";
 
 export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<DOC | null>(null);
+  const { loading, loggedIn } = useUser();
+
+  useEffect(() => {
+    if (!loading && !loggedIn) {
+      router.replace("/no-access");
+    }
+  }, [loading, loggedIn]);
 
   useEffect(() => {
     const id = router.query.receipt;
@@ -29,17 +39,19 @@ export default function AlpineWrapper() {
     });
   }, [router.query.receipt]);
 
+  if (!receipt || !loggedIn || loading) return <Loader />;
+
   return (
-    <EditorProvider>
-      <Wrapped data={receipt} />
-    </EditorProvider>
+    <PaidProtected>
+      <EditorProvider>
+        <Wrapped data={receipt} />
+      </EditorProvider>
+    </PaidProtected>
   );
 }
 
-function Wrapped({ data }: { data: DOC | null }) {
+function Wrapped({ data }: { data: DOC }) {
   const { pdfFile, previewMode, ref } = useEditor();
-
-  if (!data) return <p>invalid file</p>;
 
   const file = receipts.find((receipt) => receipt.default.name === data.name);
 

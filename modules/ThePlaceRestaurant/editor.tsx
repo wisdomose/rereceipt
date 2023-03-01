@@ -1,18 +1,43 @@
 import Input from "../../components/editor/input";
-import { genEditorStyle } from "../../utils";
+import { genEditorStyle, omit } from "../../utils";
 import Table from "../../components/editor/table";
 import useEditor from "../../store/editor/useEditor";
 import { useCallback } from "react";
+import { EDITING_MODE } from "../../types";
 
 export default function Editor() {
-  const { structure } = useEditor();
-
-  const genStyle = useCallback(() => {
-    if (!structure) return {};
-    return genEditorStyle(structure.settings);
-  }, [structure]);
+  const { structure, editingMode } = useEditor();
 
   if (structure === undefined) return <p>no structure</p>;
+
+  if (editingMode === EDITING_MODE.BASIC) {
+    return (
+      <section className="w-full">
+        <div
+          style={genEditorStyle(
+            omit({ ...structure.settings }, ["width", "font_size"])
+          )}
+          className={`text-black mx-auto lg:max-w-4xl grid md:grid-cols-2 gap-12 my-0 px-6 md:px-14 lg:px-6 py-12`}
+        >
+          <Input label="name" id="name" basic />
+          <Input label="location" id="location" basic />
+          <Input label="email" id="email" basic />
+          <Input label="receipt_no" id="receipt_no" basic />
+          <Input label="date" id="date" basic />
+          <Input label="time_in" id="time_in" basic />
+          <Input label="customer_no" id="customer_no" basic />
+          <Input label="cashier_name" id="cashier_name" basic />
+          <Input label="order_type" id="order_type" basic />
+          <Input label="sub_total" id="sub_total" basic />
+          <Input label="total" id="total" basic />
+          <Input label="status" id="status" basic />
+          <Input label="payment_type" id="payment_type" basic />
+          <Input label="whatsapp" id="whatsapp" basic />
+          <Table basic />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>

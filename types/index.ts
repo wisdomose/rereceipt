@@ -42,6 +42,11 @@ enum FONT_FAMILY {
   INHERIT = "inherit",
 }
 
+enum EDITING_MODE {
+  BASIC = "basic",
+  ADVANCED = "advanced",
+}
+
 type ITEM = {
   label: string;
   text_align: TEXT_ALIGN;
@@ -199,4 +204,5 @@ export {
   RECEIPT_KEYS,
   POS_KEYS,
   DOC_TYPES,
+  EDITING_MODE,
 };

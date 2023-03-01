@@ -80,7 +80,36 @@ export function pick<T extends Record<string, any>>(obj: T, pick: string[]) {
   Object.keys(obj).map((key) => {
     if (!pick.includes(key)) {
       delete obj[key];
-    } 
+    }
   });
   return obj;
+}
+
+export function omit<T extends Record<string, any>>(obj: T, omit: string[]) {
+  Object.keys(obj).map((key) => {
+    if (omit.includes(key)) {
+      delete obj[key];
+    }
+  });
+  return obj;
+}
+
+const month = [
+  "Jan",
+  "Feb",
+  "Mch",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+export function dateToString(date: string) {
+  const v = new Date(date);
+
+  return `${month[v.getMonth()]} ${v.getMonth()}, ${v.getFullYear()}`;
 }

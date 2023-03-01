@@ -158,16 +158,28 @@ export const fetchCurrentUser = () => {
   return auth.currentUser;
 };
 
+type Data = {
+  paid: boolean;
+  trial_ends_in: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  timestamp: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  billing: {};
+};
+
 export const fetchUserDetails = async (uid: string) => {
   const db = getFirestore(getApp());
   const docRef = doc(db, COLLECTION.USERS, uid);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    return docSnap.data();
-  } else {
-    return null;
+    return docSnap.data() as Data;
   }
+  throw null;
 };
 
 // firestore

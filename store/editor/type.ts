@@ -1,6 +1,11 @@
 import { SetStateAction, Dispatch } from "react";
-import * as receipts from "../../receipts";
-import { DOC_TYPES, FONT_FAMILY, FONT_SIZE, POS, RECEIPT } from "../../types";
+import {
+  EDITING_MODE,
+  FONT_FAMILY,
+  FONT_SIZE,
+  POS,
+  RECEIPT,
+} from "../../types";
 
 export type Pdf = JSX.Element;
 
@@ -20,6 +25,8 @@ export type Context = {
   updateFont: (value: FONT_FAMILY) => void;
   updateFontSize: (value: FONT_SIZE) => void;
   updateWidth: (value: string) => void;
+  updateEditingMode: (mode: EDITING_MODE) => void;
+  editingMode: EDITING_MODE;
   format: Format;
   pdfFile?: Pdf;
   previewMode: boolean;
