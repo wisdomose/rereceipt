@@ -158,15 +158,12 @@ export default function Table<T extends Record<string, any>>({
                     <>
                       {(cell.items as Record<string, any>[]).map(
                         (item, innerIndex) => (
-                          <>
-                            <Input
-                              key={`${index}${position}${innerIndex}`}
-                              label={label}
-                              subLabel="items"
-                              index={[index, position, innerIndex]}
-                            />
-                            {/* <br /> */}
-                          </>
+                          <Input
+                            key={`${index}${position}${innerIndex}`}
+                            label={label}
+                            subLabel="items"
+                            index={[index, position, innerIndex]}
+                          />
                         )
                       )}
                     </>
