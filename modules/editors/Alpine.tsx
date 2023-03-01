@@ -58,7 +58,6 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
   const save = useCallback(async () => {
     let id = router.query.receipt;
-    let savedId = "";
 
     if (!id || typeof id !== "string" || !structure) return;
     if (saved) {
@@ -73,7 +72,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
         },
         id
       ).then((res) => {
-        savedId = typeof res === "string" ? res : "";
+        res && notify("file saved");
       });
     } else {
       await saveProgress({
@@ -83,12 +82,10 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
         name: props.name,
         templateId: id,
       }).then((res) => {
-        savedId = typeof res === "string" ? res : "";
-        router.push(`/editor/saved/alpine?receipt=${savedId}`);
+        res && router.push(`/editor/saved/alpine?receipt=${res}`);
+        res && notify("file saved");
       });
     }
-    notify("file saved");
-
   }, [props.name, router.query.receipt, structure]);
 
   return (

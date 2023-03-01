@@ -24,9 +24,8 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { DOC, DOC_TYPES, POS, RECEIPT, SAVED } from "../types";
-import { toast } from "react-toastify";
 import { log } from "next-axiom";
-import { pick } from ".";
+import { notify, pick } from ".";
 enum COLLECTION {
   TEMPLATES = "templates",
   SAVED = "saved",
@@ -230,7 +229,8 @@ export const saveProgress = async (
 ) => {
   try {
     const auth = getAuth();
-    if (!auth.currentUser) return;
+    if (!auth.currentUser)
+      throw new Error("you need to be logged in to use this feature");
     const uid = auth.currentUser.uid;
 
     const db = getFirestore(getApp());
@@ -241,7 +241,7 @@ export const saveProgress = async (
       const snapshot = await getCountFromServer(query_);
       const count = snapshot.data().count;
 
-      if (count === 5) return -1;
+      if (count === 5) throw new Error("you have used up your save spaces");
       const doc = await addDoc(collection(db, "saved"), {
         timestamp: serverTimestamp(),
         ...data,
@@ -250,15 +250,15 @@ export const saveProgress = async (
       return doc.id;
     } else {
       const ref = doc(db, COLLECTION.SAVED, id);
-      const docu = await updateDoc(ref, {
+      await updateDoc(ref, {
         uid,
         timestamp: serverTimestamp(),
         ...data,
       });
       return id;
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    notify(error.message ?? "failed to save receipt");
   }
 };
 
