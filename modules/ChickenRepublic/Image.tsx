@@ -5,9 +5,10 @@ import { genEditorStyle, genStyle } from "../../utils";
 import { Props } from "./types";
 import { forwardRef } from "react";
 
-const Image = forwardRef<any, Props>((props, ref) => {
-  const { structure } = useEditor();
+const Image = forwardRef<any, Props>(({ data }, ref) => {
+  const { structure: str } = useEditor();
 
+  const structure = data ?? str;
   if (!structure) return null;
 
   return (

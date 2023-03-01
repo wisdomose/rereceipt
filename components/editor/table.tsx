@@ -22,6 +22,7 @@ export type TableProps = {
   subLabels?: string[];
   largeCol?: number;
   basic?: boolean;
+  hasHeader?: boolean;
 };
 
 // TODO: IF A TABLE HAS ONLY ONE ROW, IT CANNOT BE DELETED.
@@ -33,6 +34,7 @@ export default function Table<T extends Record<string, any>>({
   subLabels,
   largeCol = 0,
   basic = false,
+  hasHeader = true,
 }: TableProps) {
   const label = "products";
   const { structure, setStructure } = useEditor();
@@ -52,33 +54,35 @@ export default function Table<T extends Record<string, any>>({
         <p className={`block capitalize mb-2 text-[#4F4F4F] text-base`}>
           {label.replaceAll("_", " ")}
         </p>
-        {structure.products.length === 1 ? (
+        {structure.products.length === (hasHeader ? 1 : 0) ? (
           <p className="mb-5 mt-3 text-center text-[#BDBDBD]">no products</p>
         ) : (
           <div className="w-full overflow-auto">
             <table className="mb-5 mt-3 w-full min-w-[500px] text-[#4F4F4F]">
-              <thead>
-                <tr className="">
-                  {structure[label][0].data.map((cell) => (
-                    <th
-                      key={cell.label}
-                      className="text-start py-6 font-medium"
-                    >
-                      {cell.label}
-                    </th>
-                  ))}
-                  <th></th>
-                </tr>
-              </thead>
+              {hasHeader && (
+                <thead>
+                  <tr className="">
+                    {structure[label][0].data.map((cell) => (
+                      <th
+                        key={cell.label}
+                        className="text-start py-6 font-medium"
+                      >
+                        {cell.label}
+                      </th>
+                    ))}
+                    <th></th>
+                  </tr>
+                </thead>
+              )}
               <tbody>
-                {structure[label].slice(1).map((row, id) => (
+                {structure[label].slice(hasHeader ? 1 : 0).map((row, id) => (
                   <tr key={"row" + id} className="border-t">
                     {row.data.map((cell, cellId) => (
                       <td key={`${id}${cellId}`} className="py-6">
                         <Input
                           label="products"
                           // +1 because i am slicing the heading from the table
-                          index={[id + 1, cellId]}
+                          index={[id + (hasHeader ? 1 : 0), cellId]}
                           basic
                         />
                       </td>
@@ -88,7 +92,7 @@ export default function Table<T extends Record<string, any>>({
                       <button
                         className="group border rounded-lg py-[10px] px-3"
                         onClick={() => {
-                          deleteRow(id + 1);
+                          deleteRow(id + (hasHeader ? 1 : 0));
                         }}
                       >
                         <FiTrash2 className="group-hover:text-[#EF5DA8] focus:text-[#EF5DA8]" />

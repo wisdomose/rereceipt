@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useCallback } from "react";
+import { ReactNode, useRef, useCallback, useState, useEffect } from "react";
 import useEditor from "../../store/editor/useEditor";
 import { UseEditorProps, formats } from "../../store/editor/type";
 import EditorZoom from "../../components/layout/EditorZoom";
@@ -6,13 +6,13 @@ import { Disclosure, Menu, Popover } from "@headlessui/react";
 import {
   FiCheck,
   FiChevronDown,
-  FiChevronLeft,
   FiChevronUp,
   FiEye,
   FiEyeOff,
   FiMinus,
   FiPlus,
   FiSettings,
+  FiTrash2,
 } from "react-icons/fi";
 import {
   DOC_TYPES,
@@ -22,7 +22,7 @@ import {
   POS,
   RECEIPT,
 } from "../../types";
-import { saveProgress } from "../../utils/firebase";
+import { deleteOneSavedTemplate, saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
 import useUser from "../../store/user/useUser";
@@ -50,16 +50,27 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     structure: props.structure,
   });
 
+  /**
+   * In a saved document, this is the id of the saved document.
+   * In the templates page, this is the id of a template
+   */
+  const [docId, setDocId] = useState("");
+
   const { loading, loggedIn } = useUser();
 
   const router = useRouter();
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const save = useCallback(async () => {
+  useEffect(() => {
     let id = router.query.receipt;
+    if (!id || typeof id !== "string") return;
+    setDocId(id);
+  }, [router.query.receipt]);
 
-    if (!id || typeof id !== "string" || !structure) return;
+  const save = useCallback(async () => {
+    if (!structure) return;
+
     if (saved) {
       if (!templateId) return;
       await saveProgress(
@@ -70,7 +81,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
           name: props.name,
           templateId: templateId,
         },
-        id
+        docId
       ).then((res) => {
         res && notify("file saved");
       });
@@ -80,62 +91,81 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
         img: props.img,
         data: structure,
         name: props.name,
-        templateId: id,
+        templateId: docId,
       }).then((res) => {
         res && router.push(`/editor/saved/alpine?receipt=${res}`);
         res && notify("file saved");
       });
     }
-  }, [props.name, router.query.receipt, structure]);
+  }, [props.name, docId, structure]);
+
+  async function deleteOne() {
+    saved
+      ? await deleteOneSavedTemplate(docId).then((res) => {
+          router.replace("/saved");
+        })
+      : null;
+  }
 
   return (
     <div className="h-screen scrollbar">
       {/* <div className="h-[calc(100%_-_77px)]"> */}
       <div className="h-full grid grid-rows-[max-content,1fr]">
-        <nav className="w-full h-14 pr-6 md:pr-14 flex justify-end items-center gap-6">
-          <Select
-            items={Object.values(EDITING_MODE)}
-            current={editingMode}
-            update={(mode) => updateEditingMode(mode)}
-            block
-            btnStyle="px-3 gap-3 py-1"
-          />
+        <div className="w-full">
+          <nav className="w-full py-1 px-6 md:pr-14 flex justify-end items-center flex-wrap gap-2 md:gap-6">
+            <Select
+              items={Object.values(EDITING_MODE)}
+              current={editingMode}
+              update={(mode) => updateEditingMode(mode)}
+              block
+              btnStyle="px-3 gap-3 py-1"
+            />
 
-          <Button
-            label="save"
-            onClick={save}
-            disabled={!loggedIn || loading}
-            minimal
-            className="border py-[6px]"
-          />
-
-          <button
-            className="border lg:hidden rounded-lg py-[10px] px-3"
-            onClick={() => updatePreviewMode(!previewMode)}
-          >
-            {previewMode ? <FiEyeOff /> : <FiEye />}
-          </button>
-
-          <Popover className="relative lg:hidden">
-            {({ open }: { open: boolean }) => (
-              <>
-                <Popover.Button className="border rounded-lg py-[10px] px-3">
-                  <FiSettings />
-                </Popover.Button>
-                <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md z-10" />
-                <div
-                  className={`z-10 fixed max-h-[calc(100vh_-_154px)] h-auto left-6 top-[77px] flex items-center justify-center ${
-                    open ? "right-6" : "right-full"
-                  }`}
-                >
-                  <Popover.Panel className="bg-white w-[501px] max-w-[90vw] mx-auto rounded-xl aspect-auto relative max-h-screen overflow-auto">
-                    <SideBar />
-                  </Popover.Panel>
-                </div>
-              </>
+            {saved && (
+              <button
+                className="border lg:hidden rounded-lg py-[10px] px-3"
+                onClick={deleteOne}
+              >
+                <FiTrash2 />
+              </button>
             )}
-          </Popover>
-        </nav>
+
+            <button
+              className="border lg:hidden rounded-lg py-[10px] px-3"
+              onClick={() => updatePreviewMode(!previewMode)}
+            >
+              {previewMode ? <FiEyeOff /> : <FiEye />}
+            </button>
+
+            <Popover className="relative lg:hidden">
+              {({ open }: { open: boolean }) => (
+                <>
+                  <Popover.Button className="border rounded-lg py-[10px] px-3">
+                    <FiSettings />
+                  </Popover.Button>
+                  <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md z-10" />
+                  <div
+                    className={`z-10 fixed max-h-[calc(100vh_-_154px)] h-auto left-6 top-[77px] flex items-center justify-center ${
+                      open ? "right-6" : "right-full"
+                    }`}
+                  >
+                    <Popover.Panel className="bg-white w-[501px] max-w-[90vw] mx-auto rounded-xl aspect-auto relative max-h-screen overflow-auto">
+                      <SideBar />
+                    </Popover.Panel>
+                  </div>
+                </>
+              )}
+            </Popover>
+
+            <Button
+              label="save"
+              onClick={save}
+              disabled={!loggedIn || loading}
+              minimal
+              className="border py-[6px]"
+            />
+          </nav>
+        </div>
 
         <div className="h-full lg:grid">
           <div className="grid h-full lg:grid-cols-[1fr,max-content]">

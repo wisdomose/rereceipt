@@ -22,6 +22,7 @@ import {
   doc,
   serverTimestamp,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 import { DOC, DOC_TYPES, POS, RECEIPT, SAVED } from "../types";
 import { log } from "next-axiom";
@@ -234,12 +235,9 @@ export const saveProgress = async (
     const uid = auth.currentUser.uid;
 
     const db = getFirestore(getApp());
-    const coll = collection(db, COLLECTION.SAVED);
 
     if (!id) {
-      const query_ = query(coll, where("uid", "==", uid));
-      const snapshot = await getCountFromServer(query_);
-      const count = snapshot.data().count;
+      const count = await countNoOfSavedTemplates();
 
       if (count === 5) throw new Error("you have used up your save spaces");
       const doc = await addDoc(collection(db, "saved"), {
@@ -262,41 +260,88 @@ export const saveProgress = async (
   }
 };
 
+export const countNoOfSavedTemplates = async () => {
+  try {
+    const auth = getAuth();
+    if (!auth.currentUser)
+      throw new Error("you need to be logged in to use this feature");
+    const uid = auth.currentUser.uid;
+    const db = getFirestore(getApp());
+    const coll = collection(db, COLLECTION.SAVED);
+
+    const query_ = query(coll, where("uid", "==", uid));
+    const snapshot = await getCountFromServer(query_);
+    const count = snapshot.data().count;
+    return count;
+  } catch (error: any) {
+    notify("Error");
+  }
+};
+
 export const getAllSavedTemplates = async () => {
-  const saved: SAVED[] = [];
-  const auth = getAuth();
-  if (!auth.currentUser) return saved;
-  const uid = auth.currentUser.uid;
+  try {
+    const saved: SAVED[] = [];
+    const auth = getAuth();
+    if (!auth.currentUser) return saved;
+    const uid = auth.currentUser.uid;
 
-  const db = getFirestore(getApp());
+    const db = getFirestore(getApp());
 
-  const q = query(collection(db, COLLECTION.SAVED), where("uid", "==", uid));
+    const q = query(collection(db, COLLECTION.SAVED), where("uid", "==", uid));
 
-  const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
 
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    saved.push({
-      id: doc.id,
-      ...(data as Pick<
-        SAVED,
-        "data" | "img" | "name" | "templateId" | "timestamp" | "type" | "uid"
-      >),
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      saved.push({
+        id: doc.id,
+        ...(data as Pick<
+          SAVED,
+          "data" | "img" | "name" | "templateId" | "timestamp" | "type" | "uid"
+        >),
+      });
     });
-  });
-
-  return saved;
+    return saved;
+  } catch (error: any) {
+    notify(error.message ?? "failed to fetch templates");
+    return [];
+  }
 };
 
 export const getOneSavedTemplate = async (id: string) => {
-  const db = getFirestore(getApp());
-  const docRef = doc(db, COLLECTION.SAVED, id);
-  const docSnap = await getDoc(docRef);
+  try {
+    const db = getFirestore(getApp());
+    const docRef = doc(db, COLLECTION.SAVED, id);
+    const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    return docSnap.data() as SAVED;
-  } else {
-    return null;
+    if (docSnap.exists()) {
+      return docSnap.data() as SAVED;
+    } else {
+      throw new Error("No document found");
+    }
+  } catch (error: any) {
+    notify(error?.message ?? "We couldn't find a template");
+  }
+};
+
+export const deleteOneSavedTemplate = async (id: string) => {
+  try {
+    if (!id) throw new Error("No document specified");
+    const db = getFirestore(getApp());
+    const docRef = doc(db, COLLECTION.SAVED, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      await deleteDoc(docRef).then((res) => {
+        notify("template deleted");
+      });
+    } else {
+      throw new Error("This file may have already been deleted");
+    }
+  } catch (error: any) {
+    notify(
+      error.message ?? "We encountered a problem while deleting this file"
+    );
   }
 };
 

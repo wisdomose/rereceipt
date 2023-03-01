@@ -1,15 +1,45 @@
 import structure from "./structure";
 import Input from "../../components/editor/input";
-import { genEditorStyle } from "../../utils";
+import { genEditorStyle, omit } from "../../utils";
 import useEditor from "../../store/editor/useEditor";
+import { EDITING_MODE } from "../../types";
 
 export default function Editor() {
-  const btnStyle =
-    "h-4 w-4 grid place-items-center hover:text-black hover:bg-gray-100 text-gray-900";
-
-  const { structure } = useEditor();
+  const { structure, editingMode } = useEditor();
 
   if (structure === undefined) return <p>no structure</p>;
+
+  if (editingMode === EDITING_MODE.BASIC) {
+    return (
+      <section className="w-full">
+        <div
+          style={genEditorStyle(
+            omit({ ...structure.settings }, ["width", "font_size"])
+          )}
+          className={`text-black mx-auto lg:max-w-4xl grid md:grid-cols-2 gap-12 my-0 px-6 md:px-14 lg:px-6 py-12`}
+        >
+          <Input label="merchant_name" id="merchant_name" basic />
+          <Input label="merchant_address" id="merchant_address" basic />
+          <Input label="payment_type" id="payment_type" basic />
+          <Input label="receipt_no" id="receipt_no" basic />
+          <Input label="terminal_id" id="terminal_id" basic />
+          <Input label="date" id="date" basic />
+          <Input label="time" id="time" basic />
+          <Input label="card_type" id="card_type" basic />
+          <Input label="card_exp" id="card_exp" basic />
+          <Input label="card_client" id="card_client" basic />
+          <Input label="pan" id="pan" basic />
+          <Input label="aid" id="aid" basic />
+          <Input label="amount" id="amount" basic />
+          <Input label="response_code" id="response_code" basic />
+          <Input label="message" id="message" basic />
+          <Input label="stan" id="stan" basic />
+          <Input label="rrn" id="rrn" basic />
+          <Input label="footer_message_01" id="footer_message_01" basic />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>

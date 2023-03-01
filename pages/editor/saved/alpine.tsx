@@ -7,7 +7,6 @@ import EditorProvider from "../../../store/editor/store";
 import { getOneSavedTemplate } from "../../../utils/firebase";
 import { useState } from "react";
 import { SAVED } from "../../../types";
-import { notify, } from "../../../utils";
 import Loader from "../../../components/layout/Loader";
 import NavBar from "../../../components/layout/NavBar";
 import PaidProtected from "../../../components/layout/PaidProtected";
@@ -36,7 +35,7 @@ export default function AlpineWrapper() {
         setLoading(false);
       })
       .catch((err) => {
-        notify(err.message ?? "an error occured");
+        router.replace("/saved");
       });
   }, [router.query.receipt]);
 
@@ -63,8 +62,6 @@ function Wrapped({ data }: { data: SAVED | null }) {
   const { Editor, Image } = file.default;
 
   return (
-    // <Page isProtected={true}>
-    //   <Page.Body>
     <>
       <NavBar isLoggedIn={!false} />
       <Alpine
@@ -79,7 +76,5 @@ function Wrapped({ data }: { data: SAVED | null }) {
         {previewMode ? <Image ref={ref} /> : <Editor />}
       </Alpine>
     </>
-    //   </Page.Body>
-    // </Page>
   );
 }

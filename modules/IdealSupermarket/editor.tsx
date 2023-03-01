@@ -1,14 +1,43 @@
 import Input from "../../components/editor/input";
 import Table from "../../components/editor/table";
 import useEditor from "../../store/editor/useEditor";
-import { genEditorStyle } from "../../utils";
+import { EDITING_MODE } from "../../types";
+import { genEditorStyle, omit } from "../../utils";
 
 export default function Editor() {
-  const { structure } = useEditor();
+  const { structure, editingMode } = useEditor();
 
   if (structure === undefined) return <p>no structure</p>;
 
-  // console.log(structure);
+  if (editingMode === EDITING_MODE.BASIC) {
+    return (
+      <section className="w-full">
+        <div
+          style={genEditorStyle(
+            omit({ ...structure.settings }, ["width", "font_size"])
+          )}
+          className={`text-black mx-auto lg:max-w-4xl grid md:grid-cols-2 gap-12 my-0 px-6 md:px-14 lg:px-6 py-12`}
+        >
+          <Input label="name" id="name" basic />
+          <Input label="location" id="location" basic />
+          <Input label="contacts" id="contacts" basic />
+          <Input label="email" id="email" basic />
+          <Input label="date" id="date" basic />
+          <Input label="time_in" id="time_in" basic />
+          <Input label="cashier_name" id="cashier_name" basic />
+          <Input label="device" id="device" basic />
+          <Input label="sub_total" id="sub_total" basic />
+          <Input label="total" id="total" basic />
+          <Input label="payment_type" id="payment_type" basic />
+          <Input label="tax_percentage" id="tax_percentage" basic />
+          <Input label="tax_rate" id="tax_rate" basic />
+          <Input label="tax_paid" id="tax_paid" basic />
+          <Input label="footer_message_01" id="receipt_no" basic />
+          <Table basic />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section style={{ width: structure.settings.width }}>

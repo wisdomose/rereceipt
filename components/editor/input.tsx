@@ -31,6 +31,7 @@ type Props = {
   index?: number[];
   basic?: boolean;
   id?: string;
+  labelName?: string;
 };
 
 export default function Input({
@@ -38,6 +39,7 @@ export default function Input({
   subLabel,
   basic = false,
   id = "",
+  labelName,
   ...props
 }: Props) {
   const { structure, setStructure } = useEditor();
@@ -154,7 +156,7 @@ export default function Input({
               htmlFor={id}
               className={`block capitalize mb-2 text-[#4F4F4F] text-base`}
             >
-              {label.replaceAll("_", " ")}
+              {labelName ? labelName : label.replaceAll("_", " ")}
             </label>
           )}
 

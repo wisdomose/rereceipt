@@ -5,9 +5,9 @@ import { genEditorStyle, genStyle } from "../../utils";
 import { Props } from "./types";
 import { forwardRef } from "react";
 
-const Image = forwardRef<any, Props>((props, ref) => {
-  const { structure } = useEditor();
-
+const Image = forwardRef<any, Props>(({ data }, ref) => {
+  const { structure: str } = useEditor();
+  const structure = data ?? str;
   if (!structure) return null;
 
   return (
@@ -68,7 +68,9 @@ const Image = forwardRef<any, Props>((props, ref) => {
             </div>
             <div className="table-row">
               <p className="table-cell">CLIENT :</p>
-              <p style={genStyle(structure.card_client)}>{structure.card_client.label}</p>
+              <p style={genStyle(structure.card_client)}>
+                {structure.card_client.label}
+              </p>
             </div>
             <div className="table-row">
               <p className="table-cell">PAN :</p>

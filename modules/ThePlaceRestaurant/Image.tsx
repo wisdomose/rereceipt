@@ -5,10 +5,11 @@ import { genEditorStyle, genStyle } from "../../utils";
 import { Props } from "./types";
 import { forwardRef } from "react";
 
-const Image = forwardRef<any, Props>((props, ref) => {
-    const { structure } = useEditor();
+const Image = forwardRef<any, Props>(({ data }, ref) => {
+  const { structure: str } = useEditor();
 
-    if (!structure) return null;
+  const structure = data ?? str;
+  if (!structure) return null;
 
   return (
     <div ref={ref}>
@@ -18,15 +19,11 @@ const Image = forwardRef<any, Props>((props, ref) => {
           className={`bg-white text-black mx-auto my-0 px-1 py-[6px]`}
         >
           <>
-            <p style={genStyle(structure.name)}>
-              {structure.name.label}
-            </p>
+            <p style={genStyle(structure.name)}>{structure.name.label}</p>
             <p style={genStyle(structure.location)}>
               {structure.location.label}
             </p>
-            <p style={genStyle(structure.email)}>
-              {structure.email.label}
-            </p>
+            <p style={genStyle(structure.email)}>{structure.email.label}</p>
           </>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
@@ -141,18 +138,14 @@ const Image = forwardRef<any, Props>((props, ref) => {
             <p className="whitespace-nowrap capitalize mr-1">
               Received..........
             </p>
-            <p style={genStyle(structure.total)}>
-              {structure.total.label}
-            </p>
+            <p style={genStyle(structure.total)}>{structure.total.label}</p>
           </div>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             ============================================================
           </div>
 
-          <p style={genStyle(structure.status)}>
-            {structure.status.label}
-          </p>
+          <p style={genStyle(structure.status)}>{structure.status.label}</p>
 
           <div className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
             --------------------------------------------
@@ -173,9 +166,7 @@ const Image = forwardRef<any, Props>((props, ref) => {
               </div>
             </div>
             <div>
-              <p style={genStyle(structure.total)}>
-                {structure.total.label}
-              </p>
+              <p style={genStyle(structure.total)}>{structure.total.label}</p>
             </div>
           </div>
 

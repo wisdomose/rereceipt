@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { ITEM, SETTING } from "../types";
+import receipts from "../receipts";
 
 // functions
 export function genStyle(elem: ITEM) {
@@ -119,4 +120,13 @@ export function dateToString(date: string) {
   const v = new Date(date);
 
   return `${month[v.getMonth()]} ${v.getMonth()}, ${v.getFullYear()}`;
+}
+
+export function findReceipt(name: string) {
+  const receipt = receipts.find((receipt) => receipt.default.name === name);
+
+  if (!receipt) return;
+  const data = receipt.default;
+
+  return data;
 }
