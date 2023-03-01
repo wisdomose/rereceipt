@@ -23,10 +23,10 @@ function getRandomBoolean() {
 export default function Playground() {
   const [open, setOpen] = useState(getRandomBoolean());
   const [receiptReceipts, setReceiptReceipts] = useState<
-    Pick<DOC, "id" | "img" | "name" | "type">[]
+    Pick<DOC, "id" | "img" | "name" | "type" | "data">[]
   >([]);
   const [posReceipts, setPosReceipts] = useState<
-    Pick<DOC, "id" | "img" | "name" | "type">[]
+    Pick<DOC, "id" | "img" | "name" | "type" | "data">[]
   >([]);
   const { loggedIn, loading, paid, trial, paidLoading } = useUser();
   const router = useRouter();

@@ -359,8 +359,8 @@ export const getAllActiveTemplates = async () => {
       : null;
   });
   return { receipts, pos } as unknown as {
-    receipts: Pick<DOC, "id" | "img" | "name" | "type">[];
-    pos: Pick<DOC, "id" | "img" | "name" | "type">[];
+    receipts: Pick<DOC, "id" | "img" | "name" | "type" | "data">[];
+    pos: Pick<DOC, "id" | "img" | "name" | "type" | "data">[];
   };
 };
 
