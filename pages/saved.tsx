@@ -10,6 +10,7 @@ import Receipt from "../components/layout/Receipt";
 import Loader from "../components/layout/Loader";
 import oops from "../src/img/assets/oops.png";
 import Image from "next/image";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Saved() {
   const [saved, setSaved] = useState<SAVED[]>([]);
@@ -17,16 +18,20 @@ export default function Saved() {
   const [count, setCount] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    getAllSavedTemplates()
-      .then((res) => {
-        setSaved(res);
-      })
-      .catch((err) => {})
-      .finally(() => {
-        setLoading(false);
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      getAllSavedTemplates(user.uid)
+        .then((res) => {
+          setSaved(res);
+        })
+        .catch((err) => {})
+        .finally(() => {
+          setLoading(false);
+        });
+      countNoOfSavedTemplates(user.uid).then((res) => {
+        setCount(res);
       });
-    countNoOfSavedTemplates().then((res) => {
-      setCount(res);
     });
   }, []);
 
@@ -34,7 +39,7 @@ export default function Saved() {
   return (
     <Page isProtected>
       <Page.Body>
-        {saved && saved.length > 0 ? (
+        {!loading && saved.length > 0 ? (
           <>
             <div className="py-10 border-b border-b-gray-300 flex justify-between gap-14 items-center">
               <div>
@@ -58,20 +63,22 @@ export default function Saved() {
             </div>
           </>
         ) : (
-          <div className="h-full grid place-items-center">
-            <div className="relative w-1/4 aspect-square">
-              <Image alt="" src={oops} className="" fill />
+          <div className="h-full grid place-items-center text-[#4F4F4F]">
+            <div className="h-fit w-full">
+              <div className="relative w-full sm:w-1/2 md:w-1/3 mx-auto aspect-square">
+                <Image alt="" src={oops} className="" fill />
+              </div>
+              <h3 className="text-3xl font-medium text-center">Oops!</h3>
+              <p className="text-sm max-w-[402] text-center">
+                You do not have any saved templates.
+                <br />
+                try{" "}
+                <Link href="/playground" className="font-semibold underline">
+                  creating
+                </Link>{" "}
+                one
+              </p>
             </div>
-            <h3 className="text-3xl font-medium">Oops!</h3>
-            <p className="text-sm max-w-[402px] text-center">
-              You do not have any saved templates.
-              <br />
-              try{" "}
-              <Link href="/playground" className="font-semibold underline">
-                creating
-              </Link>{" "}
-              one
-            </p>
           </div>
         )}
       </Page.Body>

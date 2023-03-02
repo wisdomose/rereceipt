@@ -3,7 +3,7 @@ import { DOC, DOC_TYPES } from "../types";
 import { getAllActiveTemplates } from "../utils/firebase";
 import { useEffect, useState } from "react";
 import Receipt from "../components/layout/Receipt";
-import { Dialog, Disclosure } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import party from "../src/img/assets/celebration.png";
 import Image from "next/image";
 import Button from "../components/button";

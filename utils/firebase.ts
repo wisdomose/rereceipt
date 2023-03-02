@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getApp } from "firebase/app";
@@ -237,7 +238,7 @@ export const saveProgress = async (
     const db = getFirestore(getApp());
 
     if (!id) {
-      const count = await countNoOfSavedTemplates();
+      const count = await countNoOfSavedTemplates(uid);
 
       if (count === 5) throw new Error("you have used up your save spaces");
       const doc = await addDoc(collection(db, "saved"), {
@@ -260,15 +261,11 @@ export const saveProgress = async (
   }
 };
 
-export const countNoOfSavedTemplates = async () => {
+export const countNoOfSavedTemplates = async (uid: string) => {
   try {
-    const auth = getAuth();
-    if (!auth.currentUser)
-      throw new Error("you need to be logged in to use this feature");
-    const uid = auth.currentUser.uid;
+    if (!uid) throw new Error("you need to be logged in to use this feature");
     const db = getFirestore(getApp());
     const coll = collection(db, COLLECTION.SAVED);
-
     const query_ = query(coll, where("uid", "==", uid));
     const snapshot = await getCountFromServer(query_);
     const count = snapshot.data().count;
@@ -278,12 +275,10 @@ export const countNoOfSavedTemplates = async () => {
   }
 };
 
-export const getAllSavedTemplates = async () => {
+export const getAllSavedTemplates = async (uid: string) => {
   try {
     const saved: SAVED[] = [];
-    const auth = getAuth();
-    if (!auth.currentUser) return saved;
-    const uid = auth.currentUser.uid;
+    if (!uid) return saved;
 
     const db = getFirestore(getApp());
 
@@ -303,6 +298,7 @@ export const getAllSavedTemplates = async () => {
     });
     return saved;
   } catch (error: any) {
+    console.log(error);
     notify(error.message ?? "failed to fetch templates");
     return [];
   }
