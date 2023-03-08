@@ -11,6 +11,7 @@
 
 - when an invalid id is passed and no document is returned in template editor or saved editor show an invalid file screen (use an illustration here)
 - if a document isn't open for editing, when it is fetched, redirect to no-access page
+- limit creation and updating of templates to only my email from firestore rules
 
 # DOCUMENTATION
 
