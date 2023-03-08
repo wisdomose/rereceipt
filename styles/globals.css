@@ -71,3 +71,110 @@ body,
   display: block;
   text-align: center;
 }
+
+.home__container {
+  background: linear-gradient(
+      0deg,
+      rgba(250, 250, 250, 0.75),
+      rgba(250, 250, 250, 0.75)
+    ),
+    url("../src/img/assets/texture.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.grad__text {
+  background: linear-gradient(93.41deg, #ef5da8 6.58%, #5d5fef 91.52%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.section-bg {
+  position: relative;
+  isolation: isolate;
+  /* margin-top: 15%;
+  margin-bottom: 25%; */
+}
+
+.bg-pattern-red {
+  background: linear-gradient(
+      0deg,
+      rgba(235, 87, 87, 0.97),
+      rgba(235, 87, 87, 0.97)
+    ),
+    url("../src/img/assets/pattern.png");
+  background-size: cover;
+}
+
+.bg-pattern-orange {
+  background: linear-gradient(
+      0deg,
+      rgba(242, 152, 74, 0.97),
+      rgba(242, 152, 74, 0.97)
+    ),
+    url("../src/img/assets/pattern.png");
+  background-size: cover;
+}
+.bg-pattern-purple {
+  background: linear-gradient(
+      0deg,
+      rgba(155, 81, 224, 0.97),
+      rgba(155, 81, 224, 0.97)
+    ),
+    url("../src/img/assets/pattern.png");
+  background-size: cover;
+}
+
+.section-bg::after {
+  content: "";
+  width: 100%;
+  height: 200%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -50%;
+  background-image: url("../src/img/assets/linear-bg.png");
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
+
+.section-marks {
+  background: linear-gradient(
+      0deg,
+      rgba(250, 250, 250, 0.9),
+      rgba(250, 250, 250, 1)
+    ),
+    url("../src/img/assets/marks-pattern.png");
+  background-size: cover;
+}
+
+.pricing__style {
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing__style::after {
+  content: "";
+  position: absolute;
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+  bottom: 50%;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.8);
+  mix-blend-mode: overlay;
+}
+
+.pricing__style::before {
+  content: "";
+  position: absolute;
+  height: 60px;
+  width: 60px;
+  top: 50%;
+  right: 50%;
+  background-color: rgba(0, 0, 0, 0.8);
+  mix-blend-mode: overlay;
+}

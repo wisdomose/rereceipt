@@ -50,7 +50,7 @@ export default function Playground() {
   if (loading) return <Loader />;
 
   return (
-    <Page isProtected={false}>
+    <Page>
       <PaidProtected open={open}>
         {/* <Page.Nav></Page.Nav> */}
         <Page.Body>

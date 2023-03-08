@@ -19,14 +19,27 @@ import useWidth from "../../hooks/useWidth";
 import logo from "../../src/img/icons/logo.png";
 import NavBar from "./NavBar";
 import Loader from "./Loader";
+import { overrideTailwindClasses } from "tailwind-override";
 
 export const routes = [
   {
-    label: "dashboard",
+    label: "playground",
     href: "/playground",
-    icon: RxDashboard,
     protected: false,
+    showOnLogIn: true,
   },
+  {
+    label: "pricing",
+    href: "/pricing",
+    protected: false,
+    showOnLogIn: true,
+  },
+  // {
+  //   label: "dashboard",
+  //   href: "/playground",
+  //   icon: RxDashboard,
+  //   protected: false,
+  // },
   // {
   //   label: "templates",
   //   href: "/templates",
@@ -38,24 +51,28 @@ export const routes = [
     href: "/saved",
     icon: BiSave,
     protected: true,
+    showOnLogIn: true,
   },
   {
     label: "profile",
     href: "/profile",
     icon: FiUser,
     protected: true,
+    showOnLogin: true,
   },
   {
     label: "billing",
     href: "/billing",
     icon: FiDollarSign,
     protected: true,
+    showOnLogIn: true,
   },
   {
     label: "login",
     href: "/auth/login",
     icon: FiLogIn,
     protected: false,
+    showOnLogIn: false,
   },
   // {
   //   label: "signup",
@@ -69,6 +86,7 @@ const version = "0.0.0 - BETA";
 
 type Props = {
   children: ReactElement | ReactElement[];
+  className?: string;
 };
 type PageProps = Props & {
   isProtected?: boolean;
@@ -239,9 +257,15 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
   );
 };
 
-Page.Body = function Body(props: Props) {
+Page.Body = function Body({ className = "", children }: Props) {
   return (
-    <main className="max-w-[1512px] mx-auto px-6 pb-6 md:pb-14">{props.children}</main>
+    <main
+      className={overrideTailwindClasses(
+        `max-w-[1512px mx-auto px-6 pb-6 md:pb-14 md:px-14 ${className}`
+      )}
+    >
+      {children}
+    </main>
   );
 };
 

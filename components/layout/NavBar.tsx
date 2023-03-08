@@ -23,6 +23,7 @@ export default function NavBar({
   const [open, setOpen] = useState(false);
   const onClose = () => setOpen(false);
   const onOpen = () => setOpen(true);
+
   return (
     <nav className="flex justify-between items-center py-5 px-6 md:px-14 relative">
       {/* logo */}
@@ -41,42 +42,27 @@ export default function NavBar({
       <div className="flex items-center font-semibold text-[#4F4F4F] text-sm gap-6 md:gap-14">
         {/* medium screen and above */}
         <div className="hidden md:flex items-center font-semibold text-[#4F4F4F] text-sm gap-14">
-          <Link
-            href="/playground"
-            className="capitalize group focus:outline-none"
-          >
-            playground
-            <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-              <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)] group-hover:w-full group-focus:w-full  duration-150"></div>
-            </div>
-          </Link>
-          {isLoggedIn && (
-            <>
-              {routes.map((route) => {
-                return route.protected ? (
-                  <Link
-                    key={route.href}
-                    href={route.href}
-                    className="capitalize group focus:outline-none"
-                  >
-                    {route.label}
-                    <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-                      <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
-                    </div>
-                  </Link>
-                ) : null;
-              })}
-            </>
-          )}
+          <>
+            {routes
+              .filter((a) =>
+                isLoggedIn ? a.showOnLogIn || a.protected : !a.protected
+              )
+              .map((route) => (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className="capitalize group focus:outline-none"
+                >
+                  {route.label}
+                  <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+                    <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+                  </div>
+                </Link>
+              ))}
+          </>
 
           {!isLoggedIn && (
             <>
-              <Link href="/auth/login" className="capitalize group">
-                login
-                <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-                  <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)] group-hover:w-full group-focus:w-full  duration-150"></div>
-                </div>
-              </Link>
               <Link
                 href="/auth/signup"
                 className="border border-[#4F4F4F] rounded-lg py-2 px-3"
@@ -149,17 +135,15 @@ export default function NavBar({
                           <FiX className="text-[rgb(229, 231, 235)]" />
                         </Popover.Button>
                       </div>
-                      <Popover.Button
-                        as={Link}
-                        href="/playground"
-                        className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
-                      >
-                        playground
-                      </Popover.Button>
                       {isLoggedIn && (
                         <>
-                          {routes.map((route) => {
-                            return route.protected ? (
+                          {routes
+                            .filter((a) =>
+                              isLoggedIn
+                                ? a.showOnLogIn || a.protected
+                                : !a.protected
+                            )
+                            .map((route) => (
                               <Popover.Button
                                 as={Link}
                                 key={route.href}
@@ -167,24 +151,13 @@ export default function NavBar({
                                 className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
                               >
                                 {route.label}
-                                {/* <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-                                  <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
-                                </div> */}
                               </Popover.Button>
-                            ) : null;
-                          })}
+                            ))}
                         </>
                       )}
 
                       {!isLoggedIn && (
                         <>
-                          <Popover.Button
-                            as={Link}
-                            href="/auth/login"
-                            className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
-                          >
-                            login
-                          </Popover.Button>
                           <Popover.Button
                             as={Link}
                             href="/auth/signup"

@@ -110,7 +110,7 @@ export default function Login(p: any) {
                   src={google}
                   alt="sign in with google"
                 />
-                <p className="font-semibold ml-5 text-[#4F4F4F] capitalize">
+                <p className="font-semibold ml-5 text-[#4F4F4F] capitalize text-left">
                   Continue with Google
                 </p>
               </button>

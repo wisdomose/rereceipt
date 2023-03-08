@@ -22,6 +22,7 @@ export default async function handler(
       token,
     }),
   });
+  
   const resp = await response.json();
 
   if (resp.status) {

@@ -32,7 +32,7 @@ export type Subscription = {
   most_recent_invoice: Invoice;
 };
 
-type Plan = {
+export type Plan = {
   id: number;
   domain: string;
   name: string;
@@ -143,14 +143,14 @@ type Transaction = {
   pos_transaction_data: null;
 };
 
-export default function useSubscriptions(props: {
+export default function useSubscriptions(props?: {
   id?: string;
   customer_code?: string;
 }) {
   const { id, customer_code } = props ?? {};
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   // loading
@@ -221,12 +221,15 @@ export default function useSubscriptions(props: {
       getAllSubscriptions(id)
         .then((data) => {
           setSubscriptions(data);
-          const sub = data.find(
+          const sub1 = data.find(
             (subscription: Subscription) =>
-              subscription.status === SUBSCRIPTION_STATUS.ACTIVE ||
+              subscription.status === SUBSCRIPTION_STATUS.ACTIVE
+          );
+          const sub2 = data.find(
+            (subscription: Subscription) =>
               subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING
           );
-          setSubscription(sub ? sub : null);
+          setSubscription(sub1 ? sub1 : sub2 ? sub2 : null);
         })
         .catch((err) => {
           console.log(`transaction - ${err.message}`);
@@ -248,11 +251,12 @@ export default function useSubscriptions(props: {
         });
 
       return () => {
-        controller.abort();
+        // controller.abort();
       };
     }
   }, [id]);
 
+  // NOTE not needed now
   useEffect(() => {
     setPlansLoading(true);
     axios(`/api/billing/plans`, {
@@ -273,7 +277,7 @@ export default function useSubscriptions(props: {
       });
 
     return () => {
-      planController.abort();
+      // planController.abort();
     };
   }, []);
 

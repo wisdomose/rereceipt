@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { overrideTailwindClasses } from "tailwind-override";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   block?: boolean;
   minimal?: boolean;
   className?: string;
+  href?: string;
 };
 
 /* 
@@ -22,13 +24,10 @@ export default function Button({
   block = false,
   minimal = false,
   className = "",
+  href,
   ...props
 }: Props) {
-  return (
-    <button
-      type={type}
-      onClick={disabled ? undefined : onClick}
-      className={overrideTailwindClasses(`
+  const classStyles = overrideTailwindClasses(`
       ${
         minimal
           ? "border border-[#4F4F4F] rounded-lg py-2 px-3"
@@ -39,9 +38,23 @@ export default function Button({
             }`
       }
       ${block ? " w-full" : ""}
-      ${className}`)}
-    >
-      {props.label}
-    </button>
+      ${className}`);
+
+  return (
+    <>
+      {href ? (
+        <Link href={disabled ? "" : href} className={classStyles}>
+          {props.label}
+        </Link>
+      ) : (
+        <button
+          type={type}
+          onClick={disabled ? undefined : onClick}
+          className={classStyles}
+        >
+          {props.label}
+        </button>
+      )}
+    </>
   );
 }
