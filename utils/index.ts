@@ -130,3 +130,10 @@ export function findReceipt(name: string) {
 
   return data;
 }
+
+export function openInNewTab(link: string) {
+  const a = document.createElement("a");
+  a.href = link;
+  a.target = "_blank";
+  a.click();
+}

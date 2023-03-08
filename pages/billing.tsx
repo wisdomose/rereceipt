@@ -1,18 +1,14 @@
-import Head from "next/head";
 import Button from "../components/button";
 import Input from "../components/input";
 import Page from "../components/layout/Page";
 import useInput from "../hooks/useInput";
-import Script from "next/script";
 import useUser from "../store/user/useUser";
 import useSubscriptions, {
-  Plan,
   SUBSCRIPTION_STATUS,
-  Subscription,
 } from "../hooks/useSubscriptions";
 import { FiCheck, FiMail, FiX } from "react-icons/fi";
 import { BiCreditCard } from "react-icons/bi";
-import { dateToString, notify } from "../utils";
+import { dateToString, notify, openInNewTab } from "../utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import parser from "cron-parser";
 import Spinner from "../components/Spinner";
@@ -77,16 +73,17 @@ export default function Billing() {
         email,
         plan: selectedPlan,
       },
-    }).then((res) => {
-      console.log(res.data);
-      notify(res.data.message);
-      if (res.data.status) {
-        const a = document.createElement("a");
-        a.href = res.data.data.authorization_url;
-        a.target = "_blank";
-        a.click();
-      }
-    });
+    })
+      .then((res) => {
+        if (res.data.status) {
+          openInNewTab(res.data.data.authorization_url);
+        } else {
+          notify(res.data.message);
+        }
+      })
+      .catch((err) => {
+        notify(err.message);
+      });
   }
 
   useEffect(() => {
@@ -158,7 +155,7 @@ export default function Billing() {
   }, [selectedPlan]);
 
   useEffect(() => {
-    typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);   
+    typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);
   }, [router.query.plan]);
 
   useEffect(() => {
@@ -167,8 +164,6 @@ export default function Billing() {
 
   const enable = useCallback(
     async (code: string, token: string) => {
-      if (!subscription) return;
-
       await axios({
         url: `/api/billing/enable?code=${code}&token=${token}`,
         method: "POST",
@@ -178,12 +173,11 @@ export default function Billing() {
         })
         .catch((err: any) => {});
     },
-    [subscription]
+    []
   );
 
   const disable = useCallback(
     async (code: string, token: string) => {
-      if (!subscription) return;
       await axios({
         url: `/api/billing/disable?code=${code}&token=${token}`,
         method: "POST",
@@ -193,13 +187,11 @@ export default function Billing() {
         })
         .catch((err: any) => {});
     },
-    [subscription]
+    []
   );
 
   const create = useCallback(
     async (customer: string, plan: string) => {
-      if (!subscription) return;
-
       await axios({
         url: `/api/billing/create?customer=${customer}&plan=${plan}`,
         method: "POST",
@@ -209,7 +201,7 @@ export default function Billing() {
         })
         .catch((err: any) => {});
     },
-    [subscription]
+    []
   );
 
   const update = useCallback(async () => {
@@ -219,7 +211,7 @@ export default function Billing() {
       method: "GET",
     })
       .then((res) => {
-        console.log(res.data.link);
+        openInNewTab(res.data.link);
       })
       .catch((err: any) => {});
   }, [subscription]);
@@ -232,7 +224,6 @@ export default function Billing() {
 
   return (
     <>
-    
       <Page isProtected>
         <Page.Body>
           {/* header */}
@@ -286,7 +277,10 @@ export default function Billing() {
                       </div>
                     </div>
 
-                    <button className="hover:text-white focus:text-white hover:underline focus:underline">
+                    <button
+                      className="hover:text-white focus:text-white hover:underline focus:underline"
+                      onClick={update}
+                    >
                       edit
                     </button>
                   </div>
