@@ -25,62 +25,40 @@ export const routes = [
   {
     label: "playground",
     href: "/playground",
-    protected: false,
+    secured: false,
     showOnLogIn: true,
   },
   {
     label: "pricing",
     href: "/pricing",
-    protected: false,
+    secured: false,
     showOnLogIn: true,
   },
-  // {
-  //   label: "dashboard",
-  //   href: "/playground",
-  //   icon: RxDashboard,
-  //   protected: false,
-  // },
-  // {
-  //   label: "templates",
-  //   href: "/templates",
-  //   icon: BiBrush,
-  //   protected: true,
-  // },
   {
     label: "saved",
     href: "/saved",
-    icon: BiSave,
-    protected: true,
+    secured: true,
     showOnLogIn: true,
   },
   {
     label: "profile",
     href: "/profile",
-    icon: FiUser,
-    protected: true,
+    secured: true,
     showOnLogin: true,
   },
   {
     label: "billing",
     href: "/billing",
-    icon: FiDollarSign,
-    protected: true,
+    secured: true,
     showOnLogIn: true,
   },
   {
     label: "login",
     href: "/auth/login",
-    icon: FiLogIn,
-    protected: false,
+    secured: false,
     showOnLogIn: false,
   },
-  // {
-  //   label: "signup",
-  //   href: "/auth/signup",
-  //   icon: FiUserPlus,
-  //   protected: false,
-  // },
-] as const;
+];
 
 const version = "0.0.0 - BETA";
 
@@ -132,7 +110,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
           {routes.map((route) => {
             const showProtected = props.loggedIn
               ? true
-              : route.protected
+              : route.secured
               ? false
               : true;
             return !showProtected ? null : (
@@ -145,7 +123,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
                     : "hover:bg-white/10"
                 }`}
               >
-                <route.icon className="w-6 h-auto" />
+                {/* <route.icon className="w-6 h-auto" /> */}
                 <span className="inline-block ml-2 capitalize text-base">
                   {route.label}
                 </span>
@@ -184,7 +162,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
             <>
               {routes.map((route) => (
                 <>
-                  {!route.protected ? null : (
+                  {!route.secured ? null : (
                     <Link
                       key={route.href}
                       href={route.href}
@@ -194,7 +172,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
                           : "hover:bg-white/10"
                       }`}
                     >
-                      <route.icon className="w-6 h-auto" />
+                      {/* <route.icon className="w-6 h-auto" /> */}
                       <span className="inline-block ml-2 capitalize text-base">
                         {route.label}
                       </span>
@@ -207,7 +185,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
             <>
               {routes.map((route) => (
                 <>
-                  {route.protected ? null : (
+                  {route.secured ? null : (
                     <Link
                       key={route.href}
                       href={route.href}
@@ -217,7 +195,7 @@ const Nav = (props: Pick<PageProps, "active"> & { loggedIn: boolean }) => {
                           : "hover:bg-white/10"
                       }`}
                     >
-                      <route.icon className="w-6 h-auto" />
+                      {/* <route.icon className="w-6 h-auto" /> */}
                       <span className="inline-block ml-2 capitalize text-base">
                         {route.label}
                       </span>
