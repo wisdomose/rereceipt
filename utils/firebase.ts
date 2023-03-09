@@ -225,10 +225,15 @@ export const createTemplate = async (
  * @param id {string} saved document id optional if this is a new save
  * @returns
  */
-export const saveProgress = async (
-  data: Pick<SAVED, "data" | "name" | "type" | "img" | "templateId">,
-  id?: string
-) => {
+export const saveProgress = async ({
+  data,
+  id,
+  spaces,
+}: {
+  data: Pick<SAVED, "data" | "name" | "type" | "img" | "templateId">;
+  id?: string;
+  spaces?: number;
+}) => {
   try {
     const auth = getAuth();
     if (!auth.currentUser)
@@ -240,7 +245,7 @@ export const saveProgress = async (
     if (!id) {
       const count = await countNoOfSavedTemplates(uid);
 
-      if (count === 5) throw new Error("you have used up your save spaces");
+      if (count === spaces) throw new Error("you have used up your save spaces");
       const doc = await addDoc(collection(db, "saved"), {
         timestamp: serverTimestamp(),
         ...data,
