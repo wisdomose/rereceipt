@@ -178,3 +178,25 @@ body,
   background-color: rgba(0, 0, 0, 0.8);
   mix-blend-mode: overlay;
 }
+
+.active__pricing {
+  position: relative;
+}
+
+.active__pricing::before {
+  content: "";
+  position: absolute;
+  border-width: 2px;
+  border-color: inherit;
+  background-color: inherit;
+  width: 100%;
+  height: calc(100% - 9px);
+  top: 7px;
+  left:-9px;
+  border-radius: inherit;
+  box-sizing: content-box;
+  padding-top: 7px;
+  padding-left: 7px;
+  padding-right: 7px;
+  z-index: -1;
+}

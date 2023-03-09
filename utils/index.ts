@@ -137,3 +137,7 @@ export function openInNewTab(link: string) {
   a.target = "_blank";
   a.click();
 }
+
+export function capsFirst(string: string) {
+  return string[0].toUpperCase() + string.slice(1);
+}

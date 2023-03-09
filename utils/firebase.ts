@@ -61,7 +61,7 @@ async function createUser({
   const db = getFirestore(getApp());
 
   // create a collection with the user data
-  const resp = await fetch("/api/billing/create", {
+  const resp = await fetch("/api/billing/customer/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
