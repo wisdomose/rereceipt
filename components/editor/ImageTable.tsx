@@ -76,13 +76,18 @@ export default function ImageTable({
                         : 100 / row.length + "%",
                     ...genStyle(cell),
                   }}
-                  key={`${index}${position}`}
+                  key={`cell${index}${position}`}
                 >
                   {cell.label}
                   {cell?.items && (
                     <>
                       {cell.items.map((item, innerIndex) => (
-                        <p style={genStyle(item)}>{item.label}</p>
+                        <p
+                          key={`item${index}${position}${innerIndex}`}
+                          style={genStyle(item)}
+                        >
+                          {item.label}
+                        </p>
                       ))}
                     </>
                   )}
