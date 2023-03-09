@@ -64,13 +64,6 @@ body,
 .scrollbar::-webkit-scrollbar-button {
   display: none;
 }
-.table-equal {
-}
-.table-equal ::after {
-  content: "===";
-  display: block;
-  text-align: center;
-}
 
 .home__container {
   background: linear-gradient(

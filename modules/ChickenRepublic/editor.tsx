@@ -82,11 +82,12 @@ export default function Editor() {
             label="products"
             largeCol={1}
             headerDivider={DIVIDER.EQUAL_TO}
+            divider={DIVIDER.DASH}
           />
 
           {/* divider */}
           <div className="mb-2 tracking-[5px] overflow-hidden text-clip whitespace-nowrap">
-            ============================================================
+            {"_".padStart(100, "_")}
           </div>
 
           <>

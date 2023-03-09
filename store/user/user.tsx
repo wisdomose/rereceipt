@@ -32,7 +32,7 @@ export default function UserContextProvider({
   children: ReactNode;
 }) {
   const [user, setUser] = useState<(User & Record<string, any>) | null>(null);
-  const { subscription } = useSubscriptions(user?.billing);
+  const { subscription, subscriptionLoading } = useSubscriptions(user?.billing);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [paid, setPaid] = useState(false);
@@ -57,7 +57,7 @@ export default function UserContextProvider({
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || subscriptionLoading) return;
     setPaidLoading(true);
     const trial =
       new Timestamp(user.trial_ends_in.seconds, user.trial_ends_in.nanoseconds)
@@ -75,7 +75,7 @@ export default function UserContextProvider({
     }
 
     setPaidLoading(false);
-  }, [user, subscription]);
+  }, [user, subscription, subscriptionLoading]);
 
   const value = { user, loading, loggedIn, paid, trial, paidLoading };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
