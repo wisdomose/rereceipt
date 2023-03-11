@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run emulators:start\" \"next dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "emulators:seed": "firebase emulators:export seed",
+    "emulators:start": "firebase emulators:start --import seed"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
@@ -35,6 +37,7 @@
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",
     "autoprefixer": "^10.4.13",
+    "concurrently": "^7.6.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
     "postcss": "^8.4.21",
