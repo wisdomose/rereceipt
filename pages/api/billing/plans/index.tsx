@@ -42,9 +42,7 @@ export default async function handler(
         data: plans,
       });
     } else {
-      return res.json({
-        status: false,
-      });
+      return res.json(resp);
     }
   } catch (err: any) {
     console.log(err.response);
