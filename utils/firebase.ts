@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
   onAuthStateChanged,
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -28,6 +29,8 @@ import {
 import { DOC, DOC_TYPES, POS, RECEIPT, SAVED } from "../types";
 import { log } from "next-axiom";
 import { notify, pick } from ".";
+import { string } from "zod";
+
 enum COLLECTION {
   TEMPLATES = "templates",
   SAVED = "saved",
@@ -115,24 +118,33 @@ export const signupWithEmail = async ({
   firstname: string;
   lastname: string;
 }) => {
-  const auth = getAuth();
-  const db = getFirestore(getApp());
+  try {
+    const auth = getAuth();
+    const db = getFirestore(getApp());
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(async (user) => {
-      auth.currentUser &&
-        updateProfile(auth.currentUser, {
-          displayName: `${lastname} ${firstname}`,
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (user) => {
+        auth.currentUser &&
+          updateProfile(auth.currentUser, {
+            displayName: `${lastname} ${firstname}`,
+          });
+        // create a collection with the user data
+        createUser({
+          email: email,
+          first_name: firstname,
+          last_name: lastname,
+          uid: user.user.uid,
         });
-      // create a collection with the user data
-      createUser({
-        email: email,
-        first_name: firstname,
-        last_name: lastname,
-        uid: user.user.uid,
+      })
+      .catch((error) => {
+        console.log(error.code);
+        notify(
+          error?.code.split("/")[1].replaceAll("-", " ") ?? "Sign up failed"
+        );
       });
-    })
-    .catch((err) => {});
+  } catch (error: any) {
+    notify(error?.message ?? "Sign up failed");
+  }
 };
 
 export const loginWithEmail = async ({
@@ -152,6 +164,23 @@ export const logoutUser = async () => {
   const auth = getAuth();
   await auth.signOut();
   window.location.replace("/auth/login");
+};
+
+export const sendResetEmail = async (email: string) => {
+  try {
+    if (!string().email().safeParse(email).success)
+      throw new Error("A valid email is required");
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, email).then(() => {
+      notify("Password reset mail sent");
+    });
+  } catch (error: any) {
+    log.warn(
+      `sendResetEmail errored with "${error.message}" for email ${email}` ??
+        `sendResetEmail errored failed to send reset email to ${email}`
+    );
+    notify(error.message ?? "failed to send reset email");
+  }
 };
 
 export const fetchCurrentUser = () => {
@@ -180,7 +209,7 @@ export const fetchUserDetails = async (uid: string) => {
   if (docSnap.exists()) {
     return docSnap.data() as Data;
   }
-  throw null;
+  notify("An error occured fetching your details");
 };
 
 // firestore
@@ -245,7 +274,8 @@ export const saveProgress = async ({
     if (!id) {
       const count = await countNoOfSavedTemplates(uid);
 
-      if (count === spaces) throw new Error("you have used up your save spaces");
+      if (count === spaces)
+        throw new Error("you have used up your save spaces");
       const doc = await addDoc(collection(db, "saved"), {
         timestamp: serverTimestamp(),
         ...data,

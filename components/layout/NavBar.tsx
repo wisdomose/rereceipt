@@ -135,26 +135,24 @@ export default function NavBar({
                           <FiX className="text-[rgb(229, 231, 235)]" />
                         </Popover.Button>
                       </div>
-                      {isLoggedIn && (
-                        <>
-                          {routes
-                            .filter((a) =>
-                              isLoggedIn
-                                ? a.showOnLogIn || a.secured
-                                : !a.secured
-                            )
-                            .map((route) => (
-                              <Popover.Button
-                                as={Link}
-                                key={route.href}
-                                href={route.href}
-                                className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
-                              >
-                                {route.label}
-                              </Popover.Button>
-                            ))}
-                        </>
-                      )}
+                      {/* {isLoggedIn && ( */}
+                      <>
+                        {routes
+                          .filter((a) =>
+                            isLoggedIn ? a.showOnLogIn || a.secured : !a.secured
+                          )
+                          .map((route) => (
+                            <Popover.Button
+                              as={Link}
+                              key={route.href}
+                              href={route.href}
+                              className="capitalize group focus:outline-none px-6 py-3 w-full focus:bg-[rgb(59_130_246_/_0.1)] focus:text-[rgb(59_130_246_/_0.7)]"
+                            >
+                              {route.label}
+                            </Popover.Button>
+                          ))}
+                      </>
+                      {/* )} */}
 
                       {!isLoggedIn && (
                         <>

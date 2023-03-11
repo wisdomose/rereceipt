@@ -1,7 +1,9 @@
+import { getApp, initializeApp } from "firebase/app";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import Head from "next/head";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { initializeApp } from "firebase/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContextProvider from "../store/user/user";
@@ -18,6 +20,10 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);
+if (process.env.NODE_ENV === "development") {
+  connectFirestoreEmulator(getFirestore(), "localhost", 8080);
+  connectAuthEmulator(getAuth(), "http://localhost:9099");
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -29,7 +35,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         ></meta>
       </Head>
       <Component {...pageProps} />
-      <ToastContainer position="bottom-center" hideProgressBar pauseOnFocusLoss={false} pauseOnHover={false} />
+      <ToastContainer
+        position="bottom-center"
+        hideProgressBar
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+      />
     </UserContextProvider>
   );
 }

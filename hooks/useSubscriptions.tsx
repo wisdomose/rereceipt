@@ -379,7 +379,6 @@ export default function useSubscriptions(props?: {
           const subscription = subscriptions.find(
             (sub) => sub.subscription_code === activeSub.subscription_code
           );
-          console.log(subscription)
           subscription && setSubscription(subscription);
         }
       )

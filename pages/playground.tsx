@@ -11,6 +11,7 @@ import useUser from "../store/user/useUser";
 import Loader from "../components/layout/Loader";
 import { useRouter } from "next/router";
 import PaidProtected from "../components/layout/PaidProtected";
+import Spinner from "../components/Spinner";
 
 function getRandomBoolean() {
   // Generate a random number between 1 and 100
@@ -30,13 +31,15 @@ export default function Playground() {
   >([]);
   const { loggedIn, loading, paid, trial, paidLoading } = useUser();
   const router = useRouter();
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
 
   useEffect(() => {
-    if (paid || trial || (!loggedIn && open))
-      getAllActiveTemplates().then((a) => {
-        setReceiptReceipts(a.receipts);
-        setPosReceipts(a.pos);
-      });
+    if (paid || trial || (!loggedIn && open)) setLoadingTemplates(true);
+    getAllActiveTemplates().then((a) => {
+      setReceiptReceipts(a.receipts);
+      setPosReceipts(a.pos);
+    });
+    setLoadingTemplates(false);
   }, [paid, trial, open, loggedIn, paidLoading]);
 
   useEffect(() => {
@@ -61,45 +64,62 @@ export default function Playground() {
                 select a template to start creating your receipt
               </p>
             </div>
-            {posReceipts.length > 0 && (
-              <div className="px-1 py-6 sm:p-10">
-                <p className="font-bold">POS</p>
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-                  {posReceipts && (
-                    <>
-                      {posReceipts
-                        .filter((route) => route.type === DOC_TYPES.POS)
-                        .map((route) => (
-                          <Receipt
-                            href={"/editor/alpine?receipt=" + route.id}
-                            {...route}
-                            key={route.id}
-                          />
-                        ))}
-                    </>
-                  )}
-                </div>
+            {loadingTemplates ? (
+              <div className="my-14 flex items-center justify-center">
+                <Spinner />
               </div>
-            )}
-            {receiptReceipts.length > 0 && (
-              // <div className="px-1 py-6 sm:p-10">
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-                {receiptReceipts && (
-                  <>
-                    {receiptReceipts
-                      .filter((route) => route.type === DOC_TYPES.RECEIPT)
-                      .map((route) => (
-                        <Receipt
-                          href={"/editor/alpine?receipt=" + route.id}
-                          {...route}
-                          key={route.id}
-                        />
-                      ))}
-                  </>
+            ) : posReceipts.length > 0 || receiptReceipts.length > 0 ? (
+              <>
+                {posReceipts.length > 0 && (
+                  <div className="px-1 py-6 sm:p-10">
+                    <p className="font-bold">POS</p>
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
+                      {posReceipts && (
+                        <>
+                          {posReceipts
+                            .filter((route) => route.type === DOC_TYPES.POS)
+                            .map((route) => (
+                              <Receipt
+                                href={"/editor/alpine?receipt=" + route.id}
+                                {...route}
+                                key={route.id}
+                              />
+                            ))}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 )}
+                {receiptReceipts.length > 0 && (
+                  // <div className="px-1 py-6 sm:p-10">
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
+                    {receiptReceipts && (
+                      <>
+                        {receiptReceipts
+                          .filter((route) => route.type === DOC_TYPES.RECEIPT)
+                          .map((route) => (
+                            <Receipt
+                              href={"/editor/alpine?receipt=" + route.id}
+                              {...route}
+                              key={route.id}
+                            />
+                          ))}
+                      </>
+                    )}
+                  </div>
+                  // </div>
+                )}
+              </>
+            ) : posReceipts.length == 0 || receiptReceipts.length == 0 ? (
+              <div className="my-14 text-center text-gray-500">
+                <p>No templates found</p>
               </div>
-              // </div>
+            ) : (
+              <div className="my-14 text-center text-gray-500">
+                <p>An error occured fetching templates</p>
+              </div>
             )}
+
             {/* free trial prompt - if you are not logged in and you are given a free trial */}
             <Dialog
               open={!loggedIn && open}

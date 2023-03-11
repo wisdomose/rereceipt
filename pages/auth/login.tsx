@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import Page, { Protected } from "../../components/layout/Page";
 import Input from "../../components/input";
@@ -6,7 +6,11 @@ import useInput from "../../hooks/useInput";
 import google from "../../src/img/icons/google.png";
 import logoLight from "../../src/img/icons/logo-light.png";
 import loginImg from "../../src/img/assets/login.png";
-import { loginWithEmail, signUpWithGoogle } from "../../utils/firebase";
+import {
+  loginWithEmail,
+  sendResetEmail,
+  signUpWithGoogle,
+} from "../../utils/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
@@ -14,12 +18,19 @@ import Image from "next/image";
 import Link from "next/link";
 import NavBar from "../../components/layout/NavBar";
 import useWidth from "../../hooks/useWidth";
+import { Dialog } from "@headlessui/react";
+import { string } from "zod";
 
 export default function Login(p: any) {
   const [email, emailOption] = useInput("");
+  const [forgotEmail, forgotEmailOption, updateForgotEmail] = useInput("");
   const [password, passwordOption] = useInput("");
   const router = useRouter();
   const width = useWidth();
+  const [open, setOpen] = useState(false);
+  const [loadingPasswordReset, setLoadingPasswordReset] = useState(false);
+
+  const updateOpen = (value: boolean) => setOpen(value);
 
   useEffect(() => {
     const auth = getAuth();
@@ -31,8 +42,19 @@ export default function Login(p: any) {
     });
   }, []);
 
+  // when the modal is closed, reset the state
+  useEffect(() => {
+    if (!open) updateForgotEmail("");
+  }, [open]);
+
   async function login() {
     await loginWithEmail({ email, password });
+  }
+
+  async function resetPassword() {
+    setLoadingPasswordReset(true);
+    await sendResetEmail(forgotEmail);
+    setLoadingPasswordReset(false);
   }
 
   return (
@@ -85,10 +107,13 @@ export default function Login(p: any) {
                 labelClassName="font-semibold"
                 {...passwordOption}
               />
-              <button className="text-xs text-right ml-auto hover:underline">
+              <button
+                className="text-xs text-right ml-auto hover:underline"
+                onClick={() => updateOpen(true)}
+                type="button"
+              >
                 forgot password?
               </button>
-
               <br />
               <Button type="submit" label="Submit" onClick={() => {}} block />
 
@@ -142,6 +167,42 @@ export default function Login(p: any) {
 
         {/* </Page.Body> */}
       </main>
+
+      <Dialog
+        className="relative z-50 flex items-center justify-center"
+        open={open}
+        onClose={() => updateOpen(false)}
+      >
+        <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md" />
+        <div className="fixed inset-0 flex justify-center h-fit mt-[20vh]">
+          <Dialog.Panel className="bg-white w-[501px] max-w-[90vw] overflow-hidden rounded-xl aspect-auto relative flex flex-col items-center justify-center isolate px-6 py-10 ">
+            <div className=" w-full pb-6">
+              <h2 className="text-center capitalize text-xl font-semibold">
+                forgot password
+              </h2>
+              <p className="text-center pt-1 max-w-[80%] mx-auto">
+                Enter the email address associated with your account
+              </p>
+            </div>
+            <div className=" w-full min-w-[300px] max-w-[80%] mx-auto">
+              <Input
+                {...forgotEmailOption}
+                placeholder="email"
+                id="forgot-email"
+                type="email"
+              />
+            </div>
+            <Button
+              label="Send reset link"
+              className="mt-6"
+              disabled={
+                !forgotEmail || !string().email().safeParse(forgotEmail).success
+              }
+              onClick={resetPassword}
+            />
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </>
   );
 }
