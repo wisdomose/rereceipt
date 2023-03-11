@@ -58,7 +58,7 @@ export default function Page(props: PageProps) {
   return (
     <Protected {...props}>
       {({ user, loading }) => {
-        if ((props.isProtected && !user) || loading) return <Loader />;
+        if (loading) return <Loader />;
 
         return (
           <>
@@ -101,10 +101,15 @@ export function Protected(
       } else {
         props.isProtected && router.replace("/no-access");
       }
+      setLoading(false);
     });
-
-    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!loading && props.isProtected && !user) {
+      props.isProtected && router.replace("/no-access");
+    }
+  }, [loading]);
 
   return <>{props.children({ user, loading })}</>;
 }
