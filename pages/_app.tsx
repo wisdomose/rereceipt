@@ -7,6 +7,7 @@ import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContextProvider from "../store/user/user";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 export { reportWebVitals } from "next-axiom";
 
 const firebaseConfig = {
@@ -23,6 +24,7 @@ initializeApp(firebaseConfig);
 if (process.env.NODE_ENV === "development") {
   connectFirestoreEmulator(getFirestore(), "localhost", 8080);
   connectAuthEmulator(getAuth(), "http://localhost:9099");
+  connectStorageEmulator(getStorage(), "localhost", 9199);
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
