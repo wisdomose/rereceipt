@@ -93,7 +93,7 @@ export default function Home() {
     <div className="home__container">
       <Page>
         {/* <Page.Body > */}
-        <header className="grid lg:grid-cols-[535px,1fr] place-items-center min-h-[calc(100vh_-_78px)] px-6 md:px-14">
+        <header className="grid lg:grid-cols-[535px,1fr] place-items-center min-h-[calc(100vh_-_78px)] px-6 md:px-14 max-w-7xl mx-auto">
           <div className="relative lg:hidden h-full grid place-items-center">
             <Image src={receipt_illustrations} alt="" className="bg-cover" />
           </div>
@@ -121,7 +121,7 @@ export default function Home() {
             our customizable templates
           </p>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 justify-between gap-14 mt-14 ">
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 justify-between gap-14 mt-14 max-w-7xl mx-auto">
             {features.map((feature) => (
               <div
                 key={feature.heading}

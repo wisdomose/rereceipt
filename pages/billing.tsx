@@ -128,9 +128,9 @@ export default function Billing() {
               (distance % (1000 * 60 * 60)) / (1000 * 60)
             );
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            timer.innerHTML = `${pad(days)}:${pad(hours)}:${pad(minutes)}:${pad(
-              seconds
-            )}`;
+            timer.innerHTML = `${pad(days)}d:${pad(hours)}h:${pad(
+              minutes
+            )}m:${pad(seconds)}s`;
           }
         }, 1000);
 
@@ -169,10 +169,6 @@ export default function Billing() {
     });
     setPrices(p);
   }, [plans, subscription, subscriptionLoading, plansLoading]);
-
-  useEffect(() => {
-    selectedPlan && router.push(`/billing?plan=${selectedPlan}`);
-  }, [selectedPlan]);
 
   useEffect(() => {
     typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);
@@ -237,9 +233,27 @@ export default function Billing() {
 
   const updateSelectedPlan = (plan: string) => {
     setSelectedPlan(plan);
+    router.push(`/billing?plan=${selectedPlan}`);
   };
 
-  if (loading || !user) return <Loader />;
+  if (loading)
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <Loader />
+        </Page.Body>
+      </Page>
+    );
+
+  if (!user) {
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <p>you need to be logged in</p>
+        </Page.Body>
+      </Page>
+    );
+  }
 
   return (
     <>
@@ -256,7 +270,13 @@ export default function Billing() {
             </div>
             {/* countdown */}
             <div>
-              <p className="text-sm">Next subscription in</p>
+              <p className="text-sm">
+                {paid
+                  ? "Next payment due in"
+                  : trial
+                  ? "Trial ends in"
+                  : "loading..."}
+              </p>
               <h3 className="text-3xl font-medium" ref={timerRef}>
                 -:-:-:-
               </h3>
@@ -320,7 +340,7 @@ export default function Billing() {
               <Spinner />
             </div>
           ) : (
-            <div className="flex justify-center 2xl:justify-between flex-wrap gap-6 isolate">
+            <div className="flex justify-center 2xl:justify-between flex-wrap lg:flex-nowrap gap-6 isolate">
               {prices.map((price) => {
                 const active =
                   subscription?.plan?.plan_code === price.plan_code;
@@ -364,16 +384,22 @@ export default function Billing() {
                   >
                     <div className="flex flex-col xl:flex-row md:gap-6">
                       <div>
-                        <p className="uppercase border-2 border-black rounded-full px-5 w-fit">
-                          {price.type}
-                        </p>
-                        <p
-                          className={`pt-6 text-4xl ${
-                            active ? "grad__text" : ""
+                        <div
+                          className={`w-fit rounded-full p-[2px] oveflow-hidden ${
+                            active ? "grad__border" : "bg-black"
                           }`}
                         >
-                          ₦{price.price}
-                        </p>
+                          <div className="bg-[#fafafa] rounded-full overflow-hidden ">
+                            <p
+                              className={`uppercase rounded-full px-5 w-fit ${
+                                active ? "grad__text" : ""
+                              }`}
+                            >
+                              {price.type}
+                            </p>
+                          </div>
+                        </div>
+                        <p className={`pt-6 text-4xl`}>₦{price.price}</p>
                         <p className="pt-6 pb-6 md:pb-0 ">per month</p>
                       </div>
 

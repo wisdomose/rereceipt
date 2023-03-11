@@ -84,6 +84,14 @@ body,
   text-fill-color: transparent;
 }
 
+.grad__border {
+  background: linear-gradient(93.41deg, #ef5da8 6.58%, #5d5fef 91.52%);
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent; */
+}
+
 .section-bg {
   position: relative;
   isolation: isolate;
@@ -185,7 +193,7 @@ body,
   width: 100%;
   height: calc(100% - 9px);
   top: 7px;
-  left:-9px;
+  left: -9px;
   border-radius: inherit;
   box-sizing: content-box;
   padding-top: 7px;

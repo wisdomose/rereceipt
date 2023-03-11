@@ -37,7 +37,14 @@ export default function Saved() {
     });
   }, []);
 
-  if (loading || paidLoading) return <Loader />;
+  if (loading || paidLoading)
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <Loader />
+        </Page.Body>
+      </Page>
+    );
   return (
     <Page isProtected>
       <Page.Body>

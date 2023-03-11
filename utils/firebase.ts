@@ -7,6 +7,7 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   onAuthStateChanged,
+  updatePassword,
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getApp } from "firebase/app";
@@ -40,6 +41,7 @@ enum COLLECTION {
 enum IMAGES {
   GENERAL = "/",
   RECEIPTS = "/receipts/",
+  PROFILE = "/profile/",
 }
 
 const defaultProfile = {
@@ -188,6 +190,99 @@ export const fetchCurrentUser = () => {
   return auth.currentUser;
 };
 
+export const updateLoggedInUserPassword = async (password: string) => {
+  const auth = getAuth(getApp());
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    notify("you need to be logged in");
+    return;
+  }
+
+  try {
+    updatePassword(user, password)
+      .then(() => {
+        notify("password changed sucessfully");
+      })
+      .catch((error) => {
+        notify(error?.message ?? "Failed to update password");
+      });
+  } catch (error: any) {
+    notify(error?.message ?? "Failed to update password");
+  }
+};
+
+export const updateUserProfile = async ({
+  image,
+  phoneNumber,
+}: {
+  image?: File;
+  phoneNumber?: string;
+}) => {
+  const auth = getAuth(getApp());
+  const db = getFirestore(getApp());
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    notify("you need to be logged in");
+    return;
+  }
+
+  try {
+    let url = "";
+
+    if (image) {
+      await uploadFile({
+        file: image,
+        name: user.displayName
+          ? user.displayName?.replaceAll(" ", "-")
+          : new Date().getTime().toString(),
+        folder: IMAGES.PROFILE,
+      }).then((res) => {
+        url = res;
+      });
+    }
+
+    const update = {
+      photoURL: url ?? user?.photoURL,
+      phoneNumber: phoneNumber ?? user.phoneNumber,
+    };
+
+    // remove null fields
+    Object.keys(update).forEach((key) => {
+      if (
+        typeof update[key as keyof typeof update] !== "string" ||
+        (update[key as keyof typeof update] ?? "").length === 0
+      ) {
+        delete update[key as keyof typeof update];
+      }
+    });
+
+    if (update.phoneNumber) {
+      await updateDoc(doc(db, COLLECTION.USERS, user.uid), {
+        phoneNumber: update.phoneNumber,
+      }).catch((err) => {});
+    }
+
+    // update
+    updateProfile(user, update)
+      .then((res) => {
+        notify("Profile updated sucessfully");
+      })
+      .catch((error) => {
+        notify(error?.code ?? "Failed to update profile");
+      });
+  } catch (error: any) {
+    log.warn(
+      `updateUserProfile - message:${error?.message} code:${error?.code}` ??
+        "Failed to update profile"
+    );
+    notify(error?.code ?? "Failed to update profile");
+  }
+};
+
 type Data = {
   paid: boolean;
   trial_ends_in: {
@@ -216,12 +311,14 @@ export const fetchUserDetails = async (uid: string) => {
 export const uploadFile = async ({
   file,
   name,
+  folder,
 }: {
   file: File;
   name: string;
+  folder: IMAGES;
 }) => {
   const storage = getStorage(getApp());
-  const fileRef = ref(storage, IMAGES.RECEIPTS + name);
+  const fileRef = ref(storage, folder + name);
 
   return await uploadBytes(fileRef, file).then((snapshot) => {
     return getDownloadURL(fileRef).then((url) => {
@@ -240,7 +337,11 @@ export const createTemplate = async (
 ) => {
   const db = getFirestore(getApp());
 
-  const img = await uploadFile({ file: image, name: data.name });
+  const img = await uploadFile({
+    file: image,
+    name: data.name,
+    folder: IMAGES.RECEIPTS,
+  });
   await addDoc(collection(db, COLLECTION.TEMPLATES), {
     timestamp: serverTimestamp(),
     ...data,

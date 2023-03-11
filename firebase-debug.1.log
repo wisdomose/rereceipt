@@ -1,0 +1,54 @@
+[debug] [2023-03-11T17:06:42.965Z] ----------------------------------------------------------------------
+[debug] [2023-03-11T17:06:42.967Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Wisdom Ose\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:export seed
+[debug] [2023-03-11T17:06:42.968Z] CLI Version:   11.24.1
+[debug] [2023-03-11T17:06:42.968Z] Platform:      win32
+[debug] [2023-03-11T17:06:42.968Z] Node Version:  v16.14.2
+[debug] [2023-03-11T17:06:42.969Z] Time:          Sat Mar 11 2023 18:06:42 GMT+0100 (West Africa Standard Time)
+[debug] [2023-03-11T17:06:42.969Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-03-11T17:06:43.062Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2023-03-11T17:06:43.099Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2023-03-11T17:06:43.100Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"11.24.1","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"host":"127.0.0.1","port":4400}
+[info] i  Found running emulator hub for project rereceipt-4e5ec at http://127.0.0.1:4400 
+[info] i  Exporting data to: C:\Users\Wisdom Ose\Documents\programming\misc\img\seed 
+[debug] [2023-03-11T17:06:45.695Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2023-03-11T17:06:45.703Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2023-03-11T17:06:45.703Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"11.24.1","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"host":"127.0.0.1","port":4400}
+[debug] [2023-03-11T17:06:45.704Z] >>> [apiv2][query] POST http://127.0.0.1:4400/_admin/export [none]
+[debug] [2023-03-11T17:06:45.704Z] >>> [apiv2][body] POST http://127.0.0.1:4400/_admin/export {"path":"C:\\Users\\Wisdom Ose\\Documents\\programming\\misc\\img\\seed","initiatedBy":"emulators:export"}
+[debug] [2023-03-11T17:06:46.170Z] <<< [apiv2][status] POST http://127.0.0.1:4400/_admin/export 200
+[debug] [2023-03-11T17:06:46.171Z] <<< [apiv2][body] POST http://127.0.0.1:4400/_admin/export {"message":"OK"}
+[info] +  Export complete 
+[debug] [2023-03-11T17:06:56.209Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\Wisdom Ose\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:253:49)
+    at listOnTimeout (node:internal/timers:559:17)
+    at processTimers (node:internal/timers:502:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2023-03-11T17:07:08.212Z] ----------------------------------------------------------------------
+[debug] [2023-03-11T17:07:08.214Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Wisdom Ose\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:export seed
+[debug] [2023-03-11T17:07:08.215Z] CLI Version:   11.24.1
+[debug] [2023-03-11T17:07:08.215Z] Platform:      win32
+[debug] [2023-03-11T17:07:08.215Z] Node Version:  v16.14.2
+[debug] [2023-03-11T17:07:08.216Z] Time:          Sat Mar 11 2023 18:07:08 GMT+0100 (West Africa Standard Time)
+[debug] [2023-03-11T17:07:08.216Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-03-11T17:07:08.325Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2023-03-11T17:07:08.365Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2023-03-11T17:07:08.366Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"11.24.1","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"host":"127.0.0.1","port":4400}
+[info] i  Found running emulator hub for project rereceipt-4e5ec at http://127.0.0.1:4400 
+[info] i  Exporting data to: C:\Users\Wisdom Ose\Documents\programming\misc\img\seed 
+[debug] [2023-03-11T17:07:11.994Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2023-03-11T17:07:11.999Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2023-03-11T17:07:11.999Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"11.24.1","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"host":"127.0.0.1","port":4400}
+[debug] [2023-03-11T17:07:12.000Z] >>> [apiv2][query] POST http://127.0.0.1:4400/_admin/export [none]
+[debug] [2023-03-11T17:07:12.000Z] >>> [apiv2][body] POST http://127.0.0.1:4400/_admin/export {"path":"C:\\Users\\Wisdom Ose\\Documents\\programming\\misc\\img\\seed","initiatedBy":"emulators:export"}
+[debug] [2023-03-11T17:07:12.076Z] <<< [apiv2][status] POST http://127.0.0.1:4400/_admin/export 200
+[debug] [2023-03-11T17:07:12.076Z] <<< [apiv2][body] POST http://127.0.0.1:4400/_admin/export {"message":"OK"}
+[info] +  Export complete 
+[debug] [2023-03-11T17:07:22.106Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\Wisdom Ose\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:253:49)
+    at listOnTimeout (node:internal/timers:559:17)
+    at processTimers (node:internal/timers:502:7)
+[error] 
+[error] Error: An unexpected error has occurred.

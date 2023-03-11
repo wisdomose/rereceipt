@@ -50,7 +50,14 @@ export default function Playground() {
 
   const onClose = () => setOpen(false);
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <Page>
+        <PaidProtected open={open}>
+          <Loader />
+        </PaidProtected>
+      </Page>
+    );
 
   return (
     <Page>
