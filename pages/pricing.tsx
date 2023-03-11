@@ -7,6 +7,7 @@ import useSubscriptions, {
 } from "../hooks/useSubscriptions";
 import Loader from "../components/layout/Loader";
 import { useState, useEffect } from "react";
+import useUser from "../store/user/useUser";
 
 export const defaultPrices = [
   {
@@ -69,6 +70,7 @@ export type Price = typeof defaultPrices[number] &
 export default function Pricing() {
   const { plans, plansLoading } = useSubscriptions();
   const [prices, setPrices] = useState<Price[]>([]);
+  const { loggedIn, loading } = useUser();
   useEffect(() => {
     if (plansLoading) return;
     let p: any[] = [];
@@ -91,7 +93,7 @@ export default function Pricing() {
     setPrices(p);
   }, [plans, plansLoading]);
 
-  if (plansLoading)
+  if (plansLoading || loading)
     return (
       <Page>
         <Loader />
@@ -149,7 +151,9 @@ export default function Pricing() {
                       ))}
                     </ul>
                     <Button
-                      href={`/billing?plan=${price.plan_code}`}
+                      href={
+                        loggedIn ? `/billing?plan=${price.plan_code}` : "/login"
+                      }
                       className="block text-center"
                       label={price.active ? "Get started" : "coming soon"}
                       block
