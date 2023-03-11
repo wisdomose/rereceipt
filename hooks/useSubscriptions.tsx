@@ -225,6 +225,16 @@ export default function useSubscriptions(props?: {
   const [transactionsLoading, setTransactionsLoading] = useState(true);
 
   // TODO - error states
+  const [subscriptionError, setSubscriptionError] = useState<string | null>(
+    null
+  );
+  const [plansError, setPlansError] = useState<string | null>(null);
+  const [subscriptionsError, setSubscriptionsError] = useState<string | null>(
+    null
+  );
+  const [transactionsError, setTransactionsError] = useState<string | null>(
+    null
+  );
 
   let controller = new AbortController();
   let planController = new AbortController();
@@ -306,6 +316,7 @@ export default function useSubscriptions(props?: {
         })
         .catch((err) => {
           console.log(`transaction - ${err.message}`);
+          setSubscriptionsError("An error occured");
         })
         .finally(() => {
           // setSubscriptionLoading(false);
@@ -318,6 +329,7 @@ export default function useSubscriptions(props?: {
         })
         .catch((err) => {
           console.log(`transaction - ${err.message}`);
+          setTransactionsError("An error occured");
         })
         .finally(() => {
           setTransactionsLoading(false);
@@ -344,6 +356,7 @@ export default function useSubscriptions(props?: {
       })
       .catch((err: any) => {
         console.log(err.message);
+        setPlansError("An error occured");
       })
       .finally(() => {
         setPlansLoading(false);
@@ -384,6 +397,7 @@ export default function useSubscriptions(props?: {
       )
       .catch((err: any) => {
         console.log(err.message);
+        setSubscriptionError("An error occured");
       })
       .finally(() => {
         setSubscriptionLoading(false);
@@ -401,6 +415,10 @@ export default function useSubscriptions(props?: {
     subscriptionsLoading,
     plansLoading,
     transactionsLoading,
+    subscriptionError,
+    subscriptionsError,
+    plansError,
+    transactionsError,
     plans,
     transactions,
   };
