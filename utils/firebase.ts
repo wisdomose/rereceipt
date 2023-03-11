@@ -118,24 +118,33 @@ export const signupWithEmail = async ({
   firstname: string;
   lastname: string;
 }) => {
-  const auth = getAuth();
-  const db = getFirestore(getApp());
+  try {
+    const auth = getAuth();
+    const db = getFirestore(getApp());
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(async (user) => {
-      auth.currentUser &&
-        updateProfile(auth.currentUser, {
-          displayName: `${lastname} ${firstname}`,
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (user) => {
+        auth.currentUser &&
+          updateProfile(auth.currentUser, {
+            displayName: `${lastname} ${firstname}`,
+          });
+        // create a collection with the user data
+        createUser({
+          email: email,
+          first_name: firstname,
+          last_name: lastname,
+          uid: user.user.uid,
         });
-      // create a collection with the user data
-      createUser({
-        email: email,
-        first_name: firstname,
-        last_name: lastname,
-        uid: user.user.uid,
+      })
+      .catch((error) => {
+        console.log(error.code);
+        notify(
+          error?.code.split("/")[1].replaceAll("-", " ") ?? "Sign up failed"
+        );
       });
-    })
-    .catch((err) => {});
+  } catch (error: any) {
+    notify(error?.message ?? "Sign up failed");
+  }
 };
 
 export const loginWithEmail = async ({
@@ -200,7 +209,7 @@ export const fetchUserDetails = async (uid: string) => {
   if (docSnap.exists()) {
     return docSnap.data() as Data;
   }
-  throw null;
+  notify("An error occured fetching your details");
 };
 
 // firestore

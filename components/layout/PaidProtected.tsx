@@ -20,6 +20,7 @@ export default function PaidProtected({
   const [noAccess, setNoAccess] = useState(true);
 
   useEffect(() => {
+    // console.log({ paid, trial, open, loggedIn, paidLoading, loading });
     if (loading || paidLoading) return;
     if ((!paid && !trial && loggedIn) || (!loggedIn && !open)) {
       setNoAccess(true);

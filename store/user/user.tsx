@@ -1,4 +1,9 @@
-import { User, getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  User,
+  UserCredential,
+  getAuth,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { fetchUserDetails } from "../../utils/firebase";
 import useSubscriptions, {
@@ -43,13 +48,20 @@ export default function UserContextProvider({
   // -1 unlimited
   const [spaces, setSpaces] = useState(0);
 
+  async function updateUser(user: User) {
+    await fetchUserDetails(user.uid)
+      .then((data) => {
+        setUser({ ...data, ...user });
+      })
+      .catch((err) => {
+      });
+  }
+
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchUserDetails(user.uid).then((data) => {
-          setUser({ ...data, ...user });
-        });
+        updateUser(user);
         setLoggedIn(true);
         setLoading(false);
       } else {
@@ -61,7 +73,7 @@ export default function UserContextProvider({
   }, []);
 
   useEffect(() => {
-    if (!user || subscriptionLoading) return;
+    if (!user || subscriptionLoading || !subscription) return;
     setPaidLoading(true);
     const trial =
       new Timestamp(user.trial_ends_in.seconds, user.trial_ends_in.nanoseconds)
