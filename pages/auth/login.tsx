@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
-import Page, { Protected } from "../../components/layout/Page";
 import Input from "../../components/input";
 import useInput from "../../hooks/useInput";
 import google from "../../src/img/icons/google.png";
