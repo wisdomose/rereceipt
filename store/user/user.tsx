@@ -51,10 +51,9 @@ export default function UserContextProvider({
   async function updateUser(user: User) {
     await fetchUserDetails(user.uid)
       .then((data) => {
-        setUser({ ...data, ...user });
+        setUser({ ...user, ...data });
       })
-      .catch((err) => {
-      });
+      .catch((err) => {});
   }
 
   useEffect(() => {
