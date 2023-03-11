@@ -54,20 +54,34 @@ type PageProps = Props & {
   active?: typeof routes[number]["label"];
 };
 
-export default function Page(props: PageProps) {
-  return (
-    <Protected {...props}>
-      {({ user, loading }) => {
-        if (loading) return <Loader />;
+export default function Page({ isProtected = false, ...props }: PageProps) {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-        return (
-          <>
-            <NavBar isLoggedIn={!!user} user={user} />
-            {props.children}
-          </>
-        );
-      }}
-    </Protected>
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(auth.currentUser);
+      } else {
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loading && isProtected && !user) {
+      router.replace("/no-access");
+    }
+  }, [loading, user, isProtected]);
+
+  if (loading) return <Loader />;
+  return (
+    <>
+      <NavBar isLoggedIn={!!user} user={user} />
+      {props.children}
+    </>
   );
 }
 
@@ -82,34 +96,3 @@ Page.Body = function Body({ className = "", children }: Props) {
     </main>
   );
 };
-
-export function Protected(
-  props: Pick<PageProps, "isProtected"> & {
-    children: (props: { user: User | null; loading: boolean }) => ReactElement;
-  }
-) {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // redirect if no user is loggedin
-  useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(auth.currentUser);
-      } else {
-        props.isProtected && router.replace("/no-access");
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!loading && props.isProtected && !user) {
-      props.isProtected && router.replace("/no-access");
-    }
-  }, [loading]);
-
-  return <>{props.children({ user, loading })}</>;
-}

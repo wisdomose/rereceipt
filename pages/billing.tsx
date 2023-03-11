@@ -171,10 +171,6 @@ export default function Billing() {
   }, [plans, subscription, subscriptionLoading, plansLoading]);
 
   useEffect(() => {
-    selectedPlan && router.push(`/billing?plan=${selectedPlan}`);
-  }, [selectedPlan]);
-
-  useEffect(() => {
     typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);
   }, [router.query.plan]);
 
@@ -237,9 +233,10 @@ export default function Billing() {
 
   const updateSelectedPlan = (plan: string) => {
     setSelectedPlan(plan);
+    router.push(`/billing?plan=${selectedPlan}`);
   };
 
-  if (loading || !user)
+  if (loading)
     return (
       <Page isProtected>
         <Page.Body>
@@ -247,6 +244,16 @@ export default function Billing() {
         </Page.Body>
       </Page>
     );
+
+  if (!user) {
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <p>you need to be logged in</p>
+        </Page.Body>
+      </Page>
+    );
+  }
 
   return (
     <>

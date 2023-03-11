@@ -51,7 +51,7 @@ export default function Profile() {
     if (!openPassword) updateNewPassword("");
   }, [openPassword]);
 
-  if (!user || loading)
+  if (loading)
     return (
       <Page isProtected>
         <Page.Body>
@@ -59,6 +59,16 @@ export default function Profile() {
         </Page.Body>
       </Page>
     );
+
+  if (!user) {
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <p>you need to be logged in</p>
+        </Page.Body>
+      </Page>
+    );
+  }
 
   return (
     <Page isProtected>
