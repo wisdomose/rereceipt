@@ -11,8 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // not being used for now
-  res.end();
   if (req.method !== "POST") return res.end();
 
   const response = await fetch(`https://api.paystack.co/customer`, {
