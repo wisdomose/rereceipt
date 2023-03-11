@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContextProvider from "../store/user/user";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
+import ErrorBoundary from "../components/layout/ErrorBoundary";
 export { reportWebVitals } from "next-axiom";
 
 const firebaseConfig = {
@@ -36,7 +37,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         ></meta>
       </Head>
-      <Component {...pageProps} />
+      <ErrorBoundary>
+        <Component {...pageProps} />
+      </ErrorBoundary>
       <ToastContainer
         position="bottom-center"
         hideProgressBar
