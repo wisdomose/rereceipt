@@ -36,6 +36,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "9199",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {
