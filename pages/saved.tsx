@@ -11,11 +11,13 @@ import Loader from "../components/layout/Loader";
 import oops from "../src/img/assets/oops.png";
 import Image from "next/image";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import useUser from "../store/user/useUser";
 
 export default function Saved() {
   const [saved, setSaved] = useState<SAVED[]>([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState<number | undefined>(undefined);
+  const { spaces, paidLoading } = useUser();
 
   useEffect(() => {
     const auth = getAuth();
@@ -35,7 +37,7 @@ export default function Saved() {
     });
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading || paidLoading) return <Loader />;
   return (
     <Page isProtected>
       <Page.Body>
@@ -49,7 +51,13 @@ export default function Saved() {
                 <p className="text-sm">pick up from where you last stopped</p>
               </div>
 
-              <p>{count}/5 slots used</p>
+              {spaces > 0 ? (
+                <p>
+                  {count}/{spaces} slots used
+                </p>
+              ) : (
+                <p>{count} slots used</p>
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10">

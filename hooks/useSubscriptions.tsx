@@ -48,6 +48,71 @@ export type Plan = {
   updatedAt: string;
 };
 
+type PaystackCustomer = {
+  transactions: never[];
+  subscriptions: {
+    id: number;
+    domain: string;
+    status: string;
+    subscription_code: string;
+    email_token: string;
+    amount: number;
+    cron_expression: string;
+    next_payment_date: string;
+    open_invoice: null;
+    createdAt: string;
+    integration: number;
+    plan: {};
+    authorization: {
+      exp_month: null;
+      exp_year: null;
+      account_name: null;
+    };
+    customer: {
+      international_format_phone: null;
+    };
+    invoices: never[];
+    invoices_history: never[];
+    invoice_limit: number;
+    split_code: null;
+    most_recent_invoice: null;
+  }[];
+  authorizations: {
+    authorization_code: string;
+    bin: string;
+    last4: string;
+    exp_month: string;
+    exp_year: string;
+    channel: string;
+    card_type: string;
+    bank: string;
+    country_code: string;
+    brand: string;
+    reusable: boolean;
+    signature: string;
+    account_name: null;
+  }[];
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: null;
+  metadata: null;
+  domain: string;
+  customer_code: string;
+  risk_action: string;
+  id: number;
+  integration: number;
+  createdAt: string;
+  updatedAt: string;
+  created_at: string;
+  updated_at: string;
+  total_transactions: number;
+  total_transaction_value: never[];
+  dedicated_account: null;
+  identified: boolean;
+  identifications: null;
+};
+
 type Authorization = {
   authorization_code: string;
   bin: string;
@@ -159,6 +224,8 @@ export default function useSubscriptions(props?: {
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true);
   const [transactionsLoading, setTransactionsLoading] = useState(true);
 
+  // TODO - error states
+
   let controller = new AbortController();
   let planController = new AbortController();
 
@@ -212,6 +279,7 @@ export default function useSubscriptions(props?: {
     }
   }
 
+  // get all subscriptions and transactions for a user
   useEffect(() => {
     if (id) {
       setSubscriptionLoading(true);
@@ -221,21 +289,26 @@ export default function useSubscriptions(props?: {
       getAllSubscriptions(id)
         .then((data) => {
           setSubscriptions(data);
-          const sub1 = data.find(
-            (subscription: Subscription) =>
-              subscription.status === SUBSCRIPTION_STATUS.ACTIVE
-          );
-          const sub2 = data.find(
-            (subscription: Subscription) =>
-              subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING
-          );
-          setSubscription(sub1 ? sub1 : sub2 ? sub2 : null);
+          // const sub1 = data.find(
+          //   (subscription: Subscription) =>
+          //     subscription.status === SUBSCRIPTION_STATUS.ACTIVE
+          // );
+          // const sub2 = data.find(
+          //   (subscription: Subscription) =>
+          //     subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING
+          // );
+
+          // const sub3 = data.find(
+          //   (subscription: Subscription) =>
+          //     subscription.status === SUBSCRIPTION_STATUS.ATTENTION
+          // );
+          // setSubscription(sub1 ? sub1 : sub2 ? sub2 : sub3 ? sub3 : null);
         })
         .catch((err) => {
           console.log(`transaction - ${err.message}`);
         })
         .finally(() => {
-          setSubscriptionLoading(false);
+          // setSubscriptionLoading(false);
           setSubscriptionsLoading(false);
         });
 
@@ -256,7 +329,7 @@ export default function useSubscriptions(props?: {
     }
   }, [id]);
 
-  // NOTE not needed now
+  // fetch all plans
   useEffect(() => {
     setPlansLoading(true);
     axios(`/api/billing/plans`, {
@@ -281,27 +354,46 @@ export default function useSubscriptions(props?: {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!customer_code) return;
-  //   axios(`/api/billing/customer/${customer_code}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     signal: planController.signal,
-  //   })
-  //     .then(({ data }) => {
-  //       // console.log(data);
-  //       // setPlans(data.data);
-  //     })
-  //     .catch((err: any) => {
-  //       console.log(err.message);
-  //     });
+  // fetch a customers details and store the active subscription
+  useEffect(() => {
+    if (!customer_code || subscriptions.length === 0) return;
 
-  //   return () => {
-  //     planController.abort();
-  //   };
-  // }, [customer_code]);
+    setSubscriptionLoading(true);
+
+    axios(`/api/billing/customer/${customer_code}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      signal: planController.signal,
+    })
+      // TODO: if customer.subscriptions array is empty
+      .then(
+        ({
+          data,
+        }: {
+          data: { status: boolean; message: string; data: PaystackCustomer };
+        }) => {
+          const customer = data.data;
+          const activeSub = customer.subscriptions[0];
+          const subscription = subscriptions.find(
+            (sub) => sub.subscription_code === activeSub.subscription_code
+          );
+          console.log(subscription)
+          subscription && setSubscription(subscription);
+        }
+      )
+      .catch((err: any) => {
+        console.log(err.message);
+      })
+      .finally(() => {
+        setSubscriptionLoading(false);
+      });
+
+    // return () => {
+    //   planController.abort();
+    // };
+  }, [customer_code, subscriptions]);
 
   return {
     subscriptions,

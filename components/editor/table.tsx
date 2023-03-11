@@ -8,16 +8,18 @@ import {
   RiDeleteColumn,
   RiDeleteRow,
 } from "react-icons/ri";
+import { BiLayerPlus, BiLayerMinus } from "react-icons/bi";
 import { FiPlusCircle, FiTrash2 } from "react-icons/fi";
 
 export enum DIVIDER {
-  DASH = "-",
+  DASH = "_",
   EQUAL_TO = "=",
 }
 
 export type TableProps = {
   label?: RECEIPT_KEY | POS_KEY;
   headerDivider?: DIVIDER;
+  divider?: DIVIDER;
   subDetails?: boolean;
   subLabels?: string[];
   largeCol?: number;
@@ -32,6 +34,7 @@ export default function Table<T extends Record<string, any>>({
   headerDivider,
   subDetails = false,
   subLabels,
+  divider,
   largeCol = 0,
   basic = false,
   hasHeader = true,
@@ -39,7 +42,14 @@ export default function Table<T extends Record<string, any>>({
   const label = "products";
   const { structure, setStructure } = useEditor();
 
-  const { addColumn, addRow, deleteColumn, deleteRow } = useTable();
+  const {
+    addColumn,
+    addRow,
+    deleteColumn,
+    deleteRow,
+    deleteSubColumn,
+    addSubColumn,
+  } = useTable();
 
   const btnStyle =
     "p-2 grid place-items-center hover:text-black hover:bg-gray-100 text-gray-900";
@@ -119,7 +129,7 @@ export default function Table<T extends Record<string, any>>({
   return (
     <div className="relative group/table">
       {/* menu bar */}
-      <div className="absolute hidden group-focus-within/table:flex flex-col left-0 -top-0 -translate-x-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden">
+      <div className="absolute hidden group-focus-within/table:flex flex-col left-0 -top-0 -translate-x-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden z-10">
         <button className={btnStyle} onClick={addColumn}>
           <RiInsertColumnRight className={svgStyle} />
         </button>
@@ -132,59 +142,97 @@ export default function Table<T extends Record<string, any>>({
         <button className={btnStyle} onClick={() => deleteRow()}>
           <RiDeleteRow className={svgStyle} />
         </button>
+        <button className={btnStyle} onClick={() => addSubColumn()}>
+          <BiLayerPlus className={svgStyle} />
+        </button>
+        <button className={btnStyle} onClick={() => deleteSubColumn()}>
+          <BiLayerMinus className={svgStyle} />
+        </button>
       </div>
 
-      <div className="w-full">
+      <div style={{ maxWidth: structure.settings.width }}>
         <div className="table" tabIndex={-1}>
-          {structure[label].map(({ data: row }, index, elems) => (
-            // <>
-            <div
-              key={"row" + index}
-              className={`table-row w-full ${
-                headerDivider && index == 0 ? "table-equal" : ""
-              }`}
-            >
-              {row.map((cell, position) => (
+          {hasHeader && (
+            <>
+              <div className={`table-row w-full`}>
+                {structure[label][0].data.map((header, index) => (
+                  <div
+                    className="table-cell"
+                    style={{
+                      width:
+                        structure[label][0].data.length <= 4
+                          ? index === largeCol
+                            ? "50%"
+                            : 50 / (structure[label][0].data.length - 1) + "%"
+                          : 100 / structure[label][0].data.length + "%",
+                    }}
+                    key={`${header.label}`}
+                  >
+                    <Input label={label} index={[0, index]} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          {hasHeader && divider && (
+            <div className="table-row overflow-hidden">
+              <td
+                className="table-cell overflow-hidden w-full"
+                colSpan={structure[label][0].data.length}
+              >
                 <div
-                  className="table-cell"
+                  className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap"
                   style={{
-                    width:
-                      row.length <= 4
-                        ? position === largeCol
-                          ? "50%"
-                          : 50 / (row.length - 1) + "%"
-                        : 100 / row.length + "%",
+                    maxWidth:
+                      Number(structure.settings.width.slice(0, -2)) - 12 + "px",
                   }}
-                  key={`${index}${position}`}
                 >
-                  <Input label={label} index={[index, position]} />
-                  {cell?.items && (
-                    <>
-                      {(cell.items as Record<string, any>[]).map(
-                        (item, innerIndex) => (
+                  {divider.padStart(100, divider)}
+                </div>
+              </td>
+            </div>
+          )}
+          {structure[label]
+            .slice(hasHeader ? 1 : 0)
+            .map(({ data: row }, index) => (
+              <div key={"row" + index} className={`table-row w-full`}>
+                {row.map((cell, position) => (
+                  <div
+                    className="table-cell"
+                    style={{
+                      width:
+                        row.length <= 4
+                          ? position === largeCol
+                            ? "50%"
+                            : 50 / (row.length - 1) + "%"
+                          : 100 / row.length + "%",
+                    }}
+                    key={`${index}${position}`}
+                  >
+                    <Input
+                      label={label}
+                      index={[index + (hasHeader ? 1 : 0), position]}
+                    />
+                    {cell?.items && (
+                      <>
+                        {cell.items.map((item, innerIndex) => (
                           <Input
                             key={`${index}${position}${innerIndex}`}
                             label={label}
                             subLabel="items"
-                            index={[index, position, innerIndex]}
+                            index={[
+                              index + (hasHeader ? 1 : 0),
+                              position,
+                              innerIndex,
+                            ]}
                           />
-                        )
-                      )}
-                    </>
-                  )}
-                </div>
-              ))}
-              {/* divider */}
-              {/* {headerDivider && index == 0 && (
-                  <div className="table-row w-full mb-2">
-                    <p className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap bg-green-200">
-                      ============================================================
-                    </p>
+                        ))}
+                      </>
+                    )}
                   </div>
-                )} */}
-              {/* </> */}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
         </div>
       </div>
     </div>

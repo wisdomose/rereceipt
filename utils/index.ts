@@ -130,3 +130,14 @@ export function findReceipt(name: string) {
 
   return data;
 }
+
+export function openInNewTab(link: string) {
+  const a = document.createElement("a");
+  a.href = link;
+  a.target = "_blank";
+  a.click();
+}
+
+export function capsFirst(string: string) {
+  return string[0].toUpperCase() + string.slice(1);
+}

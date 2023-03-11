@@ -45,7 +45,7 @@ export default function NavBar({
           <>
             {routes
               .filter((a) =>
-                isLoggedIn ? a.showOnLogIn || a.protected : !a.protected
+                isLoggedIn ? a.showOnLogIn || a.secured : !a.secured
               )
               .map((route) => (
                 <Link
@@ -140,8 +140,8 @@ export default function NavBar({
                           {routes
                             .filter((a) =>
                               isLoggedIn
-                                ? a.showOnLogIn || a.protected
-                                : !a.protected
+                                ? a.showOnLogIn || a.secured
+                                : !a.secured
                             )
                             .map((route) => (
                               <Popover.Button

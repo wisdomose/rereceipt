@@ -1,18 +1,14 @@
-import Head from "next/head";
 import Button from "../components/button";
 import Input from "../components/input";
 import Page from "../components/layout/Page";
 import useInput from "../hooks/useInput";
-import Script from "next/script";
 import useUser from "../store/user/useUser";
 import useSubscriptions, {
-  Plan,
   SUBSCRIPTION_STATUS,
-  Subscription,
 } from "../hooks/useSubscriptions";
 import { FiCheck, FiMail, FiX } from "react-icons/fi";
 import { BiCreditCard } from "react-icons/bi";
-import { dateToString, notify } from "../utils";
+import { capsFirst, dateToString, notify, openInNewTab } from "../utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import parser from "cron-parser";
 import Spinner from "../components/Spinner";
@@ -44,6 +40,7 @@ export default function Billing() {
   const router = useRouter();
   // used to select the plan for first purchase
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   function submit() {
     //@ts-ignore
@@ -70,27 +67,41 @@ export default function Billing() {
     handler.openIframe();
   }
 
-  async function init() {
+  const init = useCallback(async () => {
+    const plan = plans.find((plan) => plan.plan_code === selectedPlan);
+    if (!plan) {
+      notify("Select a valid plan");
+      return;
+    }
     await axios("/api/billing/init", {
       method: "POST",
       data: {
         email,
         plan: selectedPlan,
       },
-    }).then((res) => {
-      console.log(res.data);
-      notify(res.data.message);
-      if (res.data.status) {
-        const a = document.createElement("a");
-        a.href = res.data.data.authorization_url;
-        a.target = "_blank";
-        a.click();
-      }
-    });
-  }
+    })
+      .then((res) => {
+        if (res.data.status) {
+          openInNewTab(res.data.data.authorization_url);
+        } else {
+          notify(res.data.message);
+        }
+      })
+      .catch((err) => {
+        notify(err.message);
+      });
+  }, [plans, selectedPlan]);
 
   useEffect(() => {
     if (!subscription) return;
+
+    if (subscription.status === SUBSCRIPTION_STATUS.ATTENTION) {
+      setNotice("There was an error billing your account");
+    } else if (subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING) {
+      setNotice(
+        "After this month, you will not have access to your priviledges"
+      );
+    }
 
     const timer = timerRef?.current;
     if (subscription && timer !== null) {
@@ -129,87 +140,87 @@ export default function Billing() {
   }, [subscription]);
 
   useEffect(() => {
-    if (plansLoading || subscriptionsLoading) return;
+    if (plansLoading || subscriptionLoading) return;
     let p: any[] = [];
 
     defaultPrices.forEach((price) => {
       const plan = plans.find(
         (plan) => plan.name.toLowerCase() === price.type.toLowerCase()
       );
-      if (plan) {
-        const sub = subscriptions.find(
-          (sub) => sub.plan.plan_code === plan.plan_code
-        );
+      if (plan && subscription?.plan.plan_code === plan.plan_code) {
         p.push({
           ...price,
           price: plan.amount,
           plan_code: plan.plan_code,
-          email_token: sub?.email_token,
-          subscription_code: sub?.subscription_code,
-          status: sub?.status,
+          email_token: subscription?.email_token,
+          subscription_code: subscription?.subscription_code,
+          status: subscription?.status,
+        });
+      } else if (plan) {
+        p.push({
+          ...price,
+          price: plan.amount,
+          plan_code: plan.plan_code,
+          email_token: "",
+          subscription_code: "",
+          status: "",
         });
       }
     });
     setPrices(p);
-  }, [plans, subscriptions, subscriptionsLoading, plansLoading]);
+  }, [plans, subscription, subscriptionLoading, plansLoading]);
 
   useEffect(() => {
     selectedPlan && router.push(`/billing?plan=${selectedPlan}`);
   }, [selectedPlan]);
 
   useEffect(() => {
-    typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);   
+    typeof router.query.plan === "string" && setSelectedPlan(router.query.plan);
   }, [router.query.plan]);
 
   useEffect(() => {
     if (user) updateEmail(user.email ?? "");
   }, [user]);
 
-  const enable = useCallback(
-    async (code: string, token: string) => {
-      if (!subscription) return;
-
-      await axios({
-        url: `/api/billing/enable?code=${code}&token=${token}`,
-        method: "POST",
+  const enable = useCallback(async (code: string, token: string) => {
+    await axios({
+      url: `/api/billing/enable?code=${code}&token=${token}`,
+      method: "POST",
+    })
+      .then((res) => {
+        notify(res.data.message);
+        router.reload();
       })
-        .then((res) => {
-          notify(res.data.message);
-        })
-        .catch((err: any) => {});
-    },
-    [subscription]
-  );
+      .catch((err: any) => {});
+  }, []);
 
-  const disable = useCallback(
-    async (code: string, token: string) => {
-      if (!subscription) return;
-      await axios({
-        url: `/api/billing/disable?code=${code}&token=${token}`,
-        method: "POST",
+  const disable = useCallback(async (code: string, token: string) => {
+    await axios({
+      url: `/api/billing/disable?code=${code}&token=${token}`,
+      method: "POST",
+    })
+      .then((res) => {
+        notify(res.data.message);
+        router.reload();
       })
-        .then((res) => {
-          notify(res.data.message);
-        })
-        .catch((err: any) => {});
-    },
-    [subscription]
-  );
+      .catch((err: any) => {});
+  }, []);
 
   const create = useCallback(
     async (customer: string, plan: string) => {
-      if (!subscription) return;
-
       await axios({
-        url: `/api/billing/create?customer=${customer}&plan=${plan}`,
+        url: `/api/billing/create?customer=${customer}&plan=${plan}&id=${
+          user?.billing?.id ?? ""
+        }`,
         method: "POST",
       })
         .then((res) => {
           notify(res.data.message);
+          router.reload();
         })
         .catch((err: any) => {});
     },
-    [subscription]
+    [user]
   );
 
   const update = useCallback(async () => {
@@ -219,7 +230,7 @@ export default function Billing() {
       method: "GET",
     })
       .then((res) => {
-        console.log(res.data.link);
+        openInNewTab(res.data.link);
       })
       .catch((err: any) => {});
   }, [subscription]);
@@ -232,9 +243,10 @@ export default function Billing() {
 
   return (
     <>
-    
       <Page isProtected>
         <Page.Body>
+          {/* @ts-ignore */}
+          <>{notice && <marquee>{notice}</marquee>}</>
           {/* header */}
           <div className="py-10 border-b border-b-gray-300 flex justify-between gap-14 items-center">
             {/* title */}
@@ -267,7 +279,8 @@ export default function Billing() {
                       </div>
                       <div>
                         <p>
-                          Master ending with{" "}
+                          {capsFirst(subscription.authorization.card_type)}{" "}
+                          ending with{" "}
                           <span className="font-semibold">
                             {subscription.authorization.last4}
                           </span>
@@ -286,7 +299,10 @@ export default function Billing() {
                       </div>
                     </div>
 
-                    <button className="hover:text-white focus:text-white hover:underline focus:underline">
+                    <button
+                      className="hover:text-white focus:text-white hover:underline focus:underline"
+                      onClick={update}
+                    >
                       edit
                     </button>
                   </div>
@@ -304,44 +320,60 @@ export default function Billing() {
               <Spinner />
             </div>
           ) : (
-            <div className="flex justify-center 2xl:justify-between flex-wrap gap-6">
+            <div className="flex justify-center 2xl:justify-between flex-wrap gap-6 isolate">
               {prices.map((price) => {
                 const active =
                   subscription?.plan?.plan_code === price.plan_code;
-                const firstPurchase = subscriptions.length === 0;
+                const nonRenewing =
+                  price?.status === SUBSCRIPTION_STATUS.NON_RENEWING;
+                const attention =
+                  price?.status === SUBSCRIPTION_STATUS.ATTENTION;
+                const completed =
+                  price?.status === SUBSCRIPTION_STATUS.COMPLETED;
+                const cancelled =
+                  price?.status === SUBSCRIPTION_STATUS.CANCELLED;
                 const hasPurchased = !!price.subscription_code;
+                const firstPurchase = subscriptions.length === 0;
+
                 const action = firstPurchase
                   ? () => updateSelectedPlan(price.plan_code)
+                  : active && nonRenewing
+                  ? () =>
+                      create(
+                        user.billing.customer_code as string,
+                        price.plan_code as string
+                      )
                   : active
                   ? () =>
                       disable(
                         price.subscription_code as string,
                         price.email_token as string
                       )
-                  : hasPurchased
-                  ? () =>
-                      enable(
-                        price.subscription_code as string,
-                        price.email_token as string
-                      )
-                  : !hasPurchased
-                  ? () =>
+                  : () =>
                       create(
                         user.billing.customer_code as string,
                         price.plan_code as string
-                      )
-                  : undefined;
+                      );
+
                 return (
                   <div
                     key={price.type}
-                    className="border-2 rounded-xl p-6 border-black max-w-[380px] w-full"
+                    className={`border-2 rounded-xl p-6 border-black max-w-[380px] w-full bg-[#FAFAFA] ${
+                      active ? "active__pricing" : ""
+                    }`}
                   >
                     <div className="flex flex-col xl:flex-row md:gap-6">
                       <div>
                         <p className="uppercase border-2 border-black rounded-full px-5 w-fit">
                           {price.type}
                         </p>
-                        <p className="pt-6 text-4xl">₦{price.price}</p>
+                        <p
+                          className={`pt-6 text-4xl ${
+                            active ? "grad__text" : ""
+                          }`}
+                        >
+                          ₦{price.price}
+                        </p>
                         <p className="pt-6 pb-6 md:pb-0 ">per month</p>
                       </div>
 
@@ -362,18 +394,22 @@ export default function Billing() {
                       label={
                         firstPurchase && selectedPlan === price.plan_code
                           ? "Selected"
-                          : price.status === SUBSCRIPTION_STATUS.ACTIVE
-                          ? "Disable plan"
+                          : firstPurchase
+                          ? "Select"
+                          : active && nonRenewing
+                          ? "Enable plan"
                           : active
-                          ? price.status ?? "Current plan"
+                          ? "Disable plan"
+                          : nonRenewing
+                          ? "Upgrade plan"
                           : "Upgrade plan"
                       }
                       block
                       className="mt-7"
                       onClick={action}
                       disabled={
-                        (firstPurchase && selectedPlan === price.plan_code) ||
-                        (price.status !== SUBSCRIPTION_STATUS.ACTIVE && active)
+                        firstPurchase && selectedPlan === price.plan_code
+                        // (price.status !== SUBSCRIPTION_STATUS.ACTIVE && active)
                       }
                     />
                   </div>
@@ -383,26 +419,9 @@ export default function Billing() {
           )}
 
           <>
-            {!subscriptionsLoading && subscriptions.length >= 0 && (
-              <div>
-                <form
-                  className="max-w-md mx-auto"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    init();
-                  }}
-                >
-                  <Input
-                    {...value}
-                    id="email"
-                    label="email"
-                    placeholder="email"
-                    type="email"
-                    required
-                  />
-                  <br />
-                  <Button label="pay" type="submit" />
-                </form>
+            {!subscriptionsLoading && subscriptions.length === 0 && (
+              <div className="max-w-[100px] mx-auto mt-14">
+                <Button label="Pay" type="submit" onClick={init} block />
               </div>
             )}
           </>
@@ -482,10 +501,6 @@ export default function Billing() {
               </>
             )}
           </>
-
-          {/* <div className="my-6">
-            
-          </div> */}
         </Page.Body>
       </Page>
     </>

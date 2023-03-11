@@ -13,6 +13,7 @@ import {
 import useEditor from "../../store/editor/useEditor";
 import {
   EDITING_MODE,
+  FONT_SIZE,
   FONT_WEIGHT,
   ITEM,
   POS,
@@ -24,6 +25,7 @@ import {
   TEXT_TRANSFORM,
 } from "../../types";
 import { Context } from "../../store/editor/type";
+import { Disclosure, Listbox, Menu } from "@headlessui/react";
 
 type Props = {
   label: RECEIPT_KEY | POS_KEY;
@@ -177,33 +179,12 @@ export default function Input({
         </div>
       </div>
     );
-
-    {
-      /* <input
-          type="text"
-          className={`bg-gray-100 border-white border w-full focus:outline-none focus:shadow-inner ${getProp(
-            "transform"
-          )}`}
-          value={value.label.toLowerCase()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onChange={(e) => {
-            actionHandler({ label: e.target.value });
-          }}
-          onBlur={() => {
-            propagateChange();
-          }}
-          style={{
-            fontWeight: getProp("font_weight"),
-            textAlign: getProp("text_align") as any,
-          }}
-        /> */
-    }
   }
 
   return (
     <div className="relative group/input w-full">
       {/* settings tray */}
-      <div className="absolute hidden group-focus-within/input:flex -top-0 -translate-y-[150%] w-fit bg-white shadow-md rounded-sm overflow-hidden z-50">
+      <div className="absolute hidden group-focus-within/input:flex -top-0 -translate-y-[150%] w-fit bg-white shadow-md rounded-sm z-50">
         <button
           className={btnStyle}
           onClick={() => {
@@ -270,6 +251,32 @@ export default function Input({
             <RxLetterCaseCapitalize className={svgStyle} />
           )}
         </button>
+        <Disclosure>
+          <div className="relative text-sm">
+            <Disclosure.Button className={`${btnStyle}`}>
+              {!!value.font_size && value.font_size !== FONT_SIZE.INHERIT
+                ? value.font_size
+                : structure.settings.font_size}
+            </Disclosure.Button>
+            <Disclosure.Panel className="absolute list-none bg-white">
+              {Object.values(FONT_SIZE)
+                .filter((size) => size !== FONT_SIZE.INHERIT)
+                .map((size) => (
+                  <button
+                    key={size}
+                    className="py-[1px] px-2 text-xs"
+                    onClick={() => {
+                      actionHandler({
+                        font_size: size,
+                      });
+                    }}
+                  >
+                    {size}
+                  </button>
+                ))}
+            </Disclosure.Panel>
+          </div>
+        </Disclosure>
       </div>
 
       {/* input */}

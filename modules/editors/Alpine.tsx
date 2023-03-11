@@ -56,7 +56,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
    */
   const [docId, setDocId] = useState("");
 
-  const { loading, loggedIn } = useUser();
+  const { loading, loggedIn, spaces } = useUser();
 
   const router = useRouter();
 
@@ -73,31 +73,34 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
     if (saved) {
       if (!templateId) return;
-      await saveProgress(
-        {
+      await saveProgress({
+        data: {
           type: props.type,
           img: props.img,
           data: structure,
           name: props.name,
           templateId: templateId,
         },
-        docId
-      ).then((res) => {
+        id: docId,
+      }).then((res) => {
         res && notify("file saved");
       });
     } else {
       await saveProgress({
-        type: props.type,
-        img: props.img,
-        data: structure,
-        name: props.name,
-        templateId: docId,
+        data: {
+          type: props.type,
+          img: props.img,
+          data: structure,
+          name: props.name,
+          templateId: docId,
+        },
+        spaces,
       }).then((res) => {
         res && router.push(`/editor/saved/alpine?receipt=${res}`);
         res && notify("file saved");
       });
     }
-  }, [props.name, docId, structure]);
+  }, [props.name, docId, structure, spaces]);
 
   async function deleteOne() {
     saved

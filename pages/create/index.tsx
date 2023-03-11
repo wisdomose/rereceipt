@@ -29,6 +29,8 @@ import Button from "../../components/button";
 import Image from "next/image";
 import { createTemplate } from "../../utils/firebase";
 import { useRouter } from "next/router";
+import useUser from "../../store/user/useUser";
+import Loader from "../../components/layout/Loader";
 
 // settings: ,
 
@@ -76,6 +78,7 @@ export default function Create() {
     font_size: FONT_SIZE.TEXT_12,
     width: "200",
   });
+  const { user, loading } = useUser();
 
   const defaultItem: ITEM = {
     label: "",
@@ -149,6 +152,13 @@ export default function Create() {
     setReceipt({ ...receipt });
   }, []);
 
+  // 404
+  useEffect(() => {
+    if (user && user?.email !== "wisdomose05@gmail.com") {
+      router.replace("/ind");
+    }
+  }, [user]);
+
   const disabled = !image || !name || !setting.width;
   const value = {
     isActive,
@@ -162,6 +172,8 @@ export default function Create() {
     toggleIsActive,
     updateName,
   };
+
+  if (loading) return <Loader />;
 
   return (
     <CreateContext.Provider value={value}>

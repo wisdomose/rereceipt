@@ -1,4 +1,3 @@
-import { TableProps } from "../components/editor/table";
 import useEditor from "../store/editor/useEditor";
 import { FONT_WEIGHT, RECEIPT, TEXT_ALIGN, TEXT_TRANSFORM } from "../types";
 
@@ -70,5 +69,15 @@ export default function useTable() {
     });
   };
 
-  return { addColumn, addRow, deleteColumn, deleteRow };
+  const addSubColumn = () => {};
+
+  const deleteSubColumn = () => {};
+  return {
+    addColumn,
+    addRow,
+    deleteColumn,
+    deleteRow,
+    addSubColumn,
+    deleteSubColumn,
+  };
 }
