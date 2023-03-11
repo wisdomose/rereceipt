@@ -75,7 +75,7 @@ Page.Body = function Body({ className = "", children }: Props) {
   return (
     <main
       className={overrideTailwindClasses(
-        `max-w-[1512px mx-auto px-6 pb-6 md:pb-14 md:px-14 ${className}`
+        `max-w-7xl mx-auto px-6 pb-6 md:pb-14 md:px-14 ${className}`
       )}
     >
       {children}
