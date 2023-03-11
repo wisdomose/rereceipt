@@ -184,7 +184,7 @@ export default function Login(p: any) {
                 Enter the email address associated with your account
               </p>
             </div>
-            <div className=" w-full max-w-[80%] mx-auto">
+            <div className=" w-full min-w-[300px] max-w-[80%] mx-auto">
               <Input
                 {...forgotEmailOption}
                 placeholder="email"
