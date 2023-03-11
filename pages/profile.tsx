@@ -51,7 +51,14 @@ export default function Profile() {
     if (!openPassword) updateNewPassword("");
   }, [openPassword]);
 
-  if (!user || loading) return <Loader />;
+  if (!user || loading)
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <Loader />
+        </Page.Body>
+      </Page>
+    );
 
   return (
     <Page isProtected>

@@ -239,7 +239,14 @@ export default function Billing() {
     setSelectedPlan(plan);
   };
 
-  if (loading || !user) return <Loader />;
+  if (loading || !user)
+    return (
+      <Page isProtected>
+        <Page.Body>
+          <Loader />
+        </Page.Body>
+      </Page>
+    );
 
   return (
     <>

@@ -91,7 +91,12 @@ export default function Pricing() {
     setPrices(p);
   }, [plans, plansLoading]);
 
-  if (plansLoading) return <Loader />;
+  if (plansLoading)
+    return (
+      <Page>
+        <Loader />
+      </Page>
+    );
   return (
     <Page>
       <div className="min-h-[calc(100vh_-_78px)] section-marks">
