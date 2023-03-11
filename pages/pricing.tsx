@@ -152,7 +152,7 @@ export default function Pricing() {
                     </ul>
                     <Button
                       href={
-                        loggedIn ? `/billing?plan=${price.plan_code}` : "/login"
+                        loggedIn ? `/billing?plan=${price.plan_code}` : "/auth/login"
                       }
                       className="block text-center"
                       label={price.active ? "Get started" : "coming soon"}
