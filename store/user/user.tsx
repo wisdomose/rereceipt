@@ -63,6 +63,7 @@ export default function UserContextProvider({
         updateUser(user);
         setLoggedIn(true);
         setLoading(false);
+        setPaidLoading(true);
       } else {
         setLoggedIn(false);
         setLoading(false);
