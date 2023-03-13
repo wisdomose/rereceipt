@@ -36,11 +36,11 @@ export default function PaidProtected({
   if (loading || !initialized || paidLoading) {
     return <Loader />;
   }
-
+  
   return (
     <>
       <Dialog
-        open={noAccess && !loading && initialized && !paidLoading}
+        open={noAccess && initialized}
         onClose={() => {}}
         className="relative z-50"
       >
@@ -67,7 +67,7 @@ export default function PaidProtected({
           </Dialog.Panel>
         </div>
       </Dialog>
-      {!noAccess && !loading && initialized && <>{children}</>}
+      {!noAccess && initialized && <>{children}</>}
     </>
   );
 }

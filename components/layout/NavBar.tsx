@@ -8,6 +8,7 @@ import useUser from "../../store/user/useUser";
 import { Dialog, Menu, Popover } from "@headlessui/react";
 import { User } from "firebase/auth";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const version = "0.0.0 - BETA";
 
@@ -48,17 +49,23 @@ export default function NavBar({
                 .filter((a) =>
                   isLoggedIn ? a.showOnLogIn || a.secured : !a.secured
                 )
-                .map((route) => (
-                  <Link
+                .map((route, index) => (
+                  <motion.div
                     key={route.href}
-                    href={route.href}
-                    className="capitalize group focus:outline-none"
+                    initial={{ y: "-200%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.5 }}
                   >
-                    {route.label}
-                    <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-                      <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
-                    </div>
-                  </Link>
+                    <Link
+                      href={route.href}
+                      className="capitalize group focus:outline-none"
+                    >
+                      {route.label}
+                      <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+                        <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+                      </div>
+                    </Link>
+                  </motion.div>
                 ))}
             </>
 

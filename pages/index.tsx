@@ -1,12 +1,14 @@
 import { useRouter } from "next/router";
 import Page from "../components/layout/Page";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import marks from "../src/img/assets/marks-pattern.png";
 import pattern from "../src/img/assets/pattern.png";
 import receipt_illustrations from "../src/img/assets/receipt-illustration.png";
 import Image from "next/image";
 import Button from "../components/button";
 import Footer from "../components/layout/footer";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
 
 const features = [
   {
@@ -89,30 +91,93 @@ const features2 = [
 export default function Home() {
   const router = useRouter();
 
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let position = 0;
+
+    const interval = setInterval(() => {
+      if (ref.current === null) return;
+      position += 1;
+      ref.current.style.backgroundPositionX = position + "px";
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="home__container">
       <Page>
         {/* <Page.Body > */}
         <header className="grid lg:grid-cols-[535px,1fr] place-items-center min-h-[calc(100vh_-_78px)] px-6 md:px-14 max-w-7xl mx-auto">
-          <div className="relative lg:hidden h-full grid place-items-center">
+          <motion.div
+            className="relative lg:hidden h-full grid place-items-center"
+            animate={{
+              scale: [0, 1, 0.1, 1],
+              rotate: [0, 10, -10, 5, -5, 0],
+            }}
+            transition={{
+              scale: {
+                type: "spring",
+              },
+              rotate: {
+                duration: 5,
+                ease: "easeInOut",
+                repeat: Infinity,
+                delay: 3,
+              },
+            }}
+          >
             <Image src={receipt_illustrations} alt="" className="bg-cover" />
-          </div>
+          </motion.div>
           <div>
-            <h1 className="text-5xl leading-[60px] md:leading-[70px] md:text-6xl 6xl:text-7xl font-bold 6xl:leading-[85px] grad__text">
+            <motion.h1
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1, type: "spring" }}
+              className="text-5xl leading-[60px] md:leading-[70px] md:text-6xl 6xl:text-7xl font-bold 6xl:leading-[85px] grad__text"
+            >
               The Only Receipt Generation Tool You’ll Ever Need
-            </h1>
-            <p className="text-xl leading-9 mt-5 text-[#4F4F4F]">
+            </motion.h1>
+            <motion.p
+              initial={{ x: "200%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className="text-xl leading-9 mt-5 text-[#4F4F4F]"
+            >
               Say goodbye to manual receipts and hello to effortless
               record-keeping with our all-in-one receipt generation tool
-            </p>
-            <Button label="Get Started" className="rounded-full mt-7" />
+            </motion.p>
+            <motion.div
+              initial={{ x: "200%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 2 }}
+            >
+              <Button label="Get Started" className="rounded-full mt-7" />
+            </motion.div>
           </div>
-          <div className="relative hidden lg:grid h-full place-items-center">
+          <motion.div
+            className="relative hidden overflow-hidden lg:grid h-full place-items-center"
+            animate={{
+              scale: [0, 1, 0.1, 1],
+              rotate: [0, 10, -10, 5, -5, 0],
+            }}
+            transition={{
+              scale: {
+                type: "spring",
+              },
+              rotate: {
+                duration: 5,
+                ease: "easeInOut",
+                repeat: Infinity,
+                delay: 3,
+              },
+            }}
+          >
             <Image src={receipt_illustrations} alt="" className="bg-cover" />
-          </div>
+          </motion.div>
         </header>
 
-        <section className="section-bg px-6 md:px-14 pt-20 pb-40">
+        <section className="section-bg px-6 md:px-14 pt-20 pb-40" ref={ref}>
           <h4 className="text-3xl leading-10 font-bold text-center text-[#4F4F4F]">
             How Does Rereceipt Work?
           </h4>
@@ -123,16 +188,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 justify-between gap-14 mt-14 max-w-7xl mx-auto">
             {features.map((feature) => (
-              <div
-                key={feature.heading}
-                // style={{ backgroundColor: feature.color }}
-                className={`p-12 text-white w-full ${feature.color}`}
-              >
-                <p className="text-3xl font-semibold">{feature.heading}</p>
-                <p className="text-xl leading-9 font-light mt-5">
-                  {feature.content}
-                </p>
-              </div>
+              <Card key={feature.heading} {...feature} />
             ))}
           </div>
         </section>
@@ -140,11 +196,7 @@ export default function Home() {
         <section className="pb-14 relative md:px-14 px-6">
           <div className="max-w-[1000px] mx-auto grid md:grid-cols-2 gap-14 lg:grid-cols-3 items-start">
             {features2.map((feature) => (
-              <div key={feature.header} className="lg:max-w-[253px]">
-                {feature.icon}
-                <p className="text-xl font-semibold my-5">{feature.header}</p>
-                <p>{feature.content}</p>
-              </div>
+              <Card2 key={feature.header} {...feature} />
             ))}
           </div>
 
@@ -158,18 +210,73 @@ export default function Home() {
               className="rounded-full mt-7 mx-auto block"
             />
           </div>
-          {/* <div className="absolute left-0 right-0 top-20 bottom-0">
-            <Image
-              src={marks}
-              alt=""
-              fill
-              className="bg-cover mix-blend-luminosity opacity-10"
-            />
-          </div> */}
         </section>
         <Footer />
         {/* </Page.Body> */}
       </Page>
+    </div>
+  );
+}
+
+export function Card2(props: typeof features2[number]) {
+  const ref = useRef(null);
+  const isInView = useInView(ref);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    isInView && setInitialized(true);
+  }, [isInView]);
+
+  return (
+    <div className="lg:max-w-[253px]" ref={ref}>
+      {props.icon}
+      <p
+        className="text-xl font-semibold my-5"
+        ref={ref}
+        style={{
+          transform: initialized ? "none" : "translateX(-50px)",
+          opacity: initialized ? 1 : 0,
+          transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+        }}
+      >
+        {props.header}
+      </p>
+      <p
+        style={{
+          transform: initialized ? "none" : "translateX(-200px)",
+          opacity: initialized ? 1 : 0,
+          transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+        }}
+      >
+        {props.content}
+      </p>
+    </div>
+  );
+}
+
+export function Card(props: typeof features[number]) {
+  const ref = useRef(null);
+  const isInView = useInView(ref);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    if (initialized) return;
+    isInView && setInitialized(true);
+  }, [isInView]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        transform: initialized ? "none" : "translateY(200px)",
+        opacity: initialized ? 1 : 0,
+        transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
+      }}
+      className={`p-12 text-white w-full ${props.color}`}
+    >
+      <p className="text-3xl font-semibold">{props.heading}</p>
+      <p className="text-xl leading-9 font-light mt-5">{props.content}</p>
     </div>
   );
 }

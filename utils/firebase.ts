@@ -158,8 +158,12 @@ export const loginWithEmail = async ({
 }) => {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
-    .then((user) => {})
-    .catch((err) => {});
+    .then((user) => {
+      notify("Login sucessful");
+    })
+    .catch((error: any) => {
+      notify(error?.code ?? "Login failed");
+    });
 };
 
 export const logoutUser = async () => {
@@ -174,7 +178,7 @@ export const sendResetEmail = async (email: string) => {
       throw new Error("A valid email is required");
     const auth = getAuth();
     sendPasswordResetEmail(auth, email).then(() => {
-      notify("Password reset mail sent");
+      notify("Password reset mail sent. Check your mailbox");
     });
   } catch (error: any) {
     log.warn(
