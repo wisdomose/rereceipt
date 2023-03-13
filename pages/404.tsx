@@ -7,7 +7,7 @@ export default function F04() {
     <div className="h-full grid place-items-center text-[#4F4F4F]">
       <div className="h-fit w-full">
         <div className="relative w-full sm:w-1/2 md:w-1/3 mx-auto aspect-square">
-          <Image src={img} alt="" fill />
+          <Image src={img} alt="" fill className="bg-cover"/>
         </div>
         <p className="text-sm max-w-[402] text-center">
           return to{" "}
