@@ -412,10 +412,12 @@ export const createTemplate = async (
     const colRef = collection(db, COLLECTION.TEMPLATES);
     const _query = query(
       colRef,
-      where("settings.id", "==", data.data.settings.id)
+      where("data.settings.id", "==", data.data.settings.id)
     );
 
     const querySnapshot = await getDocs(_query);
+
+    log.info("Check for duplicate template done");
 
     if (querySnapshot.size > 0) {
       log.warn("A template with this id already exists");
