@@ -299,6 +299,7 @@ export default function useSubscriptions(props?: {
 
       getAllSubscriptions(id)
         .then((data) => {
+          log.info("fetching subscriptions", data)
           setSubscriptions(data);
           // const sub1 = data.find(
           //   (subscription: Subscription) =>
@@ -325,8 +326,9 @@ export default function useSubscriptions(props?: {
         });
 
       getAllTransactions(id)
-        .then((data) => {
-          setTransactions(data.data);
+        .then(({data}) => {
+          log.info(`fetching transactions`, data)
+          setTransactions(data);
         })
         .catch((err) => {
           console.log(`transaction - ${err.message}`);
@@ -388,8 +390,10 @@ export default function useSubscriptions(props?: {
         }: {
           data: { status: boolean; message: string; data: PaystackCustomer };
         }) => {
+          log.info(`Fetching subscription`, data)
           const customer = data.data;
           const activeSub = customer.subscriptions[0];
+          console.log(activeSub, customer.subscriptions);
           if (activeSub) {
             const subscription = subscriptions.find(
               (sub) => sub.subscription_code === activeSub.subscription_code
