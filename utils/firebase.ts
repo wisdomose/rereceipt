@@ -251,10 +251,8 @@ export const updateLoggedInUserPassword = async (password: string) => {
 };
 
 export const updateUserProfile = async ({
-  image,
   phoneNumber,
 }: {
-  image?: File;
   phoneNumber?: string;
 }) => {
   const auth = getAuth(getApp());
@@ -270,32 +268,14 @@ export const updateUserProfile = async ({
   }
 
   try {
-    let url = "";
-
-    if (image) {
-      await uploadFile({
-        file: image,
-        name: user.displayName
-          ? user.displayName?.replaceAll(" ", "-")
-          : new Date().getTime().toString(),
-        folder: IMAGES.PROFILE,
-      }).then((res) => {
-        url = res;
-      });
-    }
-
-    const update = {
-      photoURL: url ?? user?.photoURL,
+    const update: Record<string, any> = {
       phoneNumber: phoneNumber ?? user.phoneNumber,
     };
 
     // remove null fields
     Object.keys(update).forEach((key) => {
-      if (
-        typeof update[key as keyof typeof update] !== "string" ||
-        (update[key as keyof typeof update] ?? "").length === 0
-      ) {
-        delete update[key as keyof typeof update];
+      if (typeof update[key] !== "string" || (update[key] ?? "").length === 0) {
+        delete update[key];
       }
     });
 
@@ -322,6 +302,51 @@ export const updateUserProfile = async ({
       error
     );
     notify(error?.code ?? "Failed to update profile");
+  }
+};
+
+export const updateUserProfileImage = async (image: File) => {
+  const auth = getAuth(getApp());
+  const user = auth.currentUser;
+
+  log.info(`Profiile update image initiated`);
+
+  if (!user) {
+    log.info(`Profiile update attempted by a user who isn't loggedin`);
+    notify("you need to be logged in");
+    return;
+  }
+
+  try {
+    let url = "";
+
+    await uploadFile({
+      file: image,
+      name: user.displayName
+        ? user.displayName?.replaceAll(" ", "-")
+        : new Date().getTime().toString(),
+      folder: IMAGES.PROFILE,
+    }).then((res) => {
+      url = res;
+    });
+
+    const update = {
+      photoURL: url,
+    };
+
+    // update
+    updateProfile(user, update)
+      .then((res) => {
+        log.info(`Profiile image update sucessful for ${user.email}`);
+        notify("Profile image updated");
+      })
+      .catch((error) => {
+        log.error(`Profiile image update failed for ${user.email}`, error);
+        notify(error?.code ?? "Failed to update profile image");
+      });
+  } catch (error: any) {
+    log.error(`Profiile image update failed for ${user.email}`, error);
+    notify("Failed to update profile image");
   }
 };
 
