@@ -16,7 +16,7 @@ import { Price, defaultPrices } from "./pricing";
 import axios from "axios";
 import Loader from "../components/layout/Loader";
 import { useRouter } from "next/router";
-
+import { motion } from "framer-motion";
 const pad = (v: string | number) => {
   const value = v.toString();
   return value.length == 1 ? "0" + value : value;
@@ -265,21 +265,47 @@ export default function Billing() {
           <div className="py-10 border-b border-b-gray-300 flex justify-between gap-14 items-center">
             {/* title */}
             <div className="">
-              <h3 className="text-3xl font-medium">Billing</h3>
-              <p className="text-sm">manage your subscription here</p>
+              <motion.h3
+                initial={{ x: "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+                className="text-3xl font-medium"
+              >
+                Billing
+              </motion.h3>
+
+              <motion.p
+                className="text-sm"
+                initial={{ x: "-10%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+              >
+                manage your subscription here
+              </motion.p>
             </div>
             {/* countdown */}
             <div>
-              <p className="text-sm">
+              <motion.p
+                className="text-sm"
+                initial={{ x: "50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+              >
                 {paid
                   ? "Next payment due in"
                   : trial
                   ? "Trial ends in"
                   : "loading..."}
-              </p>
-              <h3 className="text-3xl font-medium" ref={timerRef}>
+              </motion.p>
+              <motion.h3
+                className="text-3xl font-medium"
+                initial={{ x: "10%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+                ref={timerRef}
+              >
                 -:-:-:-
-              </h3>
+              </motion.h3>
             </div>
           </div>
 
@@ -328,7 +354,13 @@ export default function Billing() {
                   </div>
                 ) : (
                   <div className="my-14 text-center text-gray-500">
-                    <p>You do not have an active subscription</p>
+                    <motion.p
+                      initial={{ y: "10%", scale: 0, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5, type: "spring" }}
+                    >
+                      You do not have an active subscription
+                    </motion.p>
                   </div>
                 )}
               </>
@@ -341,7 +373,7 @@ export default function Billing() {
             </div>
           ) : (
             <div className="flex justify-center 2xl:justify-between flex-wrap lg:flex-nowrap gap-6 isolate">
-              {prices.map((price) => {
+              {prices.map((price, index) => {
                 const active =
                   subscription?.plan?.plan_code === price.plan_code;
                 const nonRenewing =
@@ -376,7 +408,10 @@ export default function Billing() {
                       );
 
                 return (
-                  <div
+                  <motion.div
+                    initial={{ y: "10%", scale: 0, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.5, type: "spring" }}
                     key={price.type}
                     className={`border-2 rounded-xl p-6 border-black max-w-[380px] w-full bg-[#FAFAFA] ${
                       active ? "active__pricing" : ""
@@ -438,23 +473,44 @@ export default function Billing() {
                         // (price.status !== SUBSCRIPTION_STATUS.ACTIVE && active)
                       }
                     />
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
           )}
 
           <>
-            {!subscriptionsLoading && subscriptions.length === 0 && (
-              <div className="max-w-[100px] mx-auto mt-14">
-                <Button label="Pay" type="submit" onClick={init} block />
-              </div>
-            )}
+            {!subscriptionsLoading &&
+              subscriptions.length === 0 &&
+              prices.length > 0 && (
+                <motion.div
+                  className="max-w-[100px] mx-auto mt-14"
+                  initial={{ y: "10%", scale: 0, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.5, type: "spring" }}
+                >
+                  <Button label="Pay" type="submit" onClick={init} block />
+                </motion.div>
+              )}
           </>
 
           <div className="py-10 border-b border-b-gray-300">
-            <h3 className="text-3xl font-medium">Billing history</h3>
-            <p className="text-sm">view previous purchases made by you</p>
+            <motion.h3
+              className="text-3xl font-medium"
+              initial={{ x: "-50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0, type: "spring" }}
+            >
+              Billing history
+            </motion.h3>
+            <motion.p
+              className="text-sm"
+              initial={{ x: "-10%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5, type: "spring" }}
+            >
+              view previous purchases made by you
+            </motion.p>
           </div>
 
           {/* billing history */}
@@ -521,7 +577,13 @@ export default function Billing() {
                   </div>
                 ) : (
                   <div className="my-14 text-center text-gray-500">
-                    <p>No transactions yet</p>
+                    <motion.p
+                      initial={{ y: "10%", scale: 0, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5, type: "spring" }}
+                    >
+                      No transactions yet
+                    </motion.p>
                   </div>
                 )}
               </>

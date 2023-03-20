@@ -30,17 +30,23 @@ export default function NavBar({
     <div className="max-w-7xl mx-auto">
       <nav className="flex justify-between items-center py-5 px-6 md:px-14 relative">
         {/* logo */}
-        <Link
-          href="/"
-          className="flex items-center justify-center relative overflow-hidden w-8 h-8"
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay:2, type: "spring" }}
         >
-          <Image
-            src={logo}
-            alt="Logo"
-            className="w-full object-contain object-top"
-            fill
-          />
-        </Link>
+          <Link
+            href="/"
+            className="flex items-center justify-center relative overflow-hidden w-8 h-8"
+          >
+            <Image
+              src={logo}
+              alt="Logo"
+              className="w-full object-contain object-top"
+              fill
+            />
+          </Link>
+        </motion.div>
 
         <div className="flex items-center font-semibold text-[#4F4F4F] text-sm gap-6 md:gap-14">
           {/* medium screen and above */}
@@ -55,7 +61,7 @@ export default function NavBar({
                     key={route.href}
                     initial={{ y: "-200%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.5 }}
+                    transition={{ duration: 0.5, delay: (index + 1) * 0.5 }}
                   >
                     <Link
                       href={route.href}

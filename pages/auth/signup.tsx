@@ -13,6 +13,7 @@ import NavBar from "../../components/layout/NavBar";
 import useWidth from "../../hooks/useWidth";
 import signupImg from "../../src/img/assets/signup.png";
 import Link from "next/link";
+import withState from "../../hooks/withState";
 
 export default function Signup(p: any) {
   const [email, emailOption] = useInput("");
@@ -21,6 +22,7 @@ export default function Signup(p: any) {
   const [lastname, lastnameOption] = useInput("");
   const router = useRouter();
   const width = useWidth();
+  const { loading, wrapper } = withState();
 
   useEffect(() => {
     const auth = getAuth();
@@ -31,10 +33,6 @@ export default function Signup(p: any) {
       }
     });
   }, []);
-
-  async function signup() {
-    await signupWithEmail({ email, password, firstname, lastname });
-  }
 
   const disabled = !firstname || !lastname || !password || !email;
 
@@ -64,7 +62,9 @@ export default function Signup(p: any) {
               className="mx-auto w-full max-w-[447px] my-20 flex flex-col items-center"
               onSubmit={(e) => {
                 e.preventDefault();
-                signup();
+                wrapper(() =>
+                  signupWithEmail({ email, password, firstname, lastname })
+                );
               }}
             >
               <div className="flex flex-col w-full mb-10">
@@ -118,6 +118,7 @@ export default function Signup(p: any) {
                 onClick={() => {}}
                 disabled={disabled}
                 block
+                loading={loading}
               />
 
               <div className="relative w-full my-16">

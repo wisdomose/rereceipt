@@ -31,6 +31,7 @@ import { createTemplate } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import useUser from "../../store/user/useUser";
 import Loader from "../../components/layout/Loader";
+import withState from "../../hooks/withState";
 
 // settings: ,
 
@@ -79,6 +80,7 @@ export default function Create() {
     width: "200",
   });
   const { user, loading } = useUser();
+  const { loading: saveLoading, wrapper } = withState();
 
   const defaultItem: ITEM = {
     label: "",
@@ -146,7 +148,7 @@ export default function Create() {
       },
     };
     RECEIPT_KEYS.map((key) => {
-      receipt = { ...receipt, [key]: { ...defaultItem } };
+      receipt = { [key]: { ...defaultItem }, ...receipt };
     });
     // @ts-ignore
     setReceipt({ ...receipt });
@@ -291,7 +293,12 @@ export default function Create() {
               </div>
             </div>
 
-            <Button label="create" onClick={create} disabled={disabled} />
+            <Button
+              label="create"
+              onClick={() => wrapper(create)}
+              disabled={disabled}
+              loading={saveLoading}
+            />
           </div>
         </Page.Body>
       </Page>
