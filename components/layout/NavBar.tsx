@@ -9,6 +9,7 @@ import { Dialog, Menu, Popover } from "@headlessui/react";
 import { User } from "firebase/auth";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { AvatarComponent } from "avatar-initials";
 
 const version = "0.0.0 - BETA";
 
@@ -94,7 +95,17 @@ export default function NavBar({
                       sizes="96px"
                     />
                   ) : (
-                    <FiUser className="rounded-full text-lg object-contain object-center text-[#4f4f4f] bg-white/10" />
+                    <AvatarComponent
+                      classes="w-full h-full object-cover rounded-full"
+                      useGravatar={false}
+                      fontWeight={700}
+                      fontFamily="inter"
+                      color="#5d5fef"
+                      background="#e9e9e9"
+                      initials={`${user?.displayName?.split(" ")[0][0]}${
+                        user?.displayName?.split(" ")[1][0]
+                      }`}
+                    />
                   )}
                 </Menu.Button>
                 <Menu.Items

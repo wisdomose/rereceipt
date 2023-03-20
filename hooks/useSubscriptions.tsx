@@ -301,20 +301,6 @@ export default function useSubscriptions(props?: {
         .then((data) => {
           // log.info("fetching subscriptions", data);
           setSubscriptions(data);
-          // const sub1 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.ACTIVE
-          // );
-          // const sub2 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING
-          // );
-
-          // const sub3 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.ATTENTION
-          // );
-          // setSubscription(sub1 ? sub1 : sub2 ? sub2 : sub3 ? sub3 : null);
         })
         .catch((err) => {
           setSubscriptionsError("An error occured");
