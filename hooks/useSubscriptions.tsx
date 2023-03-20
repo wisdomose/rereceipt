@@ -390,10 +390,12 @@ export default function useSubscriptions(props?: {
         }) => {
           const customer = data.data;
           const activeSub = customer.subscriptions[0];
-          const subscription = subscriptions.find(
-            (sub) => sub.subscription_code === activeSub.subscription_code
-          );
-          subscription && setSubscription(subscription);
+          if (activeSub) {
+            const subscription = subscriptions.find(
+              (sub) => sub.subscription_code === activeSub.subscription_code
+            );
+            subscription && setSubscription(subscription);
+          }
         }
       )
       .catch((err: any) => {
