@@ -73,7 +73,7 @@ export default function UserContextProvider({
   }, []);
 
   useEffect(() => {
-    if (!user || subscriptionLoading || !subscription) return;
+    if (!user || subscriptionLoading) return;
     setPaidLoading(true);
     const trial =
       new Timestamp(user.trial_ends_in.seconds, user.trial_ends_in.nanoseconds)
