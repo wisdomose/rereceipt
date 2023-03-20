@@ -123,12 +123,12 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
               current={editingMode}
               update={(mode) => updateEditingMode(mode)}
               block
-              btnStyle="px-3 gap-3 py-1 border-gray4"
+              btnStyle="px-3 gap-3 py-1 border-gray5"
             />
 
             {saved && (
               <button
-                className="border lg:hidden rounded-lg py-[10px] px-3"
+                className="border border-gray5 lg:hidden rounded-lg py-[10px] px-3"
                 onClick={deleteOne}
               >
                 <FiTrash2 />
@@ -136,7 +136,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
             )}
 
             <button
-              className="border border-gray4 rounded-lg py-[10px] px-3"
+              className="border border-gray5 rounded-lg py-[10px] px-3"
               onClick={() => updatePreviewMode(!previewMode)}
             >
               {previewMode ? <FiEyeOff /> : <FiEye />}
@@ -145,7 +145,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
             <Popover className="relative lg:hidden">
               {({ open }: { open: boolean }) => (
                 <>
-                  <Popover.Button className="border rounded-lg py-[10px] px-3">
+                  <Popover.Button className="border border-gray5 rounded-lg py-[10px] px-3">
                     <FiSettings />
                   </Popover.Button>
                   <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md z-10" />
@@ -167,7 +167,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
               onClick={() => wrapper(save)}
               disabled={!loggedIn || loading}
               minimal
-              className="py-2" //6px
+              className="py-2 border-gray5 text-sm" //6px
               loading={saveLoading}
             />
           </nav>

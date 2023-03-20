@@ -33,7 +33,7 @@ export default function Button({
   relative 
       ${
         minimal
-          ? "border border-gray4 h-fit rounded-lg py-2 px-3 text-xs"
+          ? "border border-gray2 h-fit rounded-lg py-2 px-3 text-xs"
           : `text-white font-semibold rounded-md px-6 py-3${
               disabled && !minimal
                 ? " bg-black/50 cursor-not-allowed"
