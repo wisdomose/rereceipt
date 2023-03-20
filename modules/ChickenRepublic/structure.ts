@@ -215,6 +215,7 @@ const structure: Partial<RECEIPT> = {
     font_family: FONT_FAMILY.UBUNTU_MONO,
     font_size: FONT_SIZE.TEXT_08,
     width: "255px",
+    id: "chicken republic",
   },
 };
 
