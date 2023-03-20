@@ -78,6 +78,7 @@ export default function Create() {
     font_family: FONT_FAMILY.UBUNTU_MONO,
     font_size: FONT_SIZE.TEXT_12,
     width: "200",
+    id: "",
   });
   const { user, loading } = useUser();
   const { loading: saveLoading, wrapper } = withState();
@@ -161,7 +162,7 @@ export default function Create() {
     }
   }, [user]);
 
-  const disabled = !image || !name || !setting.width;
+  const disabled = !image || !name || !setting.width || !setting.id;
   const value = {
     isActive,
     name,
@@ -270,6 +271,22 @@ export default function Create() {
                   id="width"
                   type="number"
                   placeholder="width"
+                  labelClassName="font-semibold"
+                  required
+                />
+
+                <Input
+                  label="id"
+                  value={setting.id}
+                  onChange={(e) =>
+                    setSetting((s) => {
+                      s.id = e.target.value;
+                      return { ...s };
+                    })
+                  }
+                  id="id"
+                  type="text"
+                  placeholder="unique identifier"
                   labelClassName="font-semibold"
                   required
                 />

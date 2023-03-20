@@ -59,6 +59,7 @@ type SETTING = {
   font_family: FONT_FAMILY;
   font_size: FONT_SIZE;
   width: string;
+  id: string;
 };
 
 type DOC = {

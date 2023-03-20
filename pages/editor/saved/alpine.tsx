@@ -11,6 +11,7 @@ import Loader from "../../../components/layout/Loader";
 import NavBar from "../../../components/layout/NavBar";
 import PaidProtected from "../../../components/layout/PaidProtected";
 import useUser from "../../../store/user/useUser";
+import { findReceipt } from "../../../utils";
 
 export default function AlpineWrapper() {
   const router = useRouter();
@@ -55,11 +56,11 @@ function Wrapped({ data }: { data: SAVED | null }) {
 
   if (!data) return <p>invalid file</p>;
 
-  const file = receipts.find((receipt) => receipt.default.name === data.name);
+  const file = findReceipt(data.data.settings.id);
 
   if (!file) return <p>invalid file</p>;
 
-  const { Editor, Image } = file.default;
+  const { Editor, Image } = file;
 
   return (
     <>

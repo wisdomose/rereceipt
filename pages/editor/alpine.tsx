@@ -17,7 +17,7 @@ import NavBar from "../../components/layout/NavBar";
 import Loader from "../../components/layout/Loader";
 import PaidProtected from "../../components/layout/PaidProtected";
 import useUser from "../../store/user/useUser";
-import { notify } from "../../utils";
+import { findReceipt, notify } from "../../utils";
 
 export default function AlpineWrapper() {
   const router = useRouter();
@@ -58,11 +58,10 @@ export default function AlpineWrapper() {
 function Wrapped({ data }: { data: DOC }) {
   const { pdfFile, previewMode, ref } = useEditor();
 
-  const file = receipts.find((receipt) => receipt.default.name === data.name);
-
+  const file = findReceipt(data.data.settings.id);
   if (!file) return <p>invalid file</p>;
 
-  const { Editor, Image } = file.default;
+  const { Editor, Image } = file;
 
   return (
     // <Page isProtected={true}>

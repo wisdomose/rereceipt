@@ -404,19 +404,41 @@ export const createTemplate = async (
   data: Pick<DOC, "isActive" | "name" | "type"> & { data: RECEIPT | POS },
   image: File
 ) => {
-  const db = getFirestore(getApp());
+  try {
+    log.info("creating a new template");
+    if (!data.data.settings.id) throw new Error("A nuique id is required");
+    const db = getFirestore(getApp());
 
-  const img = await uploadFile({
-    file: image,
-    name: data.name,
-    folder: IMAGES.RECEIPTS,
-  });
+    const colRef = collection(db, COLLECTION.TEMPLATES);
+    const _query = query(
+      colRef,
+      where("settings.id", "==", data.data.settings.id)
+    );
 
-  await addDoc(collection(db, COLLECTION.TEMPLATES), {
-    timestamp: serverTimestamp(),
-    ...data,
-    img,
-  });
+    const querySnapshot = await getDocs(_query);
+
+    if (querySnapshot.size > 0) {
+      log.warn("A template with this id already exists");
+      throw new Error("A template with this id already exists");
+    }
+
+    const img = await uploadFile({
+      file: image,
+      name: data.name,
+      folder: IMAGES.RECEIPTS,
+    });
+
+    await addDoc(collection(db, COLLECTION.TEMPLATES), {
+      timestamp: serverTimestamp(),
+      ...data,
+      img,
+    });
+
+    log.info(`template "${data.data.settings.id}" created sucessfully`);
+  } catch (error: any) {
+    log.error(error.message, error);
+    notify(error.message);
+  }
 };
 
 /**

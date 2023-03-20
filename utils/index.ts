@@ -122,8 +122,8 @@ export function dateToString(date: string) {
   return `${month[v.getMonth()]} ${v.getMonth()}, ${v.getFullYear()}`;
 }
 
-export function findReceipt(name: string) {
-  const receipt = receipts.find((receipt) => receipt.default.name === name);
+export function findReceipt(id: string) {
+  const receipt = receipts.find((receipt) => receipt.default.name === id);
 
   if (!receipt) return;
   const data = receipt.default;
