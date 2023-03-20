@@ -2,17 +2,17 @@
   "name": "receipts/ideal supermarket",
   "bucket": "rereceipt-4e5ec.appspot.com",
   "metageneration": 1,
-  "generation": 1679344830014,
+  "generation": 1679349616735,
   "contentType": "image/jpeg",
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "downloadTokens": [
-    "4e5fb5ff-1314-4b1d-b4a0-2f4bf6cde233"
+    "c2d63378-5cef-4a48-927a-097445652b83"
   ],
-  "etag": "VVZjIF8xPBYBUqDOoOqJt5AY3hQ",
+  "etag": "ZehReZKN/jWy+MPZFaftHqhGRQg",
   "customMetadata": {},
-  "timeCreated": "2023-03-20T20:40:30.014Z",
-  "updated": "2023-03-20T20:40:30.014Z",
+  "timeCreated": "2023-03-20T22:00:16.736Z",
+  "updated": "2023-03-20T22:00:16.736Z",
   "size": 105088,
   "md5Hash": "8sRaCWsr9UvqYUXGfiOolg==",
   "crc32c": "4139476505"
