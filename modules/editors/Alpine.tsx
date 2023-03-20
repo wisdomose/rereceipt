@@ -28,6 +28,7 @@ import Button from "../../components/button";
 import useUser from "../../store/user/useUser";
 import { overrideTailwindClasses } from "tailwind-override";
 import { notify } from "../../utils";
+import withState from "../../hooks/withState";
 
 type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
@@ -49,6 +50,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     name: props.name,
     structure: props.structure,
   });
+  const { loading: saveLoading, error, wrapper } = withState();
 
   /**
    * In a saved document, this is the id of the saved document.
@@ -121,7 +123,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
               current={editingMode}
               update={(mode) => updateEditingMode(mode)}
               block
-              btnStyle="px-3 gap-3 py-1"
+              btnStyle="px-3 gap-3 py-1 border-gray4"
             />
 
             {saved && (
@@ -134,7 +136,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
             )}
 
             <button
-              className="border lg:hidden rounded-lg py-[10px] px-3"
+              className="border border-gray4 rounded-lg py-[10px] px-3"
               onClick={() => updatePreviewMode(!previewMode)}
             >
               {previewMode ? <FiEyeOff /> : <FiEye />}
@@ -162,10 +164,11 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
             <Button
               label="save"
-              onClick={save}
+              onClick={() => wrapper(save)}
               disabled={!loggedIn || loading}
               minimal
-              className="border py-[6px]"
+              className="py-2" //6px
+              loading={saveLoading}
             />
           </nav>
         </div>
