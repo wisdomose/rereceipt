@@ -480,6 +480,7 @@ export const updateTemplate = async (
         type,
         template_name,
       };
+      log.info("updating doc", update);
       await updateDoc(
         docRef,
         image
