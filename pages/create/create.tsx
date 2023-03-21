@@ -34,7 +34,12 @@ import Loader from "../../components/layout/Loader";
 import withState from "../../hooks/withState";
 import useInput from "../../hooks/useInput";
 import { TemplateContext } from "../../store/template/store";
-import { RiInsertRowBottom, RiDeleteRow } from "react-icons/ri";
+import {
+  RiInsertRowBottom,
+  RiDeleteRow,
+  RiInsertColumnRight,
+  RiDeleteColumn,
+} from "react-icons/ri";
 /*
   TODO
   - loading state for when the receipt is being uploaded
@@ -562,6 +567,7 @@ export function Toggle({
 export function TTable() {
   const { receipt, setReceipt } = useContext(TemplateContext);
   const [changed, setChanged] = useState(false);
+  const label = "products";
 
   const addRow = () => {
     setReceipt((s) => {
@@ -588,7 +594,7 @@ export function TTable() {
   };
 
   const deleteRow = (row?: number) => {
-    const label = "products";
+  
     setReceipt((s) => {
       if (s === undefined) return s;
       let table = [...s[label]];
@@ -596,6 +602,35 @@ export function TTable() {
       const delIndex = row ? row : table.length - 1;
       table.splice(delIndex, 1);
       return { ...s, [label]: [...table] };
+    });
+  };
+
+  const deleteColumn = () => {
+    setReceipt((s) => {
+      if (s === undefined) return s;
+      s[label].map(({ data: col }) => {
+        return col.length === 1 ? col : col.splice(col.length - 1, 1);
+      });
+
+      return { ...s };
+    });
+  };
+
+  const addColumn = () => {
+    setReceipt((s) => {
+      if (s === undefined) return s;
+      const headerFontSize = s[label][0].data[0].font_size;
+      s[label].map(({ data: row }, index) => {
+        row.push({
+          label: "",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.NORMAL,
+          font_weight: FONT_WEIGHT.NORMAL,
+          font_size: index === 0 ? headerFontSize : undefined,
+        });
+      });
+
+      return { ...s };
     });
   };
 
@@ -627,6 +662,18 @@ export function TTable() {
                 onClick={() => deleteRow()}
               >
                 <RiDeleteRow />
+              </button>
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3 ml-3"
+                onClick={() => addColumn()}
+              >
+                <RiInsertColumnRight />
+              </button>
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3 ml-3"
+                onClick={() => deleteColumn()}
+              >
+                <RiDeleteColumn />
               </button>
               <div className="w-full overflow-auto">
                 <table className="mb-5 mt-3 w-full min-w-[500px] text-[#4F4F4F]">
