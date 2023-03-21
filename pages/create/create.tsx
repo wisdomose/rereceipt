@@ -280,7 +280,7 @@ export default function Create() {
                   .sort()
                   .map((key) =>
                     key === "products" ? (
-                      <TTable />
+                      <TTable key={key} />
                     ) : (
                       <Field name={key as RECEIPT_KEY} key={key} />
                     )
