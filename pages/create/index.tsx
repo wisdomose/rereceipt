@@ -86,7 +86,9 @@ export default function CreateListAll() {
               </motion.p>
             </div>
 
-            <Button label="Create" href="/create/create" />
+            <div>
+              <Button label="Create" href="/create/create" />
+            </div>
           </div>
           {loadingTemplates ? (
             <div className="my-14 flex items-center justify-center">

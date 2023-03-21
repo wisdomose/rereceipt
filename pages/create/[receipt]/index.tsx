@@ -37,7 +37,7 @@ import useUser from "../../../store/user/useUser";
 import Loader from "../../../components/layout/Loader";
 import withState from "../../../hooks/withState";
 import useInput from "../../../hooks/useInput";
-import { Field, Select, Toggle } from "../create";
+import { Field, Select, TTable, Toggle } from "../create";
 import { notify, omit } from "../../../utils";
 import { TemplateContext } from "../../../store/template/store";
 import { log } from "next-axiom";
@@ -296,9 +296,13 @@ export default function Edit() {
                 <div className="grid grid-cols-1 mx-auto gap-4">
                   {Object.keys(receipt)
                     .sort()
-                    .map((key) => (
-                      <Field name={key as RECEIPT_KEY} key={key} />
-                    ))}
+                    .map((key) =>
+                      key === "products" ? (
+                        <TTable />
+                      ) : (
+                        <Field name={key as RECEIPT_KEY} key={key} />
+                      )
+                    )}
                 </div>
               )}
             </div>
