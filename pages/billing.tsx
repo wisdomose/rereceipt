@@ -262,9 +262,9 @@ export default function Billing() {
           {/* @ts-ignore */}
           <>{notice && <marquee>{notice}</marquee>}</>
           {/* header */}
-          <div className="py-10 border-b border-b-gray-300 flex justify-between gap-14 items-center">
+          <div className="py-10 border-b border-b-gray-300 flex justify-between gap-10 items-center flex-col sm:flex-row w-full">
             {/* title */}
-            <div className="">
+            <div className="self-start">
               <motion.h3
                 initial={{ x: "-50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -284,9 +284,9 @@ export default function Billing() {
               </motion.p>
             </div>
             {/* countdown */}
-            <div>
+            <div className="self-end">
               <motion.p
-                className="text-sm"
+                className="text-sm text-end"
                 initial={{ x: "50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0, type: "spring" }}
@@ -298,7 +298,7 @@ export default function Billing() {
                   : "loading..."}
               </motion.p>
               <motion.h3
-                className="text-3xl font-medium"
+                className="text-3xl font-medium text-end break-words"
                 initial={{ x: "10%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.5, type: "spring" }}
