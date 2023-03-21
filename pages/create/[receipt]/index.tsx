@@ -21,7 +21,7 @@ import {
   SetStateAction,
   useContext,
   useEffect,
-  Fragment,
+  useCallback,
   useRef,
 } from "react";
 import { FiCheck, FiImage } from "react-icons/fi";
@@ -100,7 +100,7 @@ export default function Edit() {
     });
   };
 
-  async function update() {
+  const update = useCallback(async () => {
     if (!template_name || !receipt) {
       alert("something is left");
       return;
@@ -118,7 +118,7 @@ export default function Edit() {
     }).then(() => {
       // router.reload();
     });
-  }
+  }, [isActive, template_name, receipt, type, setting, image]);
 
   useEffect(() => {
     const id = router.query.receipt;
