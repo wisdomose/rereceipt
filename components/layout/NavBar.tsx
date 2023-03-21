@@ -88,7 +88,7 @@ export default function NavBar({
             )}
           </div>
 
-          {isLoggedIn && (
+          {isLoggedIn && user && (
             <Menu>
               <div className="relative">
                 <Menu.Button className="relative rounded-full overflow-hidden h-8 w-8">
