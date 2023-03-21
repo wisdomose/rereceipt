@@ -182,12 +182,12 @@ const Image = forwardRef<any, Props>(({ data }, ref) => {
             <p style={genStyle(structure.contacts)}>
               {structure.contacts.label}
             </p>
-            <div className="flex flex-row items-center">
-              <p className="whitespace-nowrap mr-1">WhatsApp only:</p>
-              <p style={genStyle(structure.whatsapp)}>
+            <p className="">
+              WhatsApp only -{" "}
+              <span style={genStyle(structure.whatsapp)}>
                 {structure.whatsapp.label}
-              </p>
-            </div>
+              </span>
+            </p>
           </div>
 
           {/* billing */}

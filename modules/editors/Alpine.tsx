@@ -116,6 +116,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     <div className="h-screen scrollbar">
       {/* <div className="h-[calc(100%_-_77px)]"> */}
       <div className="h-full grid grid-rows-[max-content,1fr]">
+        {/* toolbar */}
         <div className="w-full">
           <nav className="w-full py-1 px-6 md:pr-14 flex justify-end items-center flex-wrap gap-2 md:gap-6">
             <Select
@@ -173,6 +174,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
           </nav>
         </div>
 
+        {/* editor */}
         <div className="h-full lg:grid">
           <div className="grid h-full lg:grid-cols-[1fr,max-content]">
             <EditorZoom ref={ref}>{props.children}</EditorZoom>
