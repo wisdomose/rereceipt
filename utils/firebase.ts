@@ -445,6 +445,60 @@ export const createTemplate = async (
   }
 };
 
+export const updateTemplate = async (
+  id: string,
+  {
+    isActive,
+    template_name,
+    type,
+    image,
+    data,
+  }: Pick<DOC, "isActive" | "template_name" | "type"> & {
+    data: RECEIPT | POS;
+    image?: File;
+  }
+) => {
+  try {
+    log.info(`Updating template "${id}"`);
+    const db = getFirestore(getApp());
+    const docRef = doc(db, COLLECTION.TEMPLATES, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      let img = "";
+      if (image) {
+        img = await uploadFile({
+          file: image,
+          name: template_name,
+          folder: IMAGES.RECEIPTS,
+        });
+      }
+      const update = {
+        timestamp: serverTimestamp(),
+        data,
+        isActive,
+        type,
+        template_name,
+      };
+      await updateDoc(
+        docRef,
+        image
+          ? {
+              ...update,
+              img,
+            }
+          : { ...update }
+      );
+      log.info(`Template "${id}" update sucessful`);
+      notify("Template Updated");
+      return true;
+    }
+  } catch (error: any) {
+    log.error(`Template "${id}" update failed`, error);
+    notify("Update failed");
+  }
+};
+
 /**
  *
  * @param data
@@ -598,6 +652,28 @@ export const deleteOneSavedTemplate = async (id: string) => {
     notify(
       error.message ?? "We encountered a problem while deleting this file"
     );
+  }
+};
+
+export const getAllTemplates = async () => {
+  try {
+    log.info(`Getting all templates`);
+    const db = getFirestore(getApp());
+    const query_ = query(collection(db, COLLECTION.TEMPLATES));
+    const querySnapshot = await getDocs(query_);
+    let docs: any[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      docs.push({ id: doc.id, ...data });
+    });
+
+    return docs as Pick<
+      DOC,
+      "id" | "img" | "template_name" | "type" | "data"
+    >[];
+  } catch (error: any) {
+    log.error(`Failed to get all templates`, error);
+    return [];
   }
 };
 
