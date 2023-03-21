@@ -35,11 +35,14 @@ export default function Playground() {
 
   useEffect(() => {
     if (paid || trial || (!loggedIn && open)) setLoadingTemplates(true);
-    getAllActiveTemplates().then((a) => {
-      setReceiptReceipts(a.receipts);
-      setPosReceipts(a.pos);
-    });
-    setLoadingTemplates(false);
+    getAllActiveTemplates()
+      .then((a) => {
+        setReceiptReceipts(a.receipts);
+        setPosReceipts(a.pos);
+      })
+      .finally(() => {
+        setLoadingTemplates(false);
+      });
   }, [paid, trial, open, loggedIn, paidLoading]);
 
   useEffect(() => {
