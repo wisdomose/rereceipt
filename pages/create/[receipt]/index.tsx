@@ -40,6 +40,7 @@ import useInput from "../../../hooks/useInput";
 import { Field, Select, Toggle } from "../create";
 import { notify, omit } from "../../../utils";
 import { TemplateContext } from "../../../store/template/store";
+import { log } from "next-axiom";
 
 /*
   TODO
@@ -105,6 +106,17 @@ export default function Edit() {
       alert("something is left");
       return;
     }
+
+    log.info("starting update", {
+      data: {
+        ...receipt,
+        settings: { ...setting, width: `${setting.width}px` },
+      },
+      type,
+      isActive,
+      template_name,
+      image,
+    });
 
     await updateTemplate(id, {
       data: {
