@@ -30,7 +30,7 @@ export default function Button({
   ...props
 }: Props) {
   const classStyles = overrideTailwindClasses(`
-  relative 
+  relative grid place-items-center
       ${
         minimal
           ? "border border-gray2 h-fit rounded-lg py-2 px-3 text-xs"
@@ -55,7 +55,7 @@ export default function Button({
           onClick={disabled ? undefined : onClick}
           className={classStyles}
         >
-          <span className={`${loading ? "text-transparent" : ""}`}>
+          <span className={`text-center ${loading ? "text-transparent" : ""}`}>
             {props.label}
           </span>
           {loading && (
