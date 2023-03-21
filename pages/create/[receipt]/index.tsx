@@ -167,6 +167,10 @@ export default function Edit() {
     }
   }, [user]);
 
+  useEffect(() => {
+    log.info(`isActive has been changed to ${isActive}`);
+  }, [isActive]);
+
   const disabled = (!img && !image) || !setting.width || !template_name;
   const value = {
     isActive,
