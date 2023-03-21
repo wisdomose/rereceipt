@@ -125,7 +125,7 @@ const Image = forwardRef<any, Props>(({ data }, ref) => {
             <div className="flex flex-col">
               <p className="uppercase text-left">tax rate</p>
               <p style={genStyle(structure.tax_rate)}>
-                {structure.tax_rate.label} vat
+                {structure.tax_rate.label}
               </p>
             </div>
             <div className="flex flex-col">

@@ -528,12 +528,6 @@ export function Toggle({
   initial: boolean;
   onChange: () => void;
 }) {
-  // const [value, setValue] = useState(initial);
-
-  // useEffect(() => {
-  //   onChange();
-  // }, [value]);
-
   return (
     <Switch checked={initial} onChange={() => onChange()} as={Fragment}>
       {({ checked }: { checked: boolean }) => (

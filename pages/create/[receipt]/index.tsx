@@ -107,17 +107,6 @@ export default function Edit() {
       return;
     }
 
-    log.info("starting update", {
-      data: {
-        ...receipt,
-        settings: { ...setting, width: `${setting.width}px` },
-      },
-      type,
-      isActive,
-      template_name,
-      image,
-    });
-
     await updateTemplate(id, {
       data: {
         ...receipt,
@@ -166,10 +155,6 @@ export default function Edit() {
       router.replace("/");
     }
   }, [user]);
-
-  useEffect(() => {
-    log.info(`isActive has been changed to ${isActive}`);
-  }, [isActive]);
 
   const disabled = (!img && !image) || !setting.width || !template_name;
   const value = {
