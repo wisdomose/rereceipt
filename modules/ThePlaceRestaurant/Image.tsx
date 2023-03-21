@@ -175,7 +175,7 @@ const Image = forwardRef<any, Props>(({ data }, ref) => {
           </div>
 
           {/* footer */}
-          <div className="w-1/2 mx-auto">
+          <div className="mx-auto">
             <p style={genStyle(structure.footer_message_01)}>
               {structure.footer_message_01.label}
             </p>
