@@ -32,6 +32,7 @@ export default function AlpineWrapper() {
     getOneSavedTemplate(id)
       .then((structure) => {
         if (!structure) throw "No receipt found";
+
         setReceipt(structure);
         setLoading(false);
       })
@@ -56,7 +57,7 @@ function Wrapped({ data }: { data: SAVED | null }) {
 
   if (!data) return <p>invalid file</p>;
 
-  const file = findReceipt(data.data.settings.id);
+  const file = findReceipt(data.template_name);
 
   if (!file) return <p>invalid file</p>;
 
@@ -66,7 +67,7 @@ function Wrapped({ data }: { data: SAVED | null }) {
     <>
       <NavBar isLoggedIn={!false} />
       <Alpine
-        name={data.name}
+        name={data.template_name}
         structure={data.data}
         type={data.type}
         img={data.img}

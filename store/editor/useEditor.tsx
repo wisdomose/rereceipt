@@ -14,7 +14,7 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
   useEffect(() => {
     if (!props || !props?.name || !props?.structure) return;
 
-    const receipt = findReceipt(props.structure?.settings.id ?? "");
+    const receipt = findReceipt(props.name ?? "");
 
     if (!receipt) return;
     const { Pdf } = receipt;
@@ -31,7 +31,7 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
 
   useEffect(() => {
     if (!props?.name) return;
-    const receipt = findReceipt(props.structure?.settings.id ?? "");
+    const receipt = findReceipt(props.name ?? "");
 
     if (!receipt) return;
     const { Pdf } = receipt;

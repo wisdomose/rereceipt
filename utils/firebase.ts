@@ -401,18 +401,20 @@ export const uploadFile = async ({
  * - check if a receipt has already been created
  */
 export const createTemplate = async (
-  data: Pick<DOC, "isActive" | "name" | "type"> & { data: RECEIPT | POS },
+  data: Pick<DOC, "isActive" | "template_name" | "type"> & {
+    data: RECEIPT | POS;
+  },
   image: File
 ) => {
   try {
     log.info("creating a new template");
-    if (!data.data.settings.id) throw new Error("A nuique id is required");
+    if (!data.template_name) throw new Error("A nuique id is required");
     const db = getFirestore(getApp());
 
     const colRef = collection(db, COLLECTION.TEMPLATES);
     const _query = query(
       colRef,
-      where("data.settings.id", "==", data.data.settings.id)
+      where("data.settings.id", "==", data.template_name)
     );
 
     const querySnapshot = await getDocs(_query);
@@ -426,7 +428,7 @@ export const createTemplate = async (
 
     const img = await uploadFile({
       file: image,
-      name: data.name,
+      name: data.template_name,
       folder: IMAGES.RECEIPTS,
     });
 
@@ -436,7 +438,7 @@ export const createTemplate = async (
       img,
     });
 
-    log.info(`template "${data.data.settings.id}" created sucessfully`);
+    log.info(`template "${data.template_name}" created sucessfully`);
   } catch (error: any) {
     log.error(error.message, error);
     notify(error.message);
@@ -454,7 +456,7 @@ export const saveProgress = async ({
   id,
   spaces,
 }: {
-  data: Pick<SAVED, "data" | "name" | "type" | "img" | "templateId">;
+  data: Pick<SAVED, "data" | "template_name" | "type" | "img" | "templateId">;
   id?: string;
   spaces?: number;
 }) => {
@@ -532,7 +534,13 @@ export const getAllSavedTemplates = async (uid: string) => {
         id: doc.id,
         ...(data as Pick<
           SAVED,
-          "data" | "img" | "name" | "templateId" | "timestamp" | "type" | "uid"
+          | "data"
+          | "img"
+          | "template_name"
+          | "templateId"
+          | "timestamp"
+          | "type"
+          | "uid"
         >),
       });
     });
@@ -554,11 +562,12 @@ export const getOneSavedTemplate = async (id: string) => {
 
     if (docSnap.exists()) {
       log.info(`Saved document with id "${id}" exists`);
-      return docSnap.data() as SAVED;
-    } else {
-      log.info(`No saved document with id "${id}" exists`);
-      throw new Error("No document found");
+      const saved = docSnap.data() as SAVED;
+
+      return saved;
     }
+    log.info(`No saved document with id "${id}" exists`);
+    throw new Error("No document found");
   } catch (error: any) {
     log.error(`No saved document found with id "${id}"`, error);
     notify(error?.message ?? "We couldn't find a template");
@@ -609,8 +618,8 @@ export const getAllActiveTemplates = async () => {
     });
 
     return { receipts, pos } as unknown as {
-      receipts: Pick<DOC, "id" | "img" | "name" | "type" | "data">[];
-      pos: Pick<DOC, "id" | "img" | "name" | "type" | "data">[];
+      receipts: Pick<DOC, "id" | "img" | "template_name" | "type" | "data">[];
+      pos: Pick<DOC, "id" | "img" | "template_name" | "type" | "data">[];
     };
   } catch (error: any) {
     log.error(`Failed to get active templates`, error);

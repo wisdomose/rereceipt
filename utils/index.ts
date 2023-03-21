@@ -124,7 +124,6 @@ export function dateToString(date: string) {
 
 export function findReceipt(id: string) {
   const receipt = receipts.find((receipt) => receipt.default.name === id);
-
   if (!receipt) return;
   const data = receipt.default;
 

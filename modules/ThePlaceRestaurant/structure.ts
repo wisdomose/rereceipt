@@ -167,7 +167,6 @@ const structure: Partial<RECEIPT> = {
     font_family: FONT_FAMILY.MOULPALI,
     font_size: FONT_SIZE.TEXT_08,
     width: "190px",
-    id: "the place restaurant",
   },
 };
 

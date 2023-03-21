@@ -32,6 +32,7 @@ import { useRouter } from "next/router";
 import useUser from "../../store/user/useUser";
 import Loader from "../../components/layout/Loader";
 import withState from "../../hooks/withState";
+import useInput from "../../hooks/useInput";
 
 // settings: ,
 
@@ -78,10 +79,10 @@ export default function Create() {
     font_family: FONT_FAMILY.UBUNTU_MONO,
     font_size: FONT_SIZE.TEXT_12,
     width: "200",
-    id: "",
   });
   const { user, loading } = useUser();
   const { loading: saveLoading, wrapper } = withState();
+  const [template_name, template_nameOptions] = useInput("");
 
   const defaultItem: ITEM = {
     label: "",
@@ -131,7 +132,7 @@ export default function Create() {
         },
         type,
         isActive,
-        name,
+        template_name,
       },
       image
     ).then(() => {
@@ -162,7 +163,7 @@ export default function Create() {
     }
   }, [user]);
 
-  const disabled = !image || !name || !setting.width || !setting.id;
+  const disabled = !image || !name || !setting.width || !template_name;
   const value = {
     isActive,
     name,
@@ -277,13 +278,7 @@ export default function Create() {
 
                 <Input
                   label="id"
-                  value={setting.id}
-                  onChange={(e) =>
-                    setSetting((s) => {
-                      s.id = e.target.value;
-                      return { ...s };
-                    })
-                  }
+                  {...template_nameOptions}
                   id="id"
                   type="text"
                   placeholder="unique identifier"

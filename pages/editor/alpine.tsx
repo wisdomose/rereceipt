@@ -58,7 +58,7 @@ export default function AlpineWrapper() {
 function Wrapped({ data }: { data: DOC }) {
   const { pdfFile, previewMode, ref } = useEditor();
 
-  const file = findReceipt(data.data.settings.id);
+  const file = findReceipt(data.template_name);
   if (!file) return <p>invalid file</p>;
 
   const { Editor, Image } = file;
@@ -69,7 +69,7 @@ function Wrapped({ data }: { data: DOC }) {
     <>
       <NavBar isLoggedIn={!false} />
       <Alpine
-        name={data.name}
+        name={data.template_name}
         structure={data.data}
         type={data.type}
         img={data.img}

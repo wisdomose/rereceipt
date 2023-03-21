@@ -5,12 +5,14 @@ import { useRef, useState, useEffect } from "react";
 import { toPng } from "html-to-image";
 import { findReceipt } from "../../utils";
 
-type ReceiptProps = Pick<DOC, "img" | "name" | "data"> & { href: string };
+type ReceiptProps = Pick<DOC, "img" | "template_name" | "data"> & {
+  href: string;
+};
 
-export default function Receipt({ name, href, data }: ReceiptProps) {
+export default function Receipt({ template_name, href, data }: ReceiptProps) {
   const ref = useRef(null);
   const [img, setImg] = useState("");
-  const receipt = findReceipt(name);
+  const receipt = findReceipt(template_name);
   const { Image: Mg } = receipt ?? {};
 
   const Imgg = Mg && <Mg ref={ref} data={data} />;
@@ -34,7 +36,7 @@ export default function Receipt({ name, href, data }: ReceiptProps) {
         {img && (
           <Image
             src={img}
-            alt={name}
+            alt=""
             className="w-full object-cover object-top"
             quality={70}
             fill

@@ -136,7 +136,6 @@ const structure: Partial<POS> = {
     font_family: FONT_FAMILY.RALEWAY,
     font_size: FONT_SIZE.TEXT_08,
     width: "220px",
-    id: "moniepoint",
   },
 };
 
