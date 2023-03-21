@@ -166,7 +166,7 @@ export default function Table<T extends Record<string, any>>({
                             : 50 / (structure[label][0].data.length - 1) + "%"
                           : 100 / structure[label][0].data.length + "%",
                     }}
-                    key={`${header.label}`}
+                    key={`${header.label}${index}`}
                   >
                     <Input label={label} index={[0, index]} />
                   </div>

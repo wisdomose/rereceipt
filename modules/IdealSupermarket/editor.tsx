@@ -142,7 +142,7 @@ export default function Editor() {
             </div>
           </div>
           <div className="flex flex-col">
-            <div className="table-cell uppercase text-end">percentage</div>
+            <div className="table-cell uppercase text-end">tax</div>
             <div className="table-cell">
               <Input label="tax_paid" />
             </div>

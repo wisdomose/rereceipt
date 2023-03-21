@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { log } from "next-axiom";
 
 export enum SUBSCRIPTION_STATUS {
   ACTIVE = "active",
@@ -298,24 +299,10 @@ export default function useSubscriptions(props?: {
 
       getAllSubscriptions(id)
         .then((data) => {
+          // log.info("fetching subscriptions", data);
           setSubscriptions(data);
-          // const sub1 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.ACTIVE
-          // );
-          // const sub2 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING
-          // );
-
-          // const sub3 = data.find(
-          //   (subscription: Subscription) =>
-          //     subscription.status === SUBSCRIPTION_STATUS.ATTENTION
-          // );
-          // setSubscription(sub1 ? sub1 : sub2 ? sub2 : sub3 ? sub3 : null);
         })
         .catch((err) => {
-          console.log(`transaction - ${err.message}`);
           setSubscriptionsError("An error occured");
         })
         .finally(() => {
@@ -324,11 +311,11 @@ export default function useSubscriptions(props?: {
         });
 
       getAllTransactions(id)
-        .then((data) => {
-          setTransactions(data.data);
+        .then(({ data }) => {
+          // log.info(`fetching transactions`, data);
+          setTransactions(data);
         })
         .catch((err) => {
-          console.log(`transaction - ${err.message}`);
           setTransactionsError("An error occured");
         })
         .finally(() => {
@@ -355,7 +342,6 @@ export default function useSubscriptions(props?: {
         setPlans(data.data);
       })
       .catch((err: any) => {
-        console.log(err.message);
         setPlansError("An error occured");
       })
       .finally(() => {
@@ -369,7 +355,11 @@ export default function useSubscriptions(props?: {
 
   // fetch a customers details and store the active subscription
   useEffect(() => {
-    if (!customer_code || subscriptions.length === 0) return;
+    if (
+      !customer_code ||
+      (subscriptions.length === 0 && subscriptionsLoading === false)
+    )
+      return;
 
     setSubscriptionLoading(true);
 
@@ -380,7 +370,6 @@ export default function useSubscriptions(props?: {
       },
       signal: planController.signal,
     })
-      // TODO: if customer.subscriptions array is empty
       .then(
         ({
           data,
@@ -389,14 +378,16 @@ export default function useSubscriptions(props?: {
         }) => {
           const customer = data.data;
           const activeSub = customer.subscriptions[0];
-          const subscription = subscriptions.find(
-            (sub) => sub.subscription_code === activeSub.subscription_code
-          );
-          subscription && setSubscription(subscription);
+          if (activeSub) {
+            const subscription = subscriptions.find(
+              (sub) => sub.subscription_code === activeSub.subscription_code
+            );
+            subscription && setSubscription(subscription);
+          }
         }
       )
       .catch((err: any) => {
-        console.log(err.message);
+        // log.error(err.message, err);
         setSubscriptionError("An error occured");
       })
       .finally(() => {
@@ -406,7 +397,7 @@ export default function useSubscriptions(props?: {
     // return () => {
     //   planController.abort();
     // };
-  }, [customer_code, subscriptions]);
+  }, [customer_code, subscriptions, subscriptionsLoading]);
 
   return {
     subscriptions,

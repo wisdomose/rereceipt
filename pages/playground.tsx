@@ -12,7 +12,7 @@ import Loader from "../components/layout/Loader";
 import { useRouter } from "next/router";
 import PaidProtected from "../components/layout/PaidProtected";
 import Spinner from "../components/Spinner";
-
+import { motion } from "framer-motion";
 function getRandomBoolean() {
   // Generate a random number between 1 and 100
   const randomNumber = Math.floor(Math.random() * 100) + 1;
@@ -24,10 +24,10 @@ function getRandomBoolean() {
 export default function Playground() {
   const [open, setOpen] = useState(getRandomBoolean());
   const [receiptReceipts, setReceiptReceipts] = useState<
-    Pick<DOC, "id" | "img" | "name" | "type" | "data">[]
+    Pick<DOC, "id" | "img" | "template_name" | "type" | "data">[]
   >([]);
   const [posReceipts, setPosReceipts] = useState<
-    Pick<DOC, "id" | "img" | "name" | "type" | "data">[]
+    Pick<DOC, "id" | "img" | "template_name" | "type" | "data">[]
   >([]);
   const { loggedIn, loading, paid, trial, paidLoading } = useUser();
   const router = useRouter();
@@ -35,11 +35,14 @@ export default function Playground() {
 
   useEffect(() => {
     if (paid || trial || (!loggedIn && open)) setLoadingTemplates(true);
-    getAllActiveTemplates().then((a) => {
-      setReceiptReceipts(a.receipts);
-      setPosReceipts(a.pos);
-    });
-    setLoadingTemplates(false);
+    getAllActiveTemplates()
+      .then((a) => {
+        setReceiptReceipts(a.receipts);
+        setPosReceipts(a.pos);
+      })
+      .finally(() => {
+        setLoadingTemplates(false);
+      });
   }, [paid, trial, open, loggedIn, paidLoading]);
 
   useEffect(() => {
@@ -66,10 +69,22 @@ export default function Playground() {
         <Page.Body>
           <>
             <div className="py-10">
-              <h3 className="text-3xl font-medium">Pick Template</h3>
-              <p className="text-sm">
+              <motion.h3
+                initial={{ x: "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0, type: "spring" }}
+                className="text-3xl font-medium"
+              >
+                Pick Template
+              </motion.h3>
+              <motion.p
+                className="text-sm"
+                initial={{ x: "-10%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+              >
                 select a template to start creating your receipt
-              </p>
+              </motion.p>
             </div>
             {loadingTemplates ? (
               <div className="my-14 flex items-center justify-center">
@@ -119,11 +134,23 @@ export default function Playground() {
               </>
             ) : posReceipts.length == 0 || receiptReceipts.length == 0 ? (
               <div className="my-14 text-center text-gray-500">
-                <p>No templates found</p>
+                <motion.p
+                  initial={{ y: "10%", scale: 0, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5, type: "spring" }}
+                >
+                  No templates found
+                </motion.p>
               </div>
             ) : (
               <div className="my-14 text-center text-gray-500">
-                <p>An error occured fetching templates</p>
+                <motion.p
+                  initial={{ y: "10%", scale: 0, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.5, type: "spring" }}
+                >
+                  An error occured fetching templates
+                </motion.p>
               </div>
             )}
 

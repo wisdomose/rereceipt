@@ -64,7 +64,7 @@ type SETTING = {
 type DOC = {
   id: string;
   type: DOC_TYPES;
-  name: string;
+  template_name: string;
   isActive: boolean;
   img: string;
   data: RECEIPT & POS;
@@ -172,15 +172,23 @@ type POS = Required<Record<POS_KEY, ITEM>> & {
   settings: SETTING;
 };
 
+/**
+ * id is the id of the document
+ * uid - owner of the document
+ * templateId - id of the template that was saved
+ * template_name - the name of the receipt editor
+ * img - image of the template
+ */
+
 type SAVED = {
   id: string;
   uid: string;
   templateId: string;
   timestamp: any;
-  name: string;
   type: DOC_TYPES;
   img: string;
   data: RECEIPT & POS;
+  template_name:string;
 };
 
 export type {

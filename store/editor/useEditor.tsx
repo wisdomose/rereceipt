@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { EditorStore } from "./store";
 import { Context, UseEditorProps } from "./type";
 import receipts from "../../receipts";
+import { findReceipt } from "../../utils";
 
 export default function useEditor<T extends Context>(props?: UseEditorProps) {
   const store = useContext(EditorStore);
@@ -13,12 +14,10 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
   useEffect(() => {
     if (!props || !props?.name || !props?.structure) return;
 
-    const receipt = receipts.find(
-      (receipt) => receipt.default.name === props.name
-    );
+    const receipt = findReceipt(props.name ?? "");
 
     if (!receipt) return;
-    const { Pdf } = receipt.default;
+    const { Pdf } = receipt;
 
     // @ts-ignore
     store.updatePdfFile(<Pdf structure={store.structure} />);
@@ -32,11 +31,10 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
 
   useEffect(() => {
     if (!props?.name) return;
-    const receipt = receipts.find(
-      (receipt) => receipt.default.name === props.name
-    );
+    const receipt = findReceipt(props.name ?? "");
+
     if (!receipt) return;
-    const { Pdf } = receipt.default;
+    const { Pdf } = receipt;
 
     store?.structure && // @ts-ignore
       store.updatePdfFile(<Pdf structure={store.structure} />);

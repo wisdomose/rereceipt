@@ -18,6 +18,7 @@ import NavBar from "../../components/layout/NavBar";
 import useWidth from "../../hooks/useWidth";
 import { Dialog } from "@headlessui/react";
 import { string } from "zod";
+import withState from "../../hooks/withState";
 
 export default function Login(p: any) {
   const [email, emailOption] = useInput("");
@@ -27,7 +28,7 @@ export default function Login(p: any) {
   const width = useWidth();
   const [open, setOpen] = useState(false);
   const [loadingPasswordReset, setLoadingPasswordReset] = useState(false);
-
+  const { loading, wrapper } = withState();
   const updateOpen = (value: boolean) => setOpen(value);
 
   useEffect(() => {
@@ -44,10 +45,6 @@ export default function Login(p: any) {
   useEffect(() => {
     if (!open) updateForgotEmail("");
   }, [open]);
-
-  async function login() {
-    await loginWithEmail({ email, password });
-  }
 
   async function resetPassword() {
     setLoadingPasswordReset(true);
@@ -81,7 +78,7 @@ export default function Login(p: any) {
               className="mx-auto w-full max-w-[447px] my-20 flex flex-col items-center"
               onSubmit={(e) => {
                 e.preventDefault();
-                login();
+                wrapper(() => loginWithEmail({ email, password }));
               }}
             >
               <div className="flex flex-col w-full mb-10">
@@ -113,7 +110,13 @@ export default function Login(p: any) {
                 forgot password?
               </button>
               <br />
-              <Button type="submit" label="Submit" onClick={() => {}} block />
+              <Button
+                type="submit"
+                label="Submit"
+                onClick={() => {}}
+                block
+                loading={loading}
+              />
 
               <div className="relative w-full my-16">
                 <div className="w-full h-[1px] bg-gray-900/50"></div>
