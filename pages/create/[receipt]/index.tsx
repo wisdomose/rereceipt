@@ -117,7 +117,7 @@ export default function Edit() {
       template_name,
       image,
     }).then(() => {
-      // router.reload();
+      router.reload();
     });
   }, [isActive, template_name, receipt, type, setting, image]);
 
