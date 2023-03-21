@@ -605,7 +605,11 @@ export const getAllActiveTemplates = async () => {
   try {
     log.info(`Getting all active templates`);
     const db = getFirestore(getApp());
-    const querySnapshot = await getDocs(collection(db, COLLECTION.TEMPLATES));
+    const query_ = query(
+      collection(db, COLLECTION.TEMPLATES),
+      where("isActive", "==", true)
+    );
+    const querySnapshot = await getDocs(query_);
     let receipts: any[] = [];
     let pos: any[] = [];
     querySnapshot.forEach((doc) => {
