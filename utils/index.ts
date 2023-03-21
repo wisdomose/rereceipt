@@ -79,21 +79,23 @@ export function genEditorStyle(elem: SETTING) {
 }
 
 export function pick<T extends Record<string, any>>(obj: T, pick: string[]) {
-  Object.keys(obj).map((key) => {
+  let temp = { ...obj };
+  Object.keys(temp).map((key) => {
     if (!pick.includes(key)) {
-      delete obj[key];
+      delete temp[key];
     }
   });
-  return obj;
+  return temp;
 }
 
 export function omit<T extends Record<string, any>>(obj: T, omit: string[]) {
-  Object.keys(obj).map((key) => {
+  let temp = { ...obj };
+  Object.keys(temp).map((key) => {
     if (omit.includes(key)) {
-      delete obj[key];
+      delete temp[key];
     }
   });
-  return obj;
+  return temp;
 }
 
 export function notify(text: string) {
@@ -139,4 +141,36 @@ export function openInNewTab(link: string) {
 
 export function capsFirst(string: string) {
   return string[0].toUpperCase() + string.slice(1);
+}
+
+// check if two objects are equal to support deeply nested objects and multiple value types
+function isEqual(obj1: Record<string, any>, obj2: Record<string, any>) {
+  let variant = false;
+
+  const keys = Object.keys(obj1);
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+
+    if (variant) {
+      break;
+    }
+
+    if (Array.isArray(obj1[key])) {
+    } else {
+      switch (typeof obj1[key]) {
+        case "object":
+          break;
+        case "number":
+        case "boolean":
+        case "string":
+          variant = obj1[key] === obj2[key];
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  return variant;
 }
