@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { log } from "next-axiom";
+import { notify } from "../utils";
 
 export enum SUBSCRIPTION_STATUS {
   ACTIVE = "active",
@@ -342,6 +343,7 @@ export default function useSubscriptions(props?: {
         setPlans(data.data);
       })
       .catch((err: any) => {
+        notify("An error occured");
         setPlansError("An error occured");
       })
       .finally(() => {

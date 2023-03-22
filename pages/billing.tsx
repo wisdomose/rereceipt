@@ -92,29 +92,39 @@ export default function Billing() {
       });
   }, [plans, selectedPlan]);
 
+  // timer
   useEffect(() => {
-    if (!subscription) return;
+    if ((!subscription && !trial) || !user) return;
 
-    if (subscription.status === SUBSCRIPTION_STATUS.ATTENTION) {
+    if (subscription?.status === SUBSCRIPTION_STATUS.ATTENTION) {
       setNotice("There was an error billing your account");
-    } else if (subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING) {
+    } else if (subscription?.status === SUBSCRIPTION_STATUS.NON_RENEWING) {
       setNotice(
         "After this month, you will not have access to your priviledges"
       );
     }
 
     const timer = timerRef?.current;
-    if (subscription && timer !== null) {
+    if ((subscription || trial) && timer !== null) {
       if (
-        subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING ||
-        subscription.status === SUBSCRIPTION_STATUS.ACTIVE
+        subscription?.status === SUBSCRIPTION_STATUS.NON_RENEWING ||
+        subscription?.status === SUBSCRIPTION_STATUS.ACTIVE ||
+        trial
       ) {
         const interval = setInterval(() => {
-          const p = parser.parseExpression(subscription.cron_expression);
-          const future = p.next().toDate().getTime();
-          const now = new Date().getTime();
+          let distance = 0;
+          let future = 0;
+          let now = 0;
 
-          const distance = future - now;
+          if (subscription) {
+            const p = parser.parseExpression(subscription.cron_expression);
+            future = p.next().toDate().getTime();
+          } else if (!subscription && trial) {
+            future = user.trial_ends_in.toDate().getTime();
+          }
+
+          now = new Date().getTime();
+          distance = future - now;
 
           if (distance < 0) {
             clearInterval(interval);
@@ -137,7 +147,7 @@ export default function Billing() {
         return () => clearInterval(interval);
       }
     }
-  }, [subscription]);
+  }, [subscription, trial, user]);
 
   useEffect(() => {
     if (plansLoading || subscriptionLoading) return;
