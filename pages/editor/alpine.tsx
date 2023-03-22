@@ -49,7 +49,7 @@ export default function AlpineWrapper() {
   return (
     <PaidProtected>
       <EditorProvider>
-        <NavBar isLoggedIn={!user} user={user} />
+        <NavBar isLoggedIn={loggedIn} user={user} />
         <Wrapped data={receipt} />
       </EditorProvider>
     </PaidProtected>
