@@ -22,7 +22,7 @@ import { findReceipt, notify } from "../../utils";
 export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<DOC | null>(null);
-  const { loading, loggedIn } = useUser();
+  const { loading, loggedIn, user } = useUser();
 
   useEffect(() => {
     if (!loading && !loggedIn) {
@@ -49,6 +49,7 @@ export default function AlpineWrapper() {
   return (
     <PaidProtected>
       <EditorProvider>
+        <NavBar isLoggedIn={!user} user={user} />
         <Wrapped data={receipt} />
       </EditorProvider>
     </PaidProtected>
@@ -67,7 +68,6 @@ function Wrapped({ data }: { data: DOC }) {
     // <Page isProtected={true}>
     //   <Page.Body>
     <>
-      <NavBar isLoggedIn={!false} />
       <Alpine
         name={data.template_name}
         structure={data.data}

@@ -1,17 +1,13 @@
 import Link from "next/link";
 import { routes } from "./Page";
-import { FiLogOut, FiMenu, FiUser, FiX } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { logoutUser } from "../../utils/firebase";
 import logoDark from "../../src/img/icons/logo.png";
 import Image, { StaticImageData } from "next/image";
-import useUser from "../../store/user/useUser";
-import { Dialog, Menu, Popover } from "@headlessui/react";
+import { Menu, Popover } from "@headlessui/react";
 import { User } from "firebase/auth";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { AvatarComponent } from "avatar-initials";
-
-const version = "0.0.0 - BETA";
 
 export default function NavBar({
   isLoggedIn,
@@ -22,10 +18,6 @@ export default function NavBar({
   user?: User | null;
   logo?: StaticImageData;
 }) {
-  const [open, setOpen] = useState(false);
-  const onClose = () => setOpen(false);
-  const onOpen = () => setOpen(true);
-
   return (
     <div className="max-w-7xl mx-auto">
       <nav className="flex justify-between items-center py-5 px-6 md:px-14 relative">
@@ -33,7 +25,7 @@ export default function NavBar({
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay:2, type: "spring" }}
+          transition={{ delay: 2, type: "spring" }}
         >
           <Link
             href="/"
