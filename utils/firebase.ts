@@ -66,6 +66,13 @@ async function createUser({
   const db = getFirestore(getApp());
   const auth = getAuth();
 
+  const docRef = doc(db, COLLECTION.USERS, uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return;
+  }
+
   // create a collection with the user data
 
   log.info(`Creating Paystack account for ${email}`);
