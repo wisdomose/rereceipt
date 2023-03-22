@@ -335,14 +335,14 @@ function SideBar() {
                             <FiChevronUp className="text-gray-300" />
                           )}
                         </Menu.Button>
-                        <Menu.Items className="absolute top-0 right-0 bg-black min-w-max shadow-lg pb-2">
+                        <Menu.Items className="absolute top-0 right-0 bg-[#FAFAFA] min-w-max shadow-lg pb-2">
                           {formats.map((displayFormat) => (
                             <Menu.Item key={displayFormat}>
                               {({ active }: { active: boolean }) => (
                                 <button
                                   onClick={() => updateFormat(displayFormat)}
                                   className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 ${
-                                    active ? "" : "text-gray-50/50"
+                                    active ? "" : "text-gray-700"
                                   }`}
                                 >
                                   {displayFormat === format ? (
