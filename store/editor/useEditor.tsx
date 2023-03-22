@@ -21,7 +21,7 @@ export default function useEditor<T extends Context>(props?: UseEditorProps) {
 
     // @ts-ignore
     store.updatePdfFile(<Pdf structure={store.structure} />);
-    store.updateName(props.name);
+    // store.updateName(props.name);
     store.updateStructure(props.structure);
   }, [props?.name]);
 

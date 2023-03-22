@@ -34,7 +34,12 @@ import Loader from "../../components/layout/Loader";
 import withState from "../../hooks/withState";
 import useInput from "../../hooks/useInput";
 import { TemplateContext } from "../../store/template/store";
-
+import {
+  RiInsertRowBottom,
+  RiDeleteRow,
+  RiInsertColumnRight,
+  RiDeleteColumn,
+} from "react-icons/ri";
 /*
   TODO
   - loading state for when the receipt is being uploaded
@@ -115,7 +120,11 @@ export default function Create() {
 
   useEffect(() => {
     let data = {
-      products: [{ data: [defaultItem, defaultItem, defaultItem] }],
+      products: [
+        { data: [defaultItem, defaultItem, defaultItem] },
+        { data: [defaultItem, defaultItem, defaultItem] },
+        { data: [defaultItem, defaultItem, defaultItem] },
+      ],
       settings: {
         font_family: FONT_FAMILY.INHERIT,
         font_size: FONT_SIZE.TEXT_12,
@@ -267,9 +276,15 @@ export default function Create() {
             <div className="my-9">
               <p className="font-bold text-lg mb-4">Schema</p>
               <div className="grid grid-cols-1 mx-auto gap-4">
-                {RECEIPT_KEYS.map((receipt) => (
-                  <Field name={receipt} key={receipt} />
-                ))}
+                {[...RECEIPT_KEYS]
+                  .sort()
+                  .map((key) =>
+                    key === "products" ? (
+                      <TTable key={key} />
+                    ) : (
+                      <Field name={key as RECEIPT_KEY} key={key} />
+                    )
+                  )}
               </div>
             </div>
 
@@ -546,5 +561,172 @@ export function Toggle({
         </button>
       )}
     </Switch>
+  );
+}
+
+export function TTable() {
+  const { receipt, setReceipt } = useContext(TemplateContext);
+  const [changed, setChanged] = useState(false);
+  const label = "products";
+
+  const addRow = () => {
+    setReceipt((s) => {
+      if (s === undefined) return;
+      const newState = { ...s };
+      let table = s.products;
+      let length = table[0].data.length;
+
+      let row = [];
+      for (let i = 0; i < length; i++) {
+        row.push({
+          label: "",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.NORMAL,
+          font_weight: FONT_WEIGHT.NORMAL,
+        });
+      }
+
+      table = [...table, { data: row }];
+      newState.products = table;
+
+      return newState;
+    });
+  };
+
+  const deleteRow = (row?: number) => {
+  
+    setReceipt((s) => {
+      if (s === undefined) return s;
+      let table = [...s[label]];
+      if (table.length === 1) return { ...s };
+      const delIndex = row ? row : table.length - 1;
+      table.splice(delIndex, 1);
+      return { ...s, [label]: [...table] };
+    });
+  };
+
+  const deleteColumn = () => {
+    setReceipt((s) => {
+      if (s === undefined) return s;
+      s[label].map(({ data: col }) => {
+        return col.length === 1 ? col : col.splice(col.length - 1, 1);
+      });
+
+      return { ...s };
+    });
+  };
+
+  const addColumn = () => {
+    setReceipt((s) => {
+      if (s === undefined) return s;
+      const headerFontSize = s[label][0].data[0].font_size;
+      s[label].map(({ data: row }, index) => {
+        row.push({
+          label: "",
+          text_align: TEXT_ALIGN.LEFT,
+          transform: TEXT_TRANSFORM.NORMAL,
+          font_weight: FONT_WEIGHT.NORMAL,
+          font_size: index === 0 ? headerFontSize : undefined,
+        });
+      });
+
+      return { ...s };
+    });
+  };
+
+  if (!receipt) return null;
+
+  return (
+    <Disclosure>
+      {({ open }: { open: boolean }) => (
+        <div className="w-full relative">
+          <Disclosure.Button
+            className={`p-4 bg-gray-200 w-full border-2 text-left text-lg text-gray-900 font-semibold ${
+              open ? "rounded-t-md" : "rounded-md"
+            }
+            ${changed ? " border-green-500" : " border-transparent"}
+            `}
+          >
+            products
+          </Disclosure.Button>
+          <Disclosure.Panel className="p-4 shadow-md rounded-b-md  w-full z-20 bg-white">
+            <div className="overflow-hidden">
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3"
+                onClick={addRow}
+              >
+                <RiInsertRowBottom />
+              </button>
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3 ml-3"
+                onClick={() => deleteRow()}
+              >
+                <RiDeleteRow />
+              </button>
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3 ml-3"
+                onClick={() => addColumn()}
+              >
+                <RiInsertColumnRight />
+              </button>
+              <button
+                className="border border-gray5 rounded-lg py-[10px] px-3 ml-3"
+                onClick={() => deleteColumn()}
+              >
+                <RiDeleteColumn />
+              </button>
+              <div className="w-full overflow-auto">
+                <table className="mb-5 mt-3 w-full min-w-[500px] text-[#4F4F4F]">
+                  <tbody>
+                    {receipt.products.map((row, rowId) => (
+                      <tr key={rowId}>
+                        {row.data.map((col, colId) => (
+                          <TInput
+                            index={[rowId, colId]}
+                            key={`${rowId}${colId}`}
+                          />
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Disclosure.Panel>
+        </div>
+      )}
+    </Disclosure>
+  );
+}
+
+function TInput({ index }: { index: number[] }) {
+  const { receipt, setReceipt } = useContext(TemplateContext);
+
+  const onChange = (value: string) => {
+    setReceipt((s) => {
+      if (s === undefined) return;
+      const label = "products";
+
+      let newState = { ...s };
+      let table = newState[label];
+      let row = table[index[0]].data;
+      row[index[1]] = { ...row[index[1]], label: value };
+      table[index[0]] = { data: row };
+      newState[label] = table;
+      return newState;
+    });
+  };
+
+  return (
+    <td className="relative">
+      <input
+        type="text"
+        value={receipt?.products[index[0]].data[index[1]].label}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+        className="w-full rounded-md px-3 py-3 text-[#4F4F4F] bg-[#F2F2F2] focus:outline-none focus:ring-1 focus:shadow-lg ring-[#EF5DA8]"
+      />
+    </td>
   );
 }

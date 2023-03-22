@@ -175,19 +175,19 @@ const Image = forwardRef<any, Props>(({ data }, ref) => {
           </div>
 
           {/* footer */}
-          <div className="w-1/2 mx-auto">
+          <div className="mx-auto">
             <p style={genStyle(structure.footer_message_01)}>
               {structure.footer_message_01.label}
             </p>
             <p style={genStyle(structure.contacts)}>
               {structure.contacts.label}
             </p>
-            <div className="flex flex-row items-center">
-              <p className="whitespace-nowrap mr-1">WhatsApp only:</p>
-              <p style={genStyle(structure.whatsapp)}>
+            <p className="">
+              WhatsApp only -{" "}
+              <span style={genStyle(structure.whatsapp)}>
                 {structure.whatsapp.label}
-              </p>
-            </div>
+              </span>
+            </p>
           </div>
 
           {/* billing */}
