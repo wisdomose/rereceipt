@@ -1,5 +1,11 @@
 import useEditor from "../store/editor/useEditor";
-import { FONT_WEIGHT, RECEIPT, TEXT_ALIGN, TEXT_TRANSFORM } from "../types";
+import {
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RECEIPT,
+  TEXT_ALIGN,
+  TEXT_TRANSFORM,
+} from "../types";
 
 export default function useTable() {
   const { setStructure } = useEditor();
@@ -19,6 +25,7 @@ export default function useTable() {
           text_align: TEXT_ALIGN.LEFT,
           transform: TEXT_TRANSFORM.NORMAL,
           font_weight: FONT_WEIGHT.NORMAL,
+          font_size: FONT_SIZE.INHERIT,
         });
       }
 
@@ -39,7 +46,7 @@ export default function useTable() {
           text_align: TEXT_ALIGN.LEFT,
           transform: TEXT_TRANSFORM.NORMAL,
           font_weight: FONT_WEIGHT.NORMAL,
-          font_size: index === 0 ? headerFontSize : undefined,
+          font_size: index === 0 ? headerFontSize : FONT_SIZE.INHERIT,
         });
       });
 
