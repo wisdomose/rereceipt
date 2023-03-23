@@ -1,32 +1,26 @@
 import { useRouter } from "next/router";
 import Page from "../components/layout/Page";
 import { useEffect, useRef, useState } from "react";
-import marks from "../src/img/assets/marks-pattern.png";
-import pattern from "../src/img/assets/pattern.png";
 import receipt_illustrations from "../src/img/assets/receipt-illustration.png";
 import Image from "next/image";
 import Button from "../components/button";
-import Footer from "../components/layout/footer";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 
 const features = [
   {
     heading: "Pick a template",
-    content:
-      "Effortlessly design and export professional-looking documents with our customizable templates",
+    content: "Choose from our suite of well crafted receipts to begin",
     color: "bg-pattern-red",
   },
   {
     heading: "Customize it",
-    content:
-      "Effortlessly design and export professional-looking documents with our customizable templates",
+    content: "Change the look and feel to suit your needs. OWN IT",
     color: "bg-pattern-orange",
   },
   {
     heading: "export",
-    content:
-      "Effortlessly design and export professional-looking documents with our customizable templates",
+    content: "Export to a wide range of formats png, jpeg, svg, pdf",
     color: "bg-pattern-purple",
   },
 ];
@@ -200,18 +194,18 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-[220px] mb-14">
+          <div className="mt-[220px] mb-14 flex flex-col items-center gap-9">
             <p className="text-3xl leading-10 font-bold text-center text-[#4F4F4F] max-w-[964px] mx-auto">
-              Start your risk-free trial today! No credit card needed. Join now
-              and unlock 7 days of unlimited access
+              Start your risk-free trial today! No credit card needed.
             </p>
+            <p className="text-xl">Join now and unlock 7 days of unlimited access</p>
             <Button
               label="Get Started"
-              className="rounded-full mt-7 mx-auto block"
+              className="rounded-full mx-auto block"
+              href="/billing"
             />
           </div>
         </section>
-        <Footer />
         {/* </Page.Body> */}
       </Page>
     </div>
