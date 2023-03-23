@@ -129,7 +129,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
             {saved && (
               <button
-                className="border border-gray5 lg:hidden rounded-lg py-[10px] px-3"
+                className="border border-gray5 rounded-lg py-[10px] px-3"
                 onClick={deleteOne}
               >
                 <FiTrash2 />
