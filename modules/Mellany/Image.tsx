@@ -24,16 +24,15 @@ const Image = forwardRef<any, Props>(({ data }, ref) => {
             <p style={genStyle(structure.location)}>
               {structure.location.label}
             </p>
-            {/* contacts */}
-            <div className="flex items-center w-full bg-red-500">
-              <p className="capitalize mr-1">
-                front desk:
-                <span style={genStyle(structure.contacts)} className="inline-block break-words">
-                  {structure.contacts.label}  
-                  ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                </span>
-              </p>
-            </div>
+            <p className="flex flex-no-wrap gap-1">
+              <p className="block whitespace-nowrap">front desk:</p>
+              <span
+                style={genStyle(structure.contacts)}
+                className="break-words overflow-hidden self-start justify-start"
+              >
+                {structure.contacts.label}
+              </span>
+            </p>
             <div className="flex items-center justify-end flex-nowrap">
               <p className="capitalize mr-1">receipt no:</p>
               <p style={genStyle(structure.receipt_no)}>
