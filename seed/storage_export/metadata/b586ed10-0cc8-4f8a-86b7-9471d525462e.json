@@ -1,0 +1,19 @@
+{
+  "name": "receipts/mellany",
+  "bucket": "rereceipt-4e5ec.appspot.com",
+  "metageneration": 1,
+  "generation": 1679528617197,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "ac138f34-b6cf-4372-87aa-e005b67c91f9"
+  ],
+  "etag": "IslRvnnBEvsqGd02b2A99RQRmJE",
+  "customMetadata": {},
+  "timeCreated": "2023-03-22T23:43:37.198Z",
+  "updated": "2023-03-22T23:43:37.198Z",
+  "size": 14276,
+  "md5Hash": "lGLxnJ+YkQgLecXla8ApDg==",
+  "crc32c": "262440705"
+}
