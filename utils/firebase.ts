@@ -449,6 +449,7 @@ export const createTemplate = async (
   } catch (error: any) {
     log.error(error.message, error);
     notify(error.message);
+    throw new Error("failed to create template");
   }
 };
 
@@ -504,6 +505,7 @@ export const updateTemplate = async (
   } catch (error: any) {
     log.error(`Template "${id}" update failed`, error);
     notify("Update failed");
+    throw new Error("failed to create template");
   }
 };
 
