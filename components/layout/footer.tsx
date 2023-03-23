@@ -96,6 +96,7 @@ export default function Footer() {
                 <BsWhatsapp />
                 <a
                   target="_blank"
+                  rel="noreferrer"
                   href="https://wa.me/+2349039392400"
                   onFocus={(e) => {
                     e.target.classList.toggle("grad__text");
