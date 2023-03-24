@@ -17,6 +17,7 @@ import axios from "axios";
 import Loader from "../components/layout/Loader";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import withState from "../hooks/withState";
 const pad = (v: string | number) => {
   const value = v.toString();
   return value.length == 1 ? "0" + value : value;
@@ -41,6 +42,7 @@ export default function Billing() {
   // used to select the plan for first purchase
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const { loading: initLoading, wrapper } = withState();
 
   function submit() {
     //@ts-ignore
@@ -499,7 +501,13 @@ export default function Billing() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   transition={{ delay: 1.5, type: "spring" }}
                 >
-                  <Button label="Pay" type="submit" onClick={init} block />
+                  <Button
+                    label="Pay"
+                    type="submit"
+                    onClick={() => wrapper(init)}
+                    loading={initLoading}
+                    block
+                  />
                 </motion.div>
               )}
           </>
