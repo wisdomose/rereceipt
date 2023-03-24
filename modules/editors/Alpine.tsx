@@ -65,6 +65,21 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+
+        const msg =
+          "Do you want to exit this page? you may have unsaved changes";
+
+        e.returnValue = msg;
+
+        return msg;
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     let id = router.query.receipt;
     if (!id || typeof id !== "string") return;
     setDocId(id);
@@ -129,7 +144,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
             {saved && (
               <button
-                className="border border-gray5 lg:hidden rounded-lg py-[10px] px-3"
+                className="border border-gray5 rounded-lg py-[10px] px-3"
                 onClick={deleteOne}
               >
                 <FiTrash2 />
@@ -335,14 +350,14 @@ function SideBar() {
                             <FiChevronUp className="text-gray-300" />
                           )}
                         </Menu.Button>
-                        <Menu.Items className="absolute top-0 right-0 bg-black min-w-max shadow-lg pb-2">
+                        <Menu.Items className="absolute top-0 right-0 bg-[#FAFAFA] min-w-max shadow-lg pb-2">
                           {formats.map((displayFormat) => (
                             <Menu.Item key={displayFormat}>
                               {({ active }: { active: boolean }) => (
                                 <button
                                   onClick={() => updateFormat(displayFormat)}
                                   className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 ${
-                                    active ? "" : "text-gray-50/50"
+                                    active ? "" : "text-gray-700"
                                   }`}
                                 >
                                   {displayFormat === format ? (

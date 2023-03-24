@@ -17,6 +17,7 @@ import axios from "axios";
 import Loader from "../components/layout/Loader";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import withState from "../hooks/withState";
 const pad = (v: string | number) => {
   const value = v.toString();
   return value.length == 1 ? "0" + value : value;
@@ -41,6 +42,7 @@ export default function Billing() {
   // used to select the plan for first purchase
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const { loading: initLoading, wrapper } = withState();
 
   function submit() {
     //@ts-ignore
@@ -92,29 +94,39 @@ export default function Billing() {
       });
   }, [plans, selectedPlan]);
 
+  // timer
   useEffect(() => {
-    if (!subscription) return;
+    if ((!subscription && !trial) || !user) return;
 
-    if (subscription.status === SUBSCRIPTION_STATUS.ATTENTION) {
+    if (subscription?.status === SUBSCRIPTION_STATUS.ATTENTION) {
       setNotice("There was an error billing your account");
-    } else if (subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING) {
+    } else if (subscription?.status === SUBSCRIPTION_STATUS.NON_RENEWING) {
       setNotice(
         "After this month, you will not have access to your priviledges"
       );
     }
 
     const timer = timerRef?.current;
-    if (subscription && timer !== null) {
+    if ((subscription || trial) && timer !== null) {
       if (
-        subscription.status === SUBSCRIPTION_STATUS.NON_RENEWING ||
-        subscription.status === SUBSCRIPTION_STATUS.ACTIVE
+        subscription?.status === SUBSCRIPTION_STATUS.NON_RENEWING ||
+        subscription?.status === SUBSCRIPTION_STATUS.ACTIVE ||
+        trial
       ) {
         const interval = setInterval(() => {
-          const p = parser.parseExpression(subscription.cron_expression);
-          const future = p.next().toDate().getTime();
-          const now = new Date().getTime();
+          let distance = 0;
+          let future = 0;
+          let now = 0;
 
-          const distance = future - now;
+          if (subscription) {
+            const p = parser.parseExpression(subscription.cron_expression);
+            future = p.next().toDate().getTime();
+          } else if (!subscription && trial) {
+            future = user.trial_ends_in.toDate().getTime();
+          }
+
+          now = new Date().getTime();
+          distance = future - now;
 
           if (distance < 0) {
             clearInterval(interval);
@@ -137,7 +149,7 @@ export default function Billing() {
         return () => clearInterval(interval);
       }
     }
-  }, [subscription]);
+  }, [subscription, trial, user]);
 
   useEffect(() => {
     if (plansLoading || subscriptionLoading) return;
@@ -489,7 +501,13 @@ export default function Billing() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   transition={{ delay: 1.5, type: "spring" }}
                 >
-                  <Button label="Pay" type="submit" onClick={init} block />
+                  <Button
+                    label="Pay"
+                    type="submit"
+                    onClick={() => wrapper(init)}
+                    loading={initLoading}
+                    block
+                  />
                 </motion.div>
               )}
           </>

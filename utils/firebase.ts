@@ -66,6 +66,13 @@ async function createUser({
   const db = getFirestore(getApp());
   const auth = getAuth();
 
+  const docRef = doc(db, COLLECTION.USERS, uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return;
+  }
+
   // create a collection with the user data
 
   log.info(`Creating Paystack account for ${email}`);
@@ -442,6 +449,7 @@ export const createTemplate = async (
   } catch (error: any) {
     log.error(error.message, error);
     notify(error.message);
+    throw new Error("failed to create template");
   }
 };
 
@@ -497,6 +505,7 @@ export const updateTemplate = async (
   } catch (error: any) {
     log.error(`Template "${id}" update failed`, error);
     notify("Update failed");
+    throw new Error("failed to create template");
   }
 };
 

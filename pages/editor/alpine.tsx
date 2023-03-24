@@ -1,18 +1,11 @@
-import { UseEditorProps } from "../../store/editor/type";
 import Alpine from "../../modules/editors/Alpine";
 import { useRouter } from "next/router";
-import receipts from "../../receipts/index";
 import useEditor from "../../store/editor/useEditor";
 import { useEffect } from "react";
 import EditorProvider from "../../store/editor/store";
-import Page from "../../components/layout/Page";
-import { Popover } from "@headlessui/react";
-import Link from "next/link";
-import logo from "../../src/img/icons/logo.png";
-import { FiSettings } from "react-icons/fi";
 import { getOneTemplate } from "../../utils/firebase";
 import { useState } from "react";
-import { DOC, POS, RECEIPT } from "../../types";
+import { DOC } from "../../types";
 import NavBar from "../../components/layout/NavBar";
 import Loader from "../../components/layout/Loader";
 import PaidProtected from "../../components/layout/PaidProtected";
@@ -22,7 +15,7 @@ import { findReceipt, notify } from "../../utils";
 export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<DOC | null>(null);
-  const { loading, loggedIn } = useUser();
+  const { loading, loggedIn, user } = useUser();
 
   useEffect(() => {
     if (!loading && !loggedIn) {
@@ -49,6 +42,7 @@ export default function AlpineWrapper() {
   return (
     <PaidProtected>
       <EditorProvider>
+        <NavBar isLoggedIn={loggedIn} user={user} />
         <Wrapped data={receipt} />
       </EditorProvider>
     </PaidProtected>
@@ -67,7 +61,6 @@ function Wrapped({ data }: { data: DOC }) {
     // <Page isProtected={true}>
     //   <Page.Body>
     <>
-      <NavBar isLoggedIn={!false} />
       <Alpine
         name={data.template_name}
         structure={data.data}

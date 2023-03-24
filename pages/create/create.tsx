@@ -119,6 +119,21 @@ export default function Create() {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+
+        const msg =
+          "Do you want to exit this page? you may have unsaved changes";
+
+        e.returnValue = msg;
+
+        return msg;
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     let data = {
       products: [
         { data: [defaultItem, defaultItem, defaultItem] },
@@ -594,7 +609,6 @@ export function TTable() {
   };
 
   const deleteRow = (row?: number) => {
-  
     setReceipt((s) => {
       if (s === undefined) return s;
       let table = [...s[label]];

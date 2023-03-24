@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { toPng, toJpeg, toCanvas, toSvg } from "html-to-image";
 import jspdf from "jspdf";
 import { EDITING_MODE, FONT_FAMILY, FONT_SIZE } from "../../types";
+import { notify } from "../../utils";
 
 export const EditorStore = createContext<Context>({
   updatePdfFile: () => {},
@@ -26,7 +27,7 @@ export const EditorStore = createContext<Context>({
   updateWidth: () => {},
   setStructure: () => {},
   updateEditingMode: () => {},
-  editingMode:EDITING_MODE.BASIC,
+  editingMode: EDITING_MODE.BASIC,
   format: formats[0],
   pdfFile: undefined,
   previewMode: false,
@@ -66,10 +67,8 @@ export default function EditorProvider(props: { children: ReactNode }) {
     }
   }, [previewMode]);
 
-  // BUG: when downloading an image, the name of the file isn't the current name
   const downloadImage = useCallback(
     (data: { data: string; format: Format }) => {
-      // console.log(data);
       saveAs(data.data, name + "." + data.format);
     },
     [name]
@@ -91,13 +90,14 @@ export default function EditorProvider(props: { children: ReactNode }) {
   // }
 
   async function exportFile() {
+    setPreviewMode(true);
     function filter(node: any) {
       return node.tagName !== "i";
     }
 
     try {
       if (!ref?.current) {
-        console.log("Image still rendering");
+        notify("Document still rendering. try again");
         return;
       }
 

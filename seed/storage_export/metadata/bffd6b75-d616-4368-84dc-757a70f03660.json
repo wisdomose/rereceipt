@@ -1,0 +1,19 @@
+{
+  "name": "receipts/delve",
+  "bucket": "rereceipt-4e5ec.appspot.com",
+  "metageneration": 1,
+  "generation": 1679527364463,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "d587fa5e-6b36-467e-8609-ad37f22578e9"
+  ],
+  "etag": "vXbFkm3g6SJ8mbGZJ7tW+n/mS5A",
+  "customMetadata": {},
+  "timeCreated": "2023-03-22T23:22:44.463Z",
+  "updated": "2023-03-22T23:22:44.463Z",
+  "size": 24097,
+  "md5Hash": "bprJX9Yh/zjaK5Sj8W1atw==",
+  "crc32c": "260977526"
+}

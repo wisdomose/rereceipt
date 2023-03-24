@@ -17,7 +17,7 @@ export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<SAVED | null>(null);
   const [loading, setLoading] = useState(true);
-  const { loading: loadingUser, loggedIn } = useUser();
+  const { loading: loadingUser, loggedIn, user } = useUser();
 
   useEffect(() => {
     if (!loadingUser && !loggedIn) {
@@ -46,6 +46,7 @@ export default function AlpineWrapper() {
   return (
     <PaidProtected>
       <EditorProvider>
+        <NavBar isLoggedIn={loggedIn} user={user} />
         <Wrapped data={receipt} />
       </EditorProvider>
     </PaidProtected>
@@ -65,7 +66,6 @@ function Wrapped({ data }: { data: SAVED | null }) {
 
   return (
     <>
-      <NavBar isLoggedIn={!false} />
       <Alpine
         name={data.template_name}
         structure={data.data}

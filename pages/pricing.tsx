@@ -8,6 +8,7 @@ import useSubscriptions, {
 import Loader from "../components/layout/Loader";
 import { useState, useEffect } from "react";
 import useUser from "../store/user/useUser";
+import { motion } from "framer-motion";
 
 export const defaultPrices = [
   {
@@ -104,16 +105,32 @@ export default function Pricing() {
       <div className="min-h-[calc(100vh_-_78px)] section-marks">
         <Page.Body>
           <div className="pt-5 md:pt-14">
-            <h1 className="text-4xl leading-[50px] sm:text-5xl sm:leading-[70px] md:text-6xl md:leading-[78px] font-bold text-center max-w-[788px] mx-auto text-[#333333]">
+            <motion.h1
+              initial={{ y: "10%", scale: 0, opacity: 0 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, type: "spring" }}
+              className="text-4xl leading-[50px] sm:text-5xl sm:leading-[70px] md:text-6xl md:leading-[78px] font-bold text-center max-w-[788px] mx-auto text-[#333333]"
+            >
               Our pricing is simple with no hidden fees
-            </h1>
-            <p className="text-xl text-center text-[#333333] pt-4 md:pt-0">
+            </motion.h1>
+            <motion.p
+              initial={{ y: "-100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className="text-xl text-center text-[#333333] pt-4 md:pt-0"
+            >
               pricing plans for businesses and individuals
-            </p>
+            </motion.p>
 
             <div className="flex flex-wrap gap-14 justify-center md:justify-center items-end w-full max-w-[1000px] mx-auto pt-14 lg:pt-20">
-              {prices.map((price) => (
-                <div key={price.type} className="w-full max-w-[276px]">
+              {prices.map((price, index) => (
+                <motion.div
+                  initial={{ y: "10%", scale: 0, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.5, type: "spring" }}
+                  key={price.type}
+                  className="w-full max-w-[276px]"
+                >
                   {price.popular && (
                     <div className="bg-black text-center text-[#FAFAFA] rounded-t-xl py-2">
                       Popular
@@ -152,7 +169,9 @@ export default function Pricing() {
                     </ul>
                     <Button
                       href={
-                        loggedIn ? `/billing?plan=${price.plan_code}` : "/auth/login"
+                        loggedIn
+                          ? `/billing?plan=${price.plan_code}`
+                          : "/auth/login"
                       }
                       className="block text-center"
                       label={price.active ? "Get started" : "coming soon"}
@@ -160,13 +179,12 @@ export default function Pricing() {
                       disabled={!price.active}
                     />
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </Page.Body>
       </div>
-      {/* <Footer /> */}
     </Page>
   );
 }
