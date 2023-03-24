@@ -65,6 +65,21 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+
+        const msg =
+          "Do you want to exit this page? you may have unsaved changes";
+
+        e.returnValue = msg;
+
+        return msg;
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     let id = router.query.receipt;
     if (!id || typeof id !== "string") return;
     setDocId(id);

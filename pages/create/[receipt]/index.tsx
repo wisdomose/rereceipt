@@ -156,6 +156,21 @@ export default function Edit() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+
+        const msg =
+          "Do you want to exit this page? you may have unsaved changes";
+
+        e.returnValue = msg;
+
+        return msg;
+      });
+    }
+  }, []);
+
   const disabled = (!img && !image) || !setting.width || !template_name;
   const value = {
     isActive,
@@ -298,7 +313,7 @@ export default function Edit() {
                     .sort()
                     .map((key) =>
                       key === "products" ? (
-                        <TTable key={key}/>
+                        <TTable key={key} />
                       ) : (
                         <Field name={key as RECEIPT_KEY} key={key} />
                       )
