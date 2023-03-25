@@ -142,8 +142,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full">
-        <div className="max-w-7xl mx-auto flex w-full justify-around border-t border-t-gray4 py-[30px] ">
+      <div className="w-full border-t border-t-gray4">
+        <div className="max-w-7xl mx-auto flex w-full justify-around py-[30px] ">
           {/* <div className="w-full border-t border-t-gray4 py-[30px] "> */}
           <p className="">
             &copy; 2023 <span>Rereceipt</span> - all rights reserved
