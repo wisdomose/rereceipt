@@ -146,7 +146,7 @@ export default function Home() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 2 }}
             >
-              <Button label="Get Started" className="rounded-full mt-7" />
+              <Button label="Get Started" className="rounded-full mt-7 block w-fit" href="/auth/login" />
             </motion.div>
           </div>
           <motion.div
