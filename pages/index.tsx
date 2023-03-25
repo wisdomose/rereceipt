@@ -10,7 +10,7 @@ import { useInView } from "framer-motion";
 const features = [
   {
     heading: "Pick a template",
-    content: "Choose from our suite of well crafted receipts to begin",
+    content: "Choose from our suite of high quality well crafted receipts",
     color: "bg-pattern-red",
   },
   {
@@ -60,7 +60,7 @@ const features2 = [
       </svg>
     ),
     header: "Simple and intuitive editor",
-    content: "export receipts in jpeg, png, svg, pdf format",
+    content: "with our editor, you can choose to go simple or go pro",
   },
   {
     icon: (
@@ -78,7 +78,7 @@ const features2 = [
       </svg>
     ),
     header: "Flexible templates",
-    content: "highly customizable templates",
+    content: "highly customizable templates to suite your needs and brand",
   },
 ];
 
@@ -198,7 +198,9 @@ export default function Home() {
             <p className="text-3xl leading-10 font-bold text-center text-[#4F4F4F] max-w-[964px] mx-auto">
               Start your risk-free trial today! No credit card needed.
             </p>
-            <p className="text-xl">Join now and unlock 7 days of unlimited access</p>
+            <p className="text-xl text-center">
+              Join now and unlock 7 days of unlimited access
+            </p>
             <Button
               label="Get Started"
               className="rounded-full mx-auto block"
