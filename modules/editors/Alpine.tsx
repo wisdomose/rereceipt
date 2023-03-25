@@ -76,6 +76,8 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
         return msg;
       });
+
+      return () => window.removeEventListener("beforeunload", () => {});
     }
   }, []);
 

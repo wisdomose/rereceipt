@@ -130,6 +130,8 @@ export default function Create() {
 
         return msg;
       });
+
+      return () => window.removeEventListener("beforeunload", () => {});
     }
   }, []);
 
