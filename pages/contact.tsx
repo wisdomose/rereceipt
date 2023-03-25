@@ -46,7 +46,7 @@ export default function Contact() {
             transition={{ delay: 0, type: "spring" }}
           >
             Hey there,
-            <br /> we'd love to hear from you
+            <br /> we&apos;d love to hear from you
           </motion.h1>
           <motion.form
             onSubmit={(e) => {
