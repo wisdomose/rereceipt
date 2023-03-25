@@ -168,6 +168,8 @@ export default function Edit() {
 
         return msg;
       });
+
+      return () => window.removeEventListener("beforeunload", () => {});
     }
   }, []);
 
