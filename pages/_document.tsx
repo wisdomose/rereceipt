@@ -35,6 +35,44 @@ export default function Document() {
           rel="stylesheet"
           crossOrigin="anonymous"
         ></link>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Rereceipt</title>
+        <meta name="title" content="Rereceipt" />
+        <meta
+          name="description"
+          content="Effortlessly design and export professional-looking receipts with our customizable templates"
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://rereceipt.cc" />
+        <meta property="og:title" content="rereceipt.cc" />
+        <meta
+          property="og:description"
+          content="Effortlessly design and export professional-looking receipts with our customizable templates"
+        />
+        <meta property="og:image" content="https://www.rereceipt.cc/logo.png" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://rereceipt.cc" />
+        <meta property="twitter:title" content="rereceipt.cc" />
+        <meta
+          property="twitter:description"
+          content="Effortlessly design and export professional-looking receipts with our customizable templates"
+        />
+        {/* <meta property="twitter:site" content="@betahuhn"/> */}
+        <meta
+          property="twitter:image"
+          content="https://www.rereceipt.cc/logo.png"
+        />
+
+        <link
+          rel="icon"
+          type="image/png"
+          href="https://www.rereceipt.cc/logo.png"
+        />
       </Head>
       <body>
         <Main />
