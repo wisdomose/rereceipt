@@ -53,7 +53,7 @@ export default function Document() {
           property="og:description"
           content="Effortlessly design and export professional-looking receipts with our customizable templates"
         />
-        <meta property="og:image" content="https://www.rereceipt.cc/logo.png" />
+        <meta property="og:image" content="./logo.png" />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://rereceipt.cc" />
@@ -65,13 +65,13 @@ export default function Document() {
         {/* <meta property="twitter:site" content="@betahuhn"/> */}
         <meta
           property="twitter:image"
-          content="https://www.rereceipt.cc/logo.png"
+          content="./logo.png"
         />
 
         <link
           rel="icon"
           type="image/png"
-          href="https://www.rereceipt.cc/logo.png"
+          href="./logo.png"
         />
       </Head>
       <body>
