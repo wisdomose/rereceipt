@@ -425,66 +425,71 @@ export default function Billing() {
                     animate={{ y: 0, opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.5, type: "spring" }}
                     key={price.type}
-                    className={`border-2 rounded-xl p-6 border-black max-w-[380px] w-full bg-[#FAFAFA] ${
-                      active ? "active__pricing" : ""
-                    }`}
                   >
-                    <div className="flex flex-col xl:flex-row md:gap-6">
-                      <div>
-                        <div
-                          className={`w-fit rounded-full p-[2px] oveflow-hidden ${
-                            active ? "grad__border" : "bg-black"
-                          }`}
-                        >
-                          <div className="bg-[#fafafa] rounded-full overflow-hidden ">
-                            <p
-                              className={`uppercase rounded-full px-5 w-fit ${
-                                active ? "grad__text" : ""
-                              }`}
-                            >
-                              {price.type}
-                            </p>
+                    <div
+                      className={`border-2 rounded-xl p-6 border-black max-w-[380px] w-full bg-[#FAFAFA] ${
+                        active ? "active__pricing" : ""
+                      }`}
+                    >
+                      <div className="flex flex-col xl:flex-row md:gap-6">
+                        <div>
+                          <div
+                            className={`w-fit rounded-full p-[2px] oveflow-hidden ${
+                              active ? "grad__border" : "bg-black"
+                            }`}
+                          >
+                            <div className="bg-[#fafafa] rounded-full overflow-hidden ">
+                              <p
+                                className={`uppercase rounded-full px-5 w-fit ${
+                                  active ? "grad__text" : ""
+                                }`}
+                              >
+                                {price.type}
+                              </p>
+                            </div>
                           </div>
+                          <p className={`pt-6 text-4xl`}>₦{price.price}</p>
+                          <p className="pt-6 pb-6 md:pb-0 ">per month</p>
                         </div>
-                        <p className={`pt-6 text-4xl`}>₦{price.price}</p>
-                        <p className="pt-6 pb-6 md:pb-0 ">per month</p>
+
+                        <ul className="flex gap-5 flex-col">
+                          {price.options.map((option) => (
+                            <li
+                              key={option.label}
+                              className="flex gap-5 items-center"
+                            >
+                              <div>
+                                {option.included ? <FiCheck /> : <FiX />}
+                              </div>
+                              <p>{option.label}</p>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
-                      <ul className="flex gap-5 flex-col">
-                        {price.options.map((option) => (
-                          <li
-                            key={option.label}
-                            className="flex gap-5 items-center"
-                          >
-                            <div>{option.included ? <FiCheck /> : <FiX />}</div>
-                            <p>{option.label}</p>
-                          </li>
-                        ))}
-                      </ul>
+                      <Button
+                        label={
+                          firstPurchase && selectedPlan === price.plan_code
+                            ? "Selected"
+                            : firstPurchase
+                            ? "Select"
+                            : active && nonRenewing
+                            ? "Enable plan"
+                            : active
+                            ? "Disable plan"
+                            : nonRenewing
+                            ? "Upgrade plan"
+                            : "Upgrade plan"
+                        }
+                        block
+                        className="mt-7"
+                        onClick={action}
+                        disabled={
+                          firstPurchase && selectedPlan === price.plan_code
+                          // (price.status !== SUBSCRIPTION_STATUS.ACTIVE && active)
+                        }
+                      />
                     </div>
-
-                    <Button
-                      label={
-                        firstPurchase && selectedPlan === price.plan_code
-                          ? "Selected"
-                          : firstPurchase
-                          ? "Select"
-                          : active && nonRenewing
-                          ? "Enable plan"
-                          : active
-                          ? "Disable plan"
-                          : nonRenewing
-                          ? "Upgrade plan"
-                          : "Upgrade plan"
-                      }
-                      block
-                      className="mt-7"
-                      onClick={action}
-                      disabled={
-                        firstPurchase && selectedPlan === price.plan_code
-                        // (price.status !== SUBSCRIPTION_STATUS.ACTIVE && active)
-                      }
-                    />
                   </motion.div>
                 );
               })}
