@@ -327,25 +327,22 @@ export default function Create() {
 */
 export function Field({ name }: { name: RECEIPT_KEY }) {
   const { receipt, setReceipt, base } = useContext(TemplateContext);
-  const [isInitialized, setIsInitialized] = useState(false);
   const [fontWeight, setFontWeight] = useState<FONT_WEIGHT>(FONT_WEIGHT.NORMAL);
   const [transform, setTransform] = useState<TEXT_TRANSFORM>(
     TEXT_TRANSFORM.NORMAL
   );
   const [fontSize, setFontSize] = useState<FONT_SIZE>(FONT_SIZE.INHERIT);
-  const [textAlign, setTextAlign] = useState<TEXT_ALIGN>(TEXT_ALIGN.LEFT);
+  const [textAlign, setTextAlign] = useState<TEXT_ALIGN>(TEXT_ALIGN.END);
   const [changed, setChanged] = useState(false);
 
   useEffect(() => {
-    if (!receipt || isInitialized || name == "products") return;
+    if (!receipt || name == "products") return;
     setFontWeight(receipt[name].font_weight);
     setTransform(receipt[name].transform);
     receipt[name].font_size &&
       setFontSize(receipt[name].font_size as FONT_SIZE);
     setTextAlign(receipt[name].text_align);
-
-    setIsInitialized(true);
-  }, []);
+  }, [receipt, name]);
 
   useEffect(() => {
     if (!receipt || !base || name == "products") return;
