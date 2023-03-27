@@ -1,0 +1,19 @@
+{
+  "name": "receipts/receipt 1",
+  "bucket": "rereceipt-4e5ec.appspot.com",
+  "metageneration": 1,
+  "generation": 1679884629897,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "98155b17-23c8-420b-bf77-68386dd6fef1"
+  ],
+  "etag": "3JlZ+X1Skv7mOJL/aRGKAD/ONLI",
+  "customMetadata": {},
+  "timeCreated": "2023-03-27T02:37:09.897Z",
+  "updated": "2023-03-27T02:37:09.897Z",
+  "size": 51730,
+  "md5Hash": "p/mlSR7iG0nimOWvpBzULQ==",
+  "crc32c": "4030555490"
+}
