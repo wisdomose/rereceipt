@@ -28,7 +28,8 @@ export default function Receipt({ template_name, href, data }: ReceiptProps) {
       toSvg(ref.current, options).then(function (dataUrl) {
         if (ref2.current) {
           ref2.current.style.backgroundImage = `url('${dataUrl}')`;
-          ref2.current.style.backgroundSize = `cover`;
+          ref2.current.style.backgroundSize = `100%`;
+          ref2.current.style.backgroundRepeat = `no-repeat`;
         }
       });
     }
