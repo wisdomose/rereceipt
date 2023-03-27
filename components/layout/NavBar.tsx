@@ -80,6 +80,16 @@ export default function NavBar({
             )}
           </div>
 
+          <Link
+            href="/playground"
+            className="capitalize group focus:outline-none md:hidden"
+          >
+            playground
+            <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+              <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+            </div>
+          </Link>
+
           {isLoggedIn && user && (
             <Menu>
               <div className="relative">
