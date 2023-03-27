@@ -32,7 +32,7 @@ import { log } from "next-axiom";
 import { notify, pick } from ".";
 import { string } from "zod";
 
-enum COLLECTION {
+export enum COLLECTION {
   TEMPLATES = "templates",
   SAVED = "saved",
   USERS = "users",
