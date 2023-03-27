@@ -424,6 +424,8 @@ export function Field({ name }: { name: RECEIPT_KEY }) {
 
   if (!receipt || !base || name === "products") return null;
 
+  console.log(receipt.products);
+
   return (
     <Disclosure>
       {({ open }: { open: boolean }) => (
@@ -639,7 +641,7 @@ export function TTable() {
           text_align: TEXT_ALIGN.LEFT,
           transform: TEXT_TRANSFORM.NORMAL,
           font_weight: FONT_WEIGHT.NORMAL,
-          font_size: index === 0 ? headerFontSize : undefined,
+          font_size: index === 0 ? headerFontSize : FONT_SIZE.INHERIT,
         });
       });
 
