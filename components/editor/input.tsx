@@ -156,7 +156,7 @@ export default function Input({
           {label !== "products" && (
             <label
               htmlFor={id}
-              className={`block capitalize mb-2 text-[#4F4F4F] text-base`}
+              className={`block capitalize mb-2 text-[#4F4F4F] text-base font-semibold`}
             >
               {labelName ? labelName : label.replaceAll("_", " ")}
             </label>

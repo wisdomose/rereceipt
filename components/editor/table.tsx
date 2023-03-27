@@ -61,7 +61,7 @@ export default function Table<T extends Record<string, any>>({
   if (basic) {
     return (
       <div className="md:col-span-2 overflow-hidden">
-        <p className={`block capitalize mb-2 text-[#4F4F4F] text-base`}>
+        <p className={`block capitalize mb-2 font-semibold text-[#4F4F4F] text-base`}>
           {label.replaceAll("_", " ")}
         </p>
         {structure.products.length === (hasHeader ? 1 : 0) ? (
