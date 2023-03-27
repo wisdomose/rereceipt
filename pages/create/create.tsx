@@ -424,8 +424,6 @@ export function Field({ name }: { name: RECEIPT_KEY }) {
 
   if (!receipt || !base || name === "products") return null;
 
-  console.log(receipt.products);
-
   return (
     <Disclosure>
       {({ open }: { open: boolean }) => (
