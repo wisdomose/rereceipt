@@ -6,6 +6,7 @@ import * as ChickenRepublic from "../modules/ChickenRepublic";
 import * as DelveFood from "../modules/DelveFood";
 import * as Delve from "../modules/Delve";
 import * as Mellany from "../modules/Mellany";
+import * as Receipt1 from "../modules/Receipt 1";
 
 export default [
   MoniePoint,
@@ -16,4 +17,5 @@ export default [
   DelveFood,
   Delve,
   Mellany,
+  Receipt1,
 ];

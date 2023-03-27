@@ -5,7 +5,7 @@ import { TableProps } from "./table";
 
 export default function ImageTable({
   divider,
-  largeCol = 0,
+  largeCol,
   hasHeader,
   structure,
 }: Pick<TableProps, "divider" | "hasHeader" | "largeCol"> & {
@@ -16,8 +16,11 @@ export default function ImageTable({
   if (!structure) return null;
 
   return (
-    <div style={{ maxWidth: structure.settings.width, overflow: "hidden" }}>
-      <div className="table" tabIndex={-1}>
+    <div style={{ maxWidth: structure.settings.width, overflow: "hidden" }} className="w-full">
+      <div
+        className="table w-full"
+        tabIndex={-1}
+      >
         {hasHeader && (
           <>
             <div className={`table-row w-full`}>
@@ -26,7 +29,7 @@ export default function ImageTable({
                   className="table-cell"
                   style={{
                     width:
-                      structure[label][0].data.length <= 4
+                      structure[label][0].data.length <= 4 || largeCol
                         ? index === largeCol
                           ? "50%"
                           : 50 / (structure[label][0].data.length - 1) + "%"
@@ -51,7 +54,7 @@ export default function ImageTable({
                 className="tracking-[5px] overflow-hidden text-clip whitespace-nowrap"
                 style={{
                   maxWidth:
-                    Number(structure.settings.width.slice(0, -2)) - 12 + "px",
+                    Number(structure.settings.width.slice(0, -2)) + "px",
                 }}
               >
                 {divider.padStart(100, divider)}
@@ -69,7 +72,7 @@ export default function ImageTable({
                   className="table-cell"
                   style={{
                     width:
-                      row.length <= 4
+                      row.length <= 4 && largeCol
                         ? position === largeCol
                           ? "50%"
                           : 50 / (row.length - 1) + "%"
