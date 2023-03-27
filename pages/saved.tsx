@@ -67,7 +67,7 @@ export default function Saved() {
               )}
             </div>
 
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-10">
               {saved?.map((saved) => (
                 <Receipt
                   href={`/editor/saved/alpine?receipt=${saved.id}`}
