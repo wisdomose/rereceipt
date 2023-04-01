@@ -58,7 +58,7 @@ type PageProps = Props & {
 export default function Page({ isProtected = false, ...props }: PageProps) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => isProtected);
 
   useEffect(() => {
     const auth = getAuth();
