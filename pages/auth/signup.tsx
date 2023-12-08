@@ -4,7 +4,6 @@ import Page from "../../components/layout/Page";
 import Input from "../../components/input";
 import useInput from "../../hooks/useInput";
 import google from "../../src/img/icons/google.png";
-import { signUpWithGoogle, signupWithEmail } from "../../utils/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
@@ -13,7 +12,9 @@ import NavBar from "../../components/layout/NavBar";
 import useWidth from "../../hooks/useWidth";
 import signupImg from "../../src/img/assets/signup.png";
 import Link from "next/link";
-import withState from "../../hooks/withState";
+import User from "../../res/User";
+import useFetcher from "../../hooks/useFetcher";
+import Rereceipt from "../../res/Rereceipt";
 
 export default function Signup(p: any) {
   const [email, emailOption] = useInput("");
@@ -22,7 +23,12 @@ export default function Signup(p: any) {
   const [lastname, lastnameOption] = useInput("");
   const router = useRouter();
   const width = useWidth();
-  const { loading, wrapper } = withState();
+
+  const rereceipt = new Rereceipt();
+  const user = rereceipt.user;
+
+  const { loading:signupLoading, wrapper:signupWrapper } = useFetcher();
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -34,6 +40,10 @@ export default function Signup(p: any) {
     });
   }, []);
 
+  async function signup() {
+    user && await signupWrapper(() => user.createUserWithEmailAndPassword({ email, password, firstname, lastname }))
+  }
+
   const disabled = !firstname || !lastname || !password || !email;
 
   return (
@@ -41,7 +51,7 @@ export default function Signup(p: any) {
       <div className="md:absolute w-full z-20">
         <NavBar
           isLoggedIn={false}
-          // logo={width >= 768 ? logoLight : undefined}
+        // logo={width >= 768 ? logoLight : undefined}
         />
       </div>
       <main className="md:overflow-hidden md:h-screen">
@@ -62,9 +72,7 @@ export default function Signup(p: any) {
               className="mx-auto w-full max-w-[447px] my-20 flex flex-col items-center"
               onSubmit={(e) => {
                 e.preventDefault();
-                wrapper(() =>
-                  signupWithEmail({ email, password, firstname, lastname })
-                );
+                signup();
               }}
             >
               <div className="flex flex-col w-full mb-10">
@@ -115,10 +123,10 @@ export default function Signup(p: any) {
               <Button
                 type="submit"
                 label="Create account"
-                onClick={() => {}}
+                onClick={() => { }}
                 disabled={disabled}
                 block
-                loading={loading}
+                loading={signupLoading}
               />
 
               <div className="relative w-full my-16">
@@ -132,7 +140,7 @@ export default function Signup(p: any) {
               <button
                 type="button"
                 className="h-14 px-9 py-5 bg-cover flex items-center bg-[#F2F2F2] rounded-md"
-                onClick={signUpWithGoogle}
+                onClick={user && user.googleAuth}
               >
                 <Image
                   className="bg-cover h-10 w-10"

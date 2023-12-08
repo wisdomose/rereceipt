@@ -4,11 +4,6 @@ import useInput from "../../hooks/useInput";
 import google from "../../src/img/icons/google.png";
 import logoLight from "../../src/img/icons/logo-light.png";
 import loginImg from "../../src/img/assets/login.png";
-import {
-  loginWithEmail,
-  sendResetEmail,
-  signUpWithGoogle,
-} from "../../utils/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
@@ -18,7 +13,10 @@ import NavBar from "../../components/layout/NavBar";
 import useWidth from "../../hooks/useWidth";
 import { Dialog } from "@headlessui/react";
 import { string } from "zod";
-import withState from "../../hooks/withState";
+import User from "../../res/User";
+import useFetcher from "../../hooks/useFetcher";
+import { notify } from "../../utils";
+import Rereceipt from "../../res/Rereceipt";
 
 export default function Login(p: any) {
   const [email, emailOption] = useInput("");
@@ -27,12 +25,15 @@ export default function Login(p: any) {
   const router = useRouter();
   const width = useWidth();
   const [open, setOpen] = useState(false);
-  const [loadingPasswordReset, setLoadingPasswordReset] = useState(false);
-  const { loading, wrapper } = withState();
   const updateOpen = (value: boolean) => setOpen(value);
+  const rereceipt = new Rereceipt();
+  const user = rereceipt.user;
+
+  const { loading: loginLoading, wrapper: loginWrapper, error: loginError } = useFetcher();
+  const { wrapper: passwordResetMailWrapper, loading: passwordResetLoading } = useFetcher();
 
   useEffect(() => {
-    const auth = getAuth();
+    const auth = rereceipt.auth;
     onAuthStateChanged(auth, (user) => {
       if (user) {
         router.replace("/playground");
@@ -46,10 +47,18 @@ export default function Login(p: any) {
     if (!open) updateForgotEmail("");
   }, [open]);
 
+  useEffect(() => {
+    if (!loginError) return;
+
+    notify(loginError.split("/")[1].replaceAll("-", " "))
+  }, [loginError])
+
   async function resetPassword() {
-    setLoadingPasswordReset(true);
-    await sendResetEmail(forgotEmail);
-    setLoadingPasswordReset(false);
+    if (user) await passwordResetMailWrapper(() => user.sendResetPasswordMail(forgotEmail));
+  }
+
+  async function login() {
+    if (user) await loginWrapper(() => user.loginInWithEmailAndPassword({ email, password }))
   }
 
   return (
@@ -78,7 +87,7 @@ export default function Login(p: any) {
               className="mx-auto w-full max-w-[447px] my-20 flex flex-col items-center"
               onSubmit={(e) => {
                 e.preventDefault();
-                wrapper(() => loginWithEmail({ email, password }));
+                login();
               }}
             >
               <div className="flex flex-col w-full mb-10">
@@ -113,9 +122,8 @@ export default function Login(p: any) {
               <Button
                 type="submit"
                 label="Submit"
-                onClick={() => {}}
                 block
-                loading={loading}
+                loading={loginLoading}
               />
 
               <div className="relative w-full my-16">
@@ -129,7 +137,7 @@ export default function Login(p: any) {
               <button
                 type="button"
                 className="h-14 px-9 py-5 bg-cover flex items-center bg-[#F2F2F2] rounded-md"
-                onClick={signUpWithGoogle}
+                onClick={user && user.googleAuth}
               >
                 <Image
                   className="bg-cover h-10 w-10"
@@ -199,6 +207,7 @@ export default function Login(p: any) {
               disabled={
                 !forgotEmail || !string().email().safeParse(forgotEmail).success
               }
+              loading={passwordResetLoading}
               onClick={resetPassword}
             />
           </Dialog.Panel>

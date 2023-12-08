@@ -4,20 +4,33 @@ import receipts from "../../../receipts/index";
 import useEditor from "../../../store/editor/useEditor";
 import { useEffect } from "react";
 import EditorProvider from "../../../store/editor/store";
-import { getOneSavedTemplate } from "../../../utils/firebase";
 import { useState } from "react";
 import { SAVED } from "../../../types";
 import Loader from "../../../components/layout/Loader";
 import NavBar from "../../../components/layout/NavBar";
 import PaidProtected from "../../../components/layout/PaidProtected";
 import useUser from "../../../store/user/useUser";
-import { findReceipt } from "../../../utils";
+import { findReceipt, notify } from "../../../utils";
+import Rereceipt from "../../../res/Rereceipt";
+import useFetcher from "../../../hooks/useFetcher";
 
 export default function AlpineWrapper() {
+  const { template } = new Rereceipt();
   const router = useRouter();
   const [receipt, setReceipt] = useState<SAVED | null>(null);
-  const [loading, setLoading] = useState(true);
   const { loading: loadingUser, loggedIn, user } = useUser();
+
+  const { loading: findReceiptLoading, error: findReceiptError, wrapper: findReceiptWrapper, data: findReceiptData } = useFetcher<SAVED>();
+
+  useEffect(() => {
+    if (!findReceiptData) return;
+    setReceipt(findReceiptData);
+  }, [findReceiptData])
+
+  useEffect(() => {
+    if (!findReceiptError) return;
+    router.replace("/saved");
+  }, [findReceiptError])
 
   useEffect(() => {
     if (!loadingUser && !loggedIn) {
@@ -29,27 +42,19 @@ export default function AlpineWrapper() {
     const id = router.query.receipt;
     if (!id || typeof id !== "string") return;
 
-    getOneSavedTemplate(id)
-      .then((structure) => {
-        if (!structure) throw "No receipt found";
+    template && (async function () { findReceiptWrapper(() => template.getOneSavedTemplate(id)) })()
 
-        setReceipt(structure);
-        setLoading(false);
-      })
-      .catch((err) => {
-        router.replace("/saved");
-      });
   }, [router.query.receipt]);
 
-  if (loading || loadingUser || !loggedIn) return <Loader />;
+  if (findReceiptLoading || loadingUser || !loggedIn) return <Loader />;
 
   return (
-    <PaidProtected>
-      <EditorProvider>
-        <NavBar isLoggedIn={loggedIn} user={user} />
-        <Wrapped data={receipt} />
-      </EditorProvider>
-    </PaidProtected>
+    // <PaidProtected>
+    <EditorProvider>
+      <NavBar />
+      <Wrapped data={receipt} />
+    </EditorProvider>
+    // </PaidProtected>
   );
 }
 

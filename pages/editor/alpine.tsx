@@ -8,14 +8,13 @@ import { useState } from "react";
 import { DOC } from "../../types";
 import NavBar from "../../components/layout/NavBar";
 import Loader from "../../components/layout/Loader";
-import PaidProtected from "../../components/layout/PaidProtected";
 import useUser from "../../store/user/useUser";
 import { findReceipt, notify } from "../../utils";
 
 export default function AlpineWrapper() {
   const router = useRouter();
   const [receipt, setReceipt] = useState<DOC | null>(null);
-  const { loading, loggedIn, user } = useUser();
+  const { loading, loggedIn } = useUser();
 
   useEffect(() => {
     if (!loading && !loggedIn) {
@@ -40,12 +39,12 @@ export default function AlpineWrapper() {
   if (!receipt || !loggedIn || loading) return <Loader />;
 
   return (
-    <PaidProtected>
+    // <PaidProtected>
       <EditorProvider>
-        <NavBar isLoggedIn={loggedIn} user={user} />
+        <NavBar />
         <Wrapped data={receipt} />
       </EditorProvider>
-    </PaidProtected>
+    // </PaidProtected>
   );
 }
 

@@ -1,0 +1,20 @@
+[debug] [2023-12-08T12:52:41.694Z] ----------------------------------------------------------------------
+[debug] [2023-12-08T12:52:41.696Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\wisdo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js use rereceipt-preview-52938
+[debug] [2023-12-08T12:52:41.696Z] CLI Version:   13.0.0
+[debug] [2023-12-08T12:52:41.697Z] Platform:      win32
+[debug] [2023-12-08T12:52:41.697Z] Node Version:  v20.9.0
+[debug] [2023-12-08T12:52:41.697Z] Time:          Fri Dec 08 2023 13:52:41 GMT+0100 (West Africa Standard Time)
+[debug] [2023-12-08T12:52:41.697Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-12-08T12:52:41.775Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-12-08T12:52:41.775Z] > authorizing via signed-in user (wisdomose05@gmail.com)
+[debug] [2023-12-08T12:52:41.778Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/rereceipt-preview-52938 [none]
+[debug] [2023-12-08T12:52:53.263Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/rereceipt-preview-52938 200
+[debug] [2023-12-08T12:52:53.265Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/rereceipt-preview-52938 {"projectId":"rereceipt-preview-52938","projectNumber":"356752930970","displayName":"rereceipt-preview","name":"projects/rereceipt-preview-52938","resources":{"hostingSite":"rereceipt-preview-52938","storageBucket":"rereceipt-preview-52938.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_9813d0bc-c7a7-40f5-9624-473cb081ccfb"}
+[info] Now using project rereceipt-preview-52938
+[debug] [2023-12-08T12:53:02.344Z] Error: Timed out.
+    at Timeout.<anonymous> (C:\Users\wisdo\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:258:49)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+[error] 
+[error] Error: An unexpected error has occurred.

@@ -1,23 +1,24 @@
 import Link from "next/link";
 import { routes } from "./Page";
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
-import { logoutUser } from "../../utils/firebase";
 import logoDark from "../../src/img/icons/logo.png";
 import Image, { StaticImageData } from "next/image";
 import { Menu, Popover } from "@headlessui/react";
-import { User } from "firebase/auth";
 import { motion } from "framer-motion";
 import { AvatarComponent } from "avatar-initials";
+import User from "../../res/User";
+import Rereceipt from "../../res/Rereceipt";
+import useUser from "../../store/user/useUser";
 
 export default function NavBar({
-  isLoggedIn,
-  user,
   logo = logoDark,
 }: {
-  isLoggedIn: boolean;
-  user?: User | null;
   logo?: StaticImageData;
 }) {
+  const rereceipt = new Rereceipt();
+  const user = rereceipt.user;
+  const { loggedIn, user: currentUser } = useUser();
+
   return (
     <div className="max-w-7xl mx-auto">
       <nav className="flex justify-between items-center py-5 px-6 md:px-14 relative">
@@ -46,7 +47,7 @@ export default function NavBar({
             <>
               {routes
                 .filter((a) =>
-                  isLoggedIn ? a.showOnLogIn || a.secured : !a.secured
+                  loggedIn ? a.showOnLogIn || a.secured : !a.secured
                 )
                 .map((route, index) => (
                   <motion.div
@@ -68,7 +69,7 @@ export default function NavBar({
                 ))}
             </>
 
-            {!isLoggedIn && (
+            {!loggedIn && (
               <>
                 <Link
                   href="/auth/signup"
@@ -79,25 +80,25 @@ export default function NavBar({
               </>
             )}
           </div>
+          {loggedIn &&
+            <Link
+              href="/playground"
+              className="capitalize group focus:outline-none md:hidden"
+            >
+              playground
+              <div className="h-[2px] w-full rounded-full relative overflow-hidden">
+                <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
+              </div>
+            </Link>}
 
-          <Link
-            href="/playground"
-            className="capitalize group focus:outline-none md:hidden"
-          >
-            playground
-            <div className="h-[2px] w-full rounded-full relative overflow-hidden">
-              <div className="h-full w-0 bg-[rgb(59_130_246_/_0.5)]  group-hover:w-full group-focus:w-full duration-150"></div>
-            </div>
-          </Link>
-
-          {isLoggedIn && user && (
+          {loggedIn && user && (
             <Menu>
               <div className="relative">
                 <Menu.Button className="relative rounded-full overflow-hidden h-8 w-8">
-                  {user?.photoURL ? (
+                  {currentUser?.photoURL ? (
                     <Image
                       fill
-                      src={user.photoURL}
+                      src={currentUser.photoURL}
                       alt="dp"
                       className="object-cover"
                       sizes="96px"
@@ -110,9 +111,8 @@ export default function NavBar({
                       fontFamily="inter"
                       color="#5d5fef"
                       background="#e9e9e9"
-                      initials={`${user?.displayName?.split(" ")[0][0]}${
-                        user?.displayName?.split(" ")[1][0]
-                      }`}
+                      initials={`${currentUser?.displayName?.split(" ")[0][0]}${currentUser?.displayName?.split(" ")[1][0]
+                        }`}
                     />
                   )}
                 </Menu.Button>
@@ -123,10 +123,9 @@ export default function NavBar({
                     {({ active }: { active: boolean }) => (
                       <li>
                         <button
-                          className={`flex items-center justify-center w-full px-6 py-4 ${
-                            active ? "text-[rgb(59_130_246_/_0.8)]" : ""
-                          }`}
-                          onClick={logoutUser}
+                          className={`flex items-center justify-center w-full px-6 py-4 ${active ? "text-[rgb(59_130_246_/_0.8)]" : ""
+                            }`}
+                          onClick={user && user.signOut}
                         >
                           <FiLogOut />
                           <span className="inline-block ml-2 capitalize text-xs font-normal">
@@ -163,11 +162,11 @@ export default function NavBar({
                             <FiX className="text-[rgb(229, 231, 235)]" />
                           </Popover.Button>
                         </div>
-                        {/* {isLoggedIn && ( */}
+                        {/* {loggedIn && ( */}
                         <>
                           {routes
                             .filter((a) =>
-                              isLoggedIn
+                              loggedIn
                                 ? a.showOnLogIn || a.secured
                                 : !a.secured
                             )
@@ -184,7 +183,7 @@ export default function NavBar({
                         </>
                         {/* )} */}
 
-                        {!isLoggedIn && (
+                        {!loggedIn && (
                           <>
                             <Popover.Button
                               as={Link}

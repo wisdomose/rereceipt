@@ -1,43 +1,60 @@
 import Page from "../components/layout/Page";
 import { useState, useEffect } from "react";
-import {
-  countNoOfSavedTemplates,
-  getAllSavedTemplates,
-} from "../utils/firebase";
 import { SAVED } from "../types";
 import Link from "next/link";
 import Receipt from "../components/layout/Receipt";
 import Loader from "../components/layout/Loader";
 import oops from "../src/img/assets/oops.png";
 import Image from "next/image";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import useUser from "../store/user/useUser";
+import useFetcher from "../hooks/useFetcher";
+import Rereceipt from "../res/Rereceipt";
 
 export default function Saved() {
   const [saved, setSaved] = useState<SAVED[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { loading } = useUser();
   const [count, setCount] = useState<number | undefined>(undefined);
-  const { spaces, paidLoading } = useUser();
+  const { spaces } = useUser();
+  const { template } = new Rereceipt()
+
+  const { wrapper: savedTemplatesWrapper, data: savedTemplatesData, loading: savedTemplatesLoading } = useFetcher<SAVED[]>();
+  const { wrapper: countTemplatesWrapper, data: countTemplatesData, loading: countTemplatesLoading } = useFetcher<number>();
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      getAllSavedTemplates(user.uid)
-        .then((res) => {
-          setSaved(res);
-        })
-        .catch((err) => {})
-        .finally(() => {
-          setLoading(false);
-        });
-      countNoOfSavedTemplates(user.uid).then((res) => {
-        setCount(res);
-      });
-    });
-  }, []);
+    if (loading) return;
+    template && savedTemplatesWrapper(template.getAllSavedTemplates)
+    template && countTemplatesWrapper(template.countNoOfSavedTemplates)
 
-  if (loading || paidLoading)
+    // const auth = getAuth();
+    // onAuthStateChanged(auth, (user) => {
+    //   if (!user) return;
+    //   getAllSavedTemplates(user.uid)
+    //     .then((res) => {
+    //       setSaved(res);
+    //     })
+    //     .catch((err) => {})
+    //     .finally(() => {
+    //       setLoading(false);
+    //     });
+    //   countNoOfSavedTemplates(user.uid).then((res) => {
+    //     setCount(res);
+    //   });
+    // });
+  }, [loading]);
+
+  useEffect(() => {
+    if (!savedTemplatesData) return;
+
+    setSaved(savedTemplatesData)
+  }, [savedTemplatesData])
+
+  useEffect(() => {
+    if (!countTemplatesData) return;
+
+    setCount(countTemplatesData)
+  }, [countTemplatesData])
+
+  if (savedTemplatesLoading || countTemplatesLoading)
     return (
       <Page isProtected>
         <Page.Body>
@@ -48,7 +65,7 @@ export default function Saved() {
   return (
     <Page isProtected>
       <Page.Body>
-        {!loading && saved.length > 0 ? (
+        {!savedTemplatesLoading && saved.length > 0 ? (
           <>
             <div className="py-10 border-b border-b-gray-300 flex justify-between gap-14 items-center">
               <div>
@@ -63,7 +80,7 @@ export default function Saved() {
                   {count}/{spaces} slots used
                 </p>
               ) : (
-                <p>{count} slots used</p>
+                <p>{count} slot{(count ?? 0) > 1 ? "s" : ""} used</p>
               )}
             </div>
 
