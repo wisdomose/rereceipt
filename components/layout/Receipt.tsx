@@ -33,7 +33,7 @@ export default function Receipt({ template_name, href, data }: ReceiptProps) {
         }
       });
     }
-  }, [Mg]);
+  }, [Mg, options]);
 
   return (
     <Link

@@ -65,7 +65,6 @@ export default function Login(p: any) {
     <>
       <div className="md:absolute w-full z-20">
         <NavBar
-          isLoggedIn={false}
           logo={width >= 768 ? logoLight : undefined}
         />
       </div>

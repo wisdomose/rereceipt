@@ -31,7 +31,6 @@ import { createTemplate } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import useUser from "../../store/user/useUser";
 import Loader from "../../components/layout/Loader";
-import withState from "../../hooks/withState";
 import useInput from "../../hooks/useInput";
 import { TemplateContext } from "../../store/template/store";
 import {
@@ -40,6 +39,7 @@ import {
   RiInsertColumnRight,
   RiDeleteColumn,
 } from "react-icons/ri";
+import useFetcher from "../../hooks/useFetcher";
 /*
   TODO
   - loading state for when the receipt is being uploaded
@@ -61,7 +61,7 @@ export default function Create() {
     width: "200",
   });
   const { user, loading } = useUser();
-  const { loading: saveLoading, wrapper } = withState();
+  const { loading: saveLoading, wrapper } = useFetcher();
   const [template_name, template_nameOptions] = useInput("");
 
   const defaultItem: ITEM = {

@@ -1,10 +1,6 @@
 import { FiCheck, FiX } from "react-icons/fi";
 import Page from "../components/layout/Page";
 import Button from "../components/button";
-import useSubscriptions, {
-  Plan,
-  Subscription,
-} from "../hooks/useSubscriptions";
 import Loader from "../components/layout/Loader";
 import { useState, useEffect } from "react";
 import useUser from "../store/user/useUser";
@@ -12,8 +8,8 @@ import { motion } from "framer-motion";
 
 export const defaultPrices = [
   {
-    price: "2,500",
-    type: "basic",
+    price: "0",
+    type: "free",
     color: "#FCDDEC",
     popular: false,
     active: true,
@@ -33,7 +29,7 @@ export const defaultPrices = [
     type: "standard",
     color: "#C6C6EC",
     popular: true,
-    active: true,
+    active: false,
     options: [
       {
         label: "20 storage spaces",
@@ -64,42 +60,37 @@ export const defaultPrices = [
   },
 ];
 
-export type Price = typeof defaultPrices[number] &
-  Pick<Plan, "plan_code"> &
-  Partial<Pick<Subscription, "email_token" | "status" | "subscription_code">>;
-
 export default function Pricing() {
-  const { plans, plansLoading } = useSubscriptions();
-  const [prices, setPrices] = useState<Price[]>([]);
+  const [prices, setPrices] = useState(defaultPrices);
   const { loggedIn, loading } = useUser();
-  useEffect(() => {
-    if (plansLoading) return;
-    let p: any[] = [];
+  // useEffect(() => {
+  //   if (plansLoading) return;
+  //   let p: any[] = [];
 
-    defaultPrices.forEach((price) => {
-      const plan = plans.find(
-        (plan) => plan.name.toLowerCase() === price.type.toLowerCase()
-      );
-      if (plan) {
-        p.push({
-          ...price,
-          price: plan.amount,
-          plan_code: plan.plan_code,
-          email_token: undefined,
-          subscription_code: undefined,
-          status: undefined,
-        });
-      }
-    });
-    setPrices(p);
-  }, [plans, plansLoading]);
+  //   defaultPrices.forEach((price) => {
+  //     const plan = plans.find(
+  //       (plan) => plan.name.toLowerCase() === price.type.toLowerCase()
+  //     );
+  //     if (plan) {
+  //       p.push({
+  //         ...price,
+  //         price: plan.amount,
+  //         plan_code: plan.plan_code,
+  //         email_token: undefined,
+  //         subscription_code: undefined,
+  //         status: undefined,
+  //       });
+  //     }
+  //   });
+  //   setPrices(p);
+  // }, [plans, plansLoading]);
 
-  if (plansLoading || loading)
-    return (
-      <Page>
-        <Loader />
-      </Page>
-    );
+  // if (loading)
+  //   return (
+  //     <Page>
+  //       <Loader />
+  //     </Page>
+  //   );
   return (
     <Page>
       <div className="min-h-[calc(100vh_-_78px)] section-marks">
@@ -170,9 +161,14 @@ export default function Pricing() {
                     <Button
                       href={
                         loggedIn
-                          ? `/billing?plan=${price.plan_code}`
+                          ? `/profile`
                           : "/auth/login"
                       }
+                      // href={
+                      //   loggedIn
+                      //     ? `/billing?plan=${price.price}`
+                      //     : "/auth/login"
+                      // }
                       className="block text-center"
                       label={price.active ? "Get started" : "coming soon"}
                       block

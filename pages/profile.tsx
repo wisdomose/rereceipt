@@ -13,14 +13,15 @@ import Button from "../components/button";
 import { FiCamera, FiImage, FiUser } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AvatarComponent } from "avatar-initials";
-import withState from "../hooks/withState";
 import { motion } from "framer-motion";
 import User from "../res/User";
 import Rereceipt from "../res/Rereceipt";
+import useUser from "../store/user/useUser";
+import useFetcher from "../hooks/useFetcher";
 
 export default function Profile() {
-  // const { user, loading } = useUser();
-  const { user, currentUser } = new Rereceipt();
+  const { user: currentUser, loading } = useUser();
+  const { user } = new Rereceipt();
   // const user = rereceipt.user;
 
   const [email, emailOptions, updateEmail] = useInput("");
@@ -32,14 +33,15 @@ export default function Profile() {
   const [image, setImage] = useState<File | undefined>(undefined);
   const updateOpen = (value: boolean) => setOpen(value);
   const updateOpenPassword = (value: boolean) => setOpenPassword(value);
-  const { loading: updatePicLoading, wrapper: updatePicWrapper } = withState();
+  const { loading: updatePicLoading, wrapper: updatePicWrapper } = useFetcher();
   const { loading: updateProfileLoading, wrapper: updateProfileWrapper } =
-    withState();
+    useFetcher();
   const { loading: updatePasswordLoading, wrapper: updatePasswordWrapper } =
-    withState();
+    useFetcher();
 
   useEffect(() => {
     if (!currentUser) return;
+    console.log(currentUser)
     updateEmail(currentUser.email ?? "");
     updatePhoneNumber(currentUser.phoneNumber ?? "");
   }, [currentUser]);
@@ -131,10 +133,10 @@ export default function Profile() {
             <p className="font-semibold">Email</p>
             <Input {...emailOptions} id="email" type="email" disabled />
           </div>
-          <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
+          {/* <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
             <p className="font-semibold">Phone number</p>
             <Input {...phoneNumberOptions} id="phone-number" type="text" />
-          </div>
+          </div> */}
           <div className="grid md:grid-cols-2 md:gap-14 py-8">
             <p className="font-semibold">Password</p>
             <div>
@@ -155,7 +157,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex justify-end pb-10">
+          {/* <div className="flex justify-end pb-10">
             <Button
               label="Save changes"
               disabled={phoneNumber === (currentUser.phoneNumber ?? "")}
@@ -164,7 +166,7 @@ export default function Profile() {
                 user && updateProfileWrapper(() => user.updateUserProfile({ phoneNumber }))
               }
             />
-          </div>
+          </div> */}
         </>
 
         {/* image */}

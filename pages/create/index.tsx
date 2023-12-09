@@ -1,6 +1,6 @@
 import Page from "../../components/layout/Page";
 import { DOC, DOC_TYPES } from "../../types";
-import { getAllActiveTemplates, getAllTemplates } from "../../utils/firebase";
+import { getAllTemplates } from "../../utils/firebase";
 import { useEffect, useState } from "react";
 import Receipt from "../../components/layout/Receipt";
 import { Dialog } from "@headlessui/react";

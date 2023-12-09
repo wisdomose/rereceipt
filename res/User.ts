@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   updatePassword,
+  updatePhoneNumber,
   updateProfile,
 } from "firebase/auth";
 import Firebase from "./Firebase";
@@ -157,15 +158,14 @@ export default class User {
   async updateUserProfile({ phoneNumber }: { phoneNumber?: string }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const auth = this.auth;
-        const db = this.db;
-        const user = this.user;
+        const user = this.auth.currentUser;
 
         if (!user) {
           console.info(
             `Profiile update attempted by a user who isn't loggedin`
           );
           notify("you need to be logged in");
+          reject("you need to be logged in");
           return;
         }
 
@@ -184,15 +184,10 @@ export default class User {
         });
 
         // update
-        await updateProfile(user, update)
-          .then((res) => {
-            console.info(`Profiile update sucessful for ${user.email}`);
-            notify("Profile updated sucessfully");
-          })
-          .catch((error) => {
-            console.warn(`Profiile update failed for ${user.email}`);
-            notify(error?.code ?? "Failed to update profile");
-          });
+        await updateProfile(user, update);
+        console.info(`Profiile update sucessful for ${user.email}`);
+        notify("Profile updated sucessfully");
+
         resolve(true);
       } catch (error: any) {
         console.error(
@@ -209,7 +204,7 @@ export default class User {
     return new Promise(async (resolve, reject) => {
       try {
         const auth = this.auth;
-        const user = this.user;
+        const user = this.auth.currentUser;
 
         if (!user) {
           notify("you need to be logged in");
@@ -220,15 +215,17 @@ export default class User {
 
         let url = "";
 
-        await this.media.uploadFile({
-          file: image,
-          name: user.displayName
-            ? user.displayName?.replaceAll(" ", "-")
-            : new Date().getTime().toString(),
-          folder: IMAGES.PROFILE,
-        }).then((res) => {
-          url = res;
-        });
+        await this.media
+          .uploadFile({
+            file: image,
+            name: user.displayName
+              ? user.displayName?.replaceAll(" ", "-")
+              : new Date().getTime().toString(),
+            folder: IMAGES.PROFILE,
+          })
+          .then((res) => {
+            url = res;
+          });
 
         const update = {
           photoURL: url,

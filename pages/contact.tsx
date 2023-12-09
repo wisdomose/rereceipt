@@ -3,18 +3,18 @@ import Input from "../components/input";
 import Page from "../components/layout/Page";
 import TextArea from "../components/textarea";
 import useInput from "../hooks/useInput";
-import withState from "../hooks/withState";
 import { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { notify } from "../utils";
+import useFetcher from "../hooks/useFetcher";
 
 export default function Contact() {
   const [email, emailOptions] = useInput("");
   const [subject, subjectOptions] = useInput("");
   const [name, nameOptions] = useInput("");
   const [message, setMessage] = useState("");
-  const { loading, wrapper } = withState();
+  const { loading, wrapper } = useFetcher();
 
   const mail = useCallback(async () => {
     await axios({
