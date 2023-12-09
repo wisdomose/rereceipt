@@ -1,11 +1,10 @@
 import Page from "../components/layout/Page";
 import { useState, useEffect, useRef } from "react";
-import {
-  updateLoggedInUserPassword,
-  updateUserProfile,
-  updateUserProfileImage,
-} from "../utils/firebase";
-import useUser from "../store/user/useUser";
+// import {
+//   updateLoggedInUserPassword,
+//   updateUserProfile,
+//   updateUserProfileImage,
+// } from "../utils/firebase";
 import Loader from "../components/layout/Loader";
 import Image from "next/image";
 import Input from "../components/input";
@@ -14,11 +13,17 @@ import Button from "../components/button";
 import { FiCamera, FiImage, FiUser } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AvatarComponent } from "avatar-initials";
-import withState from "../hooks/withState";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import User from "../res/User";
+import Rereceipt from "../res/Rereceipt";
+import useUser from "../store/user/useUser";
+import useFetcher from "../hooks/useFetcher";
 
 export default function Profile() {
-  const { user, loading } = useUser();
+  const { user: currentUser, loading } = useUser();
+  const { user } = new Rereceipt();
+  // const user = rereceipt.user;
+
   const [email, emailOptions, updateEmail] = useInput("");
   const [phoneNumber, phoneNumberOptions, updatePhoneNumber] = useInput("");
   const [newPassword, newPasswordOptions, updateNewPassword] = useInput("");
@@ -28,17 +33,18 @@ export default function Profile() {
   const [image, setImage] = useState<File | undefined>(undefined);
   const updateOpen = (value: boolean) => setOpen(value);
   const updateOpenPassword = (value: boolean) => setOpenPassword(value);
-  const { loading: updatePicLoading, wrapper: updatePicWrapper } = withState();
+  const { loading: updatePicLoading, wrapper: updatePicWrapper } = useFetcher();
   const { loading: updateProfileLoading, wrapper: updateProfileWrapper } =
-    withState();
+    useFetcher();
   const { loading: updatePasswordLoading, wrapper: updatePasswordWrapper } =
-    withState();
+    useFetcher();
 
   useEffect(() => {
-    if (!user) return;
-    updateEmail(user.email ?? "");
-    updatePhoneNumber(user.phoneNumber ?? "");
-  }, [user]);
+    if (!currentUser) return;
+    console.log(currentUser)
+    updateEmail(currentUser.email ?? "");
+    updatePhoneNumber(currentUser.phoneNumber ?? "");
+  }, [currentUser]);
 
   // when the update password modal is closed, clean the state
   useEffect(() => {
@@ -52,16 +58,16 @@ export default function Profile() {
     }
   }, [open]);
 
-  if (loading)
-    return (
-      <Page isProtected>
-        <Page.Body>
-          <Loader />
-        </Page.Body>
-      </Page>
-    );
+  // if (loading)
+  //   return (
+  //     <Page isProtected>
+  //       <Page.Body>
+  //         <Loader />
+  //       </Page.Body>
+  //     </Page>
+  //   );
 
-  if (!user) {
+  if (!currentUser) {
     return (
       <Page isProtected>
         <Page.Body>
@@ -95,10 +101,10 @@ export default function Profile() {
         <>
           <div className="flex items-end gap-14 py-8 border-b border-b-gray-300">
             <div className="relative overflow-hidden w-24 aspect-square rounded-full">
-              {user?.photoURL ? (
+              {currentUser?.photoURL ? (
                 <Image
                   fill
-                  src={user?.photoURL}
+                  src={currentUser?.photoURL}
                   className="object-cover object-center"
                   alt=""
                   sizes="96px"
@@ -111,9 +117,8 @@ export default function Profile() {
                   fontFamily="inter"
                   color="#5d5fef"
                   background="#e9e9e9"
-                  initials={`${user.displayName?.split(" ")[0][0]}${
-                    user.displayName?.split(" ")[1][0]
-                  }`}
+                  initials={`${currentUser.displayName?.split(" ")[0][0]}${currentUser.displayName?.split(" ")[1][0]
+                    }`}
                 />
               )}
             </div>
@@ -128,10 +133,10 @@ export default function Profile() {
             <p className="font-semibold">Email</p>
             <Input {...emailOptions} id="email" type="email" disabled />
           </div>
-          <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
+          {/* <div className="grid md:grid-cols-2 md:gap-14 py-8 border-b border-b-gray-300">
             <p className="font-semibold">Phone number</p>
             <Input {...phoneNumberOptions} id="phone-number" type="text" />
-          </div>
+          </div> */}
           <div className="grid md:grid-cols-2 md:gap-14 py-8">
             <p className="font-semibold">Password</p>
             <div>
@@ -139,7 +144,7 @@ export default function Profile() {
                 id="password"
                 type="password"
                 value="********"
-                onChange={() => {}}
+                onChange={() => { }}
                 disabled
               />
               <br />
@@ -152,23 +157,23 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex justify-end pb-10">
+          {/* <div className="flex justify-end pb-10">
             <Button
               label="Save changes"
-              disabled={phoneNumber === (user?.phoneNumber ?? "")}
+              disabled={phoneNumber === (currentUser.phoneNumber ?? "")}
               loading={updateProfileLoading}
               onClick={() =>
-                updateProfileWrapper(() => updateUserProfile({ phoneNumber }))
+                user && updateProfileWrapper(() => user.updateUserProfile({ phoneNumber }))
               }
             />
-          </div>
+          </div> */}
         </>
 
         {/* image */}
         <Dialog
           className="relative z-50 flex items-center justify-center"
           open={open}
-          onClose={updatePicLoading ? () => {} : () => updateOpen(false)}
+          onClose={updatePicLoading ? () => { } : () => updateOpen(false)}
         >
           <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md" />
           <div className="fixed inset-0 flex justify-center h-fit mt-[20vh]">
@@ -195,13 +200,13 @@ export default function Profile() {
                     />
                   </label>
 
-                  {image || user?.photoURL ? (
+                  {image || currentUser.photoURL ? (
                     <Image
                       alt=""
                       src={
                         image
                           ? URL.createObjectURL(image)
-                          : user?.photoURL || ""
+                          : currentUser.photoURL || ""
                       }
                       className="w-full h-full object-center object-cover"
                       fill
@@ -215,9 +220,8 @@ export default function Profile() {
                       fontFamily="inter"
                       color="#5d5fef"
                       background="#e9e9e9"
-                      initials={`${user.displayName?.split(" ")[0][0]}${
-                        user.displayName?.split(" ")[1][0]
-                      }`}
+                      initials={`${currentUser.displayName?.split(" ")[0][0]}${currentUser.displayName?.split(" ")[1][0]
+                        }`}
                     />
                   )}
                 </div>
@@ -230,7 +234,7 @@ export default function Profile() {
                     !image
                       ? undefined
                       : () =>
-                          updatePicWrapper(() => updateUserProfileImage(image))
+                        user && updatePicWrapper(() => user.updateUserProfileImage(image))
                   }
                   loading={updatePicLoading}
                 />
@@ -244,7 +248,7 @@ export default function Profile() {
           className="relative z-50 flex items-center justify-center"
           open={openPassword}
           onClose={() =>
-            updatePasswordLoading ? () => {} : updateOpenPassword(false)
+            updatePasswordLoading ? () => { } : updateOpenPassword(false)
           }
         >
           <Dialog.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md" />
@@ -263,8 +267,8 @@ export default function Profile() {
                 disabled={newPassword.length < 6}
                 className="mt-6"
                 onClick={() =>
-                  updatePasswordWrapper(() =>
-                    updateLoggedInUserPassword(newPassword)
+                  user && updatePasswordWrapper(() =>
+                    user.updateUserPassword(newPassword)
                   )
                 }
                 loading={updatePasswordLoading}

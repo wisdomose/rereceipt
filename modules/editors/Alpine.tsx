@@ -22,13 +22,13 @@ import {
   POS,
   RECEIPT,
 } from "../../types";
-import { deleteOneSavedTemplate, saveProgress } from "../../utils/firebase";
 import { useRouter } from "next/router";
 import Button from "../../components/button";
 import useUser from "../../store/user/useUser";
 import { overrideTailwindClasses } from "tailwind-override";
 import { notify } from "../../utils";
-import withState from "../../hooks/withState";
+import Rereceipt from "../../res/Rereceipt";
+import useFetcher from "../../hooks/useFetcher";
 
 type Props = Pick<UseEditorProps, "name"> & {
   children: ReactNode;
@@ -40,6 +40,7 @@ type Props = Pick<UseEditorProps, "name"> & {
 };
 
 export default function Alpine({ saved = false, templateId, ...props }: Props) {
+  const { template } = new Rereceipt();
   const {
     structure,
     editingMode,
@@ -50,7 +51,24 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
     name: props.name,
     structure: props.structure,
   });
-  const { loading: saveLoading, error, wrapper } = withState();
+
+  const { loading: deleteLoading, error: deleteError, wrapper: deleteWrapper, data: deleteData } = useFetcher();
+  const { loading: saveLoading, error: saveError, wrapper: saveWrapper, data: saveData } = useFetcher();
+  const { loading: saveNewLoading, error: saveNewError, wrapper: saveNewWrapper, data: saveNewData } = useFetcher();
+
+  useEffect(() => {
+    if (!deleteData) return;
+    router.replace("/saved");
+  }, [deleteData])
+  useEffect(() => {
+    if (!saveData) return;
+    notify("file saved");
+  }, [saveData])
+  useEffect(() => {
+    if (!saveNewData) return;
+    router.push(`/editor/saved/alpine?receipt=${saveNewData}`);
+    notify("file saved");
+  }, [saveNewData])
 
   /**
    * In a saved document, this is the id of the saved document.
@@ -77,7 +95,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
         return msg;
       });
 
-      return () => window.removeEventListener("beforeunload", () => {});
+      return () => window.removeEventListener("beforeunload", () => { });
     }
   }, []);
 
@@ -92,7 +110,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
     if (saved) {
       if (!templateId) return;
-      await saveProgress({
+      template && await saveWrapper(() => template.saveProgress({
         data: {
           type: props.type,
           img: props.img,
@@ -101,33 +119,29 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
           templateId: templateId,
         },
         id: docId,
-      }).then((res) => {
-        res && notify("file saved");
-      });
+      }))
     } else {
-      await saveProgress({
-        data: {
-          type: props.type,
-          img: props.img,
-          data: structure,
-          template_name: props.name,
-          templateId: docId,
-        },
-        spaces,
-      }).then((res) => {
-        res && router.push(`/editor/saved/alpine?receipt=${res}`);
-        res && notify("file saved");
-      });
+      template &&
+        await saveNewWrapper(() => template.saveProgress({
+          data: {
+            type: props.type,
+            img: props.img,
+            data: structure,
+            template_name: props.name,
+            templateId: docId,
+          },
+          spaces,
+        }))
     }
   }, [props.name, docId, structure, spaces]);
 
   async function deleteOne() {
     saved
-      ? await deleteOneSavedTemplate(docId).then((res) => {
-          router.replace("/saved");
-        })
+      ? template && await deleteWrapper(() => template.deleteOneSavedTemplate(docId))
       : null;
   }
+
+
 
   return (
     <div className="h-screen scrollbar">
@@ -168,9 +182,8 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
                   </Popover.Button>
                   <Popover.Overlay className="fixed inset-0 bg-black/10 backdrop-blur-md z-10" />
                   <div
-                    className={`z-10 fixed max-h-[calc(100vh_-_154px)] h-auto left-6 top-[77px] flex items-center justify-center ${
-                      open ? "right-6" : "right-full"
-                    }`}
+                    className={`z-10 fixed max-h-[calc(100vh_-_154px)] h-auto left-6 top-[77px] flex items-center justify-center ${open ? "right-6" : "right-full"
+                      }`}
                   >
                     <Popover.Panel className="bg-white w-[501px] max-w-[90vw] mx-auto rounded-xl aspect-auto relative max-h-screen overflow-auto">
                       <SideBar />
@@ -182,7 +195,7 @@ export default function Alpine({ saved = false, templateId, ...props }: Props) {
 
             <Button
               label="save"
-              onClick={() => wrapper(save)}
+              onClick={save}
               disabled={!loggedIn || loading}
               minimal
               className="py-2 border-gray5 text-sm" //6px
@@ -229,17 +242,15 @@ function SideBar() {
       {/* mode selector */}
       <div className="flex gap-4 p-3 border-b-[1px] border-[#828282]">
         <button
-          className={`capitalize text-sm ${
-            !previewMode ? "font-semibold" : "font-normal"
-          }`}
+          className={`capitalize text-sm ${!previewMode ? "font-semibold" : "font-normal"
+            }`}
           onClick={() => updatePreviewMode(false)}
         >
           builder
         </button>
         <button
-          className={`capitalize text-sm ${
-            previewMode ? "font-semibold" : "font-normal"
-          }`}
+          className={`capitalize text-sm ${previewMode ? "font-semibold" : "font-normal"
+            }`}
           onClick={() => updatePreviewMode(true)}
         >
           preview
@@ -253,9 +264,8 @@ function SideBar() {
             <>
               <div className="flex justify-between items-center">
                 <p
-                  className={`text-sm ${
-                    disOpen ? "font-semibold " : "font-normal"
-                  }`}
+                  className={`text-sm ${disOpen ? "font-semibold " : "font-normal"
+                    }`}
                 >
                   Settings
                 </p>
@@ -321,9 +331,8 @@ function SideBar() {
             <>
               <div className="flex justify-between items-center">
                 <p
-                  className={`text-sm ${
-                    disOpen ? "font-semibold " : "font-normal"
-                  }`}
+                  className={`text-sm ${disOpen ? "font-semibold " : "font-normal"
+                    }`}
                 >
                   Export
                 </p>
@@ -358,9 +367,8 @@ function SideBar() {
                               {({ active }: { active: boolean }) => (
                                 <button
                                   onClick={() => updateFormat(displayFormat)}
-                                  className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 ${
-                                    active ? "" : "text-gray-700"
-                                  }`}
+                                  className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 ${active ? "" : "text-gray-700"
+                                    }`}
                                 >
                                   {displayFormat === format ? (
                                     <FiCheck />
@@ -384,9 +392,9 @@ function SideBar() {
                     isLoading
                       ? undefined
                       : () => {
-                          updatePreviewMode(true);
-                          exportFile();
-                        }
+                        updatePreviewMode(true);
+                        exportFile();
+                      }
                   }
                 >
                   {!isLoading ? `export ${name}` : "loading"}
@@ -423,9 +431,8 @@ function Select({
     <Menu>
       {({ open }: { open: boolean }) => (
         <div
-          className={`relative inline-block overflow-visible ${
-            block ? "w-fit" : "w-full"
-          }`}
+          className={`relative inline-block overflow-visible ${block ? "w-fit" : "w-full"
+            }`}
         >
           <Menu.Button
             className={overrideTailwindClasses(
@@ -446,9 +453,8 @@ function Select({
               <Menu.Item key={item}>
                 {({ active }: { active: boolean }) => (
                   <button
-                    className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${
-                      active ? "font-semibold" : ""
-                    }`}
+                    className={`text-sm grid grid-cols-[16px,1fr] items-center gap-2 px-1 pt-2 w-full ${active ? "font-semibold" : ""
+                      }`}
                     onClick={() => update(item)}
                   >
                     {item === current ? <FiCheck /> : <span></span>}

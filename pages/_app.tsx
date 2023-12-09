@@ -1,14 +1,14 @@
-import { getApp, initializeApp } from "firebase/app";
-import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import Head from "next/head";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContextProvider from "../store/user/user";
-import { connectStorageEmulator, getStorage } from "firebase/storage";
 import ErrorBoundary from "../components/layout/ErrorBoundary";
+import { initializeApp } from "firebase/app";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 export { reportWebVitals } from "next-axiom";
 
 const firebaseConfig = {
@@ -18,14 +18,18 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_APP_ID,
-  // measurementId: process.env.REACT_APP_measurementId,
 };
 
 initializeApp(firebaseConfig);
+
+const storage = getStorage();
+const auth = getAuth();
+const db = getFirestore();
+
 if (process.env.NODE_ENV === "development") {
-  connectFirestoreEmulator(getFirestore(), "localhost", 8080);
-  connectAuthEmulator(getAuth(), "http://localhost:9099");
-  connectStorageEmulator(getStorage(), "localhost", 9199);
+  connectStorageEmulator(storage, "localhost", 9199);
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectAuthEmulator(auth, "http://localhost:9099");
 }
 
 function MyApp({ Component, pageProps }: AppProps) {

@@ -214,3 +214,15 @@ export {
   DOC_TYPES,
   EDITING_MODE,
 };
+
+export enum COLLECTION {
+  TEMPLATES = "templates",
+  SAVED = "saved",
+  // USERS = "users",
+}
+
+export enum IMAGES {
+  GENERAL = "/",
+  RECEIPTS = "/receipts/",
+  PROFILE = "/profile/",
+}

@@ -14,28 +14,28 @@ export default function PaidProtected({
   children: ReactElement;
   open?: boolean;
 }) {
-  const { loggedIn, loading, paid, trial, paidLoading } = useUser();
+  const { loggedIn, loading,} = useUser();
   const [initialized, setInitialized] = useState(false);
   const router = useRouter();
   const [noAccess, setNoAccess] = useState(true);
 
-  useEffect(() => {
-    // console.log({ paid, trial, open, loggedIn, paidLoading, loading });
-    if (loading || paidLoading) return;
-    if ((!paid && !trial && loggedIn) || (!loggedIn && !open)) {
-      setNoAccess(true);
-      setInitialized(true);
-    } else {
-      setInitialized(true);
-      setNoAccess(false);
-    }
-  }, [paid, trial, open, loggedIn, paidLoading, loading]);
+  // useEffect(() => {
+  //   // console.log({ paid, trial, open, loggedIn, paidLoading, loading });
+  //   if (loading || paidLoading) return;
+  //   if ((!paid && !trial && loggedIn) || (!loggedIn && !open)) {
+  //     setNoAccess(true);
+  //     setInitialized(true);
+  //   } else {
+  //     setInitialized(true);
+  //     setNoAccess(false);
+  //   }
+  // }, [paid, trial, open, loggedIn, paidLoading, loading]);
 
   const onSubClose = () => router.push("/billing");
 
-  if (loading || !initialized || paidLoading) {
-    return <Loader />;
-  }
+  // if (loading || !initialized || paidLoading) {
+  //   return <Loader />;
+  // }
   
   return (
     <>

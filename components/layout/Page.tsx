@@ -1,23 +1,20 @@
 import { ReactElement, useEffect, useState } from "react";
-import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
-import { User } from "firebase/auth";
 import NavBar from "./NavBar";
 import Loader from "./Loader";
 import { overrideTailwindClasses } from "tailwind-override";
 import Footer from "./footer";
+import User from "../../res/User";
+import Firebase from "../../res/Firebase";
+import Rereceipt from "../../res/Rereceipt";
+import useUser from "../../store/user/useUser";
 
 export const routes = [
   {
     label: "playground",
     href: "/playground",
-    secured: false,
-    showOnLogIn: true,
-  },
-  {
-    label: "pricing",
-    href: "/pricing",
-    secured: false,
+    secured: true,
     showOnLogIn: true,
   },
   {
@@ -57,30 +54,19 @@ type PageProps = Props & {
 
 export default function Page({ isProtected = false, ...props }: PageProps) {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(() => isProtected);
+  const { loading, loggedIn } = useUser();
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(auth.currentUser);
-      } else {
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!loading && isProtected && !user) {
+    if (!loading && !loggedIn && isProtected) {
       router.replace("/no-access");
     }
-  }, [loading, user, isProtected]);
+  }, [loading, loggedIn, isProtected]);
 
-  if (loading) return <Loader />;
+  if (loading || !loggedIn && isProtected) return <Loader />;
+
   return (
     <>
-      <NavBar isLoggedIn={!!user} user={user} />
+      <NavBar />
       {props.children}
       <Footer />
     </>

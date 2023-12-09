@@ -35,12 +35,12 @@ import {
 import { useRouter } from "next/router";
 import useUser from "../../../store/user/useUser";
 import Loader from "../../../components/layout/Loader";
-import withState from "../../../hooks/withState";
 import useInput from "../../../hooks/useInput";
 import { Field, Select, TTable, Toggle } from "../create";
 import { notify, omit } from "../../../utils";
 import { TemplateContext } from "../../../store/template/store";
 import { log } from "next-axiom";
+import useFetcher from "../../../hooks/useFetcher";
 
 /*
   TODO
@@ -63,7 +63,7 @@ export default function Edit() {
     width: "200",
   });
   const { user, loading } = useUser();
-  const { loading: updateLoading, wrapper } = withState();
+  const { loading: updateLoading, wrapper } = useFetcher();
   const [template_name, template_nameOptions, updateTemplate_name] =
     useInput("");
   const [initialized, setInitialized] = useState(false);
