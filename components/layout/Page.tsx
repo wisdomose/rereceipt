@@ -54,7 +54,7 @@ type PageProps = Props & {
 
 export default function Page({ isProtected = false, ...props }: PageProps) {
   const router = useRouter();
-  const { loading, loggedIn } = useUser();
+  const { loading, loggedIn, user } = useUser();
 
   useEffect(() => {
     if (!loading && !loggedIn && isProtected) {
