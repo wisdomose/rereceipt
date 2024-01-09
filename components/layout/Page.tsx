@@ -60,6 +60,9 @@ export default function Page({ isProtected = false, ...props }: PageProps) {
     if (!loading && !loggedIn && isProtected) {
       router.replace("/no-access");
     }
+    else{
+      (async function () { console.log(await user?.getIdToken()) })()
+    }
   }, [loading, loggedIn, isProtected]);
 
   if (loading || !loggedIn && isProtected) return <Loader />;
